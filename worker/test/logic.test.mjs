@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   windowState,
+  bothTeamsReal,
   scorePick,
   streakLabel,
   computeTable,
@@ -11,14 +12,22 @@ import {
 
 const KO = Date.parse("2026-06-17T21:00:00+01:00"); // England v Croatia
 const MIN = 60 * 1000;
+const DAY = 24 * 60 * MIN;
 
-test("window edges — the integrity core (HANDOFF spec)", () => {
-  assert.equal(windowState(KO, KO - 61 * MIN), "pre", "KO−61: too early, reject");
-  assert.equal(windowState(KO, KO - 60 * MIN), "open", "KO−60: window opens exactly here");
-  assert.equal(windowState(KO, KO - 59 * MIN), "open", "KO−59: accept");
-  assert.equal(windowState(KO, KO - 1 * MIN), "open", "KO−1: still open");
-  assert.equal(windowState(KO, KO), "shut", "KO exactly: shut — no more picks");
-  assert.equal(windowState(KO, KO + 1 * MIN), "shut", "KO+1: shut, reject");
+test("window: open any time before KO, shuts at KO (integrity core)", () => {
+  assert.equal(windowState(KO, KO - 3 * DAY), "open", "KO−3 days: accept");
+  assert.equal(windowState(KO, KO - 60 * MIN), "open", "KO−60: open");
+  assert.equal(windowState(KO, KO - 1 * MIN), "open", "KO−1 min: accept");
+  assert.equal(windowState(KO, KO), "shut", "KO exactly: shut");
+  assert.equal(windowState(KO, KO + 1 * MIN), "shut", "KO+1: reject");
+});
+
+test("picks only allowed once both teams are real", () => {
+  assert.equal(bothTeamsReal("England", "Croatia"), true);
+  assert.equal(bothTeamsReal("1A", "2B"), false, "group-placeholder");
+  assert.equal(bothTeamsReal("W73", "L74"), false, "knockout-placeholder");
+  assert.equal(bothTeamsReal("England", "3C/D/F"), false, "third-placed placeholder");
+  assert.equal(bothTeamsReal("Côte d'Ivoire", "South Korea"), true, "apostrophes/spaces ok");
 });
 
 test("scoring — 3 exact / 1 result / 0 otherwise, no bankers", () => {

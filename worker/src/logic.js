@@ -2,17 +2,19 @@
 // No Cloudflare or Node APIs in here — so it runs identically in the Worker
 // and under plain `node` for tests. This is the integrity core; keep it pure.
 
-export const WINDOW_MS = 60 * 60 * 1000; // window opens at KO − 60 min
-
 // Window state for a match, given kick-off and "now" as epoch ms.
-//   'pre'  → before the window opens (too early to pick)
-//   'open' → in [KO−60m, KO)  (picks accepted, picks stay hidden)
-//   'shut' → at/after KO       (no more picks; picks revealed)
+//   'open' → any time before KO   (picks accepted/changeable, stay hidden)
+//   'shut' → at/after KO          (no more picks; picks revealed)
+// (The old KO−60 opening was abolished — pick or change the score anytime
+// before kick-off; the only rule is it shuts at KO.)
 export function windowState(koMs, nowMs) {
-  if (nowMs < koMs - WINDOW_MS) return "pre";
-  if (nowMs < koMs) return "open";
-  return "shut";
+  return nowMs < koMs ? "open" : "shut";
 }
+
+// Picks are only allowed once both teams are real. Knockout placeholders like
+// "1A", "W73", "3C/D/F" contain digits or slashes; real team names never do.
+export const isRealTeam = (t) => !!t && !/[\d/]/.test(t);
+export const bothTeamsReal = (a, b) => isRealTeam(a) && isRealTeam(b);
 
 // Score one prediction against the actual result. SIMPLE scoring (Adam, final):
 //   exact score        → 3 pts

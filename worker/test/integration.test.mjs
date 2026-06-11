@@ -30,6 +30,7 @@ function makeKV() {
 const MATCHES = {
   matches: [
     { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null },
+    { id: 99, team1: "1A", team2: "2B", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null }, // placeholder teams
   ],
 };
 
@@ -81,22 +82,21 @@ test("full lifecycle: create → join → pick window edges → reveal gating �
   const joined = await call(env, "POST", "/join", { body: { uid: "smithy", nickname: "Smithy", code } });
   assert.equal(joined.status, 200);
 
-  // --- WINDOW EDGES (server-side, integrity core) ---
-  const tooEarly = await call(env, "POST", "/pick", {
-    body: { uid: "adam", matchId: 50, s1: 2, s2: 1 }, now: koMs - 61 * MIN,
+  // --- WINDOW EDGES (server-side, integrity core; new rule: open until KO) ---
+  const wayEarly = await call(env, "POST", "/pick", {
+    body: { uid: "adam", matchId: 50, s1: 1, s2: 0 }, now: koMs - 3 * 24 * 60 * MIN,
   });
-  assert.equal(tooEarly.status, 403, "KO−61 rejected");
-  assert.equal(tooEarly.json.state, "pre");
+  assert.equal(wayEarly.status, 200, "KO−3 days accepted (no more KO−60 gate)");
 
-  const ok = await call(env, "POST", "/pick", {
-    body: { uid: "adam", matchId: 50, s1: 2, s2: 1 }, now: koMs - 59 * MIN,
+  const changePre = await call(env, "POST", "/pick", {
+    body: { uid: "adam", matchId: 50, s1: 2, s2: 1 }, now: koMs - 1 * MIN,
   });
-  assert.equal(ok.status, 200, "KO−59 accepted");
+  assert.equal(changePre.status, 200, "KO−1 min: change accepted and overwrites");
 
   const smithyPick = await call(env, "POST", "/pick", {
     body: { uid: "smithy", matchId: 50, s1: 1, s2: 1 }, now: koMs - 5 * MIN,
   });
-  assert.equal(smithyPick.status, 200, "KO−5 accepted");
+  assert.equal(smithyPick.status, 200);
 
   const tooLate = await call(env, "POST", "/pick", {
     body: { uid: "adam", matchId: 50, s1: 0, s2: 0 }, now: koMs + 1 * MIN,
@@ -104,9 +104,9 @@ test("full lifecycle: create → join → pick window edges → reveal gating �
   assert.equal(tooLate.status, 403, "KO+1 rejected — no swaps after shut");
   assert.equal(tooLate.json.state, "shut");
 
-  // the rejected late swap must NOT have overwritten the locked pick
+  // the pre-KO change took effect; the rejected post-KO swap did NOT overwrite it
   const stored = await env.KV.get("picks:50", "json");
-  assert.deepEqual({ s1: stored.adam.s1, s2: stored.adam.s2 }, { s1: 2, s2: 1 }, "original pick intact");
+  assert.deepEqual({ s1: stored.adam.s1, s2: stored.adam.s2 }, { s1: 2, s2: 1 }, "pre-KO change kept, post-KO swap ignored");
 
   // --- REVEAL GATING ---
   const hidden = await call(env, "GET", `/picks?code=${code}&matchId=50`, { now: koMs - 1 * MIN });
@@ -259,4 +259,7 @@ test("validation: bad scores and missing fields are rejected", async () => {
   assert.equal(badScore.status, 400);
   const noMatch = await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 999, s1: 1, s2: 0 }, now: koMs - 30 * MIN });
   assert.equal(noMatch.status, 404);
+  const placeholder = await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 99, s1: 1, s2: 0 }, now: koMs - 30 * MIN });
+  assert.equal(placeholder.status, 403, "can't pick a match with placeholder teams");
+  assert.equal(placeholder.json.state, "na");
 });

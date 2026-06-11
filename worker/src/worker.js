@@ -19,6 +19,7 @@
 
 import {
   windowState,
+  bothTeamsReal,
   computeTable,
   buildReveals,
   makeCode,
@@ -255,9 +256,11 @@ async function makePick(env, body) {
   const matches = await getMatches(env);
   const match = matches.find((m) => m.id === matchId);
   if (!match) return j({ error: "no such match" }, 404, env);
-  const state = windowState(Date.parse(match.ukKickoff), Date.now());
-  if (state === "pre") return j({ error: "window not open yet", state }, 403, env);
-  if (state === "shut") return j({ error: "window has shut", state }, 403, env);
+  if (!bothTeamsReal(match.team1, match.team2))
+    return j({ error: "teams not confirmed yet", state: "na" }, 403, env);
+  // open until KO; at/after KO it's shut (no post-shut swap). Pre-KO overwrites freely.
+  if (windowState(Date.parse(match.ukKickoff), Date.now()) === "shut")
+    return j({ error: "window has shut", state: "shut" }, 403, env);
 
   // optionally keep nickname fresh + ensure membership exists
   if (body.nickname) {
