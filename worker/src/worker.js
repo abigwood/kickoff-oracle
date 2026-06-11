@@ -59,10 +59,13 @@ const kvGet = (env, k) => env.KV.get(k, "json");
 const kvPut = (env, k, v) => env.KV.put(k, JSON.stringify(v));
 const randBytes = (n) => crypto.getRandomValues(new Uint8Array(n));
 
+// A member's display name is per-league: league.names[uid] overrides the user's
+// global nickname (which stays the default/fallback for leagues with no override).
 async function resolveMembers(env, league) {
   const uids = (league && league.members) || [];
+  const names = (league && league.names) || {};
   const users = await Promise.all(uids.map((uid) => kvGet(env, `user:${uid}`)));
-  return uids.map((uid, i) => ({ uid, nick: (users[i] && users[i].nickname) || "Anon" }));
+  return uids.map((uid, i) => ({ uid, nick: names[uid] || (users[i] && users[i].nickname) || "Anon" }));
 }
 
 async function loadPicksByMatch(env, matchIds) {
@@ -72,9 +75,11 @@ async function loadPicksByMatch(env, matchIds) {
   return Object.fromEntries(entries);
 }
 
+// The global nickname is just a default: set it once (first time), and let
+// explicit /nick (no code) or per-league overrides change what's displayed.
 async function ensureUser(env, uid, nickname) {
-  const u = (await kvGet(env, `user:${uid}`)) || { nickname: normNick(nickname), leagues: [] };
-  if (nickname) u.nickname = normNick(nickname);
+  const u = (await kvGet(env, `user:${uid}`)) || { nickname: "", leagues: [] };
+  if (nickname && !u.nickname) u.nickname = normNick(nickname);
   return u;
 }
 
@@ -119,7 +124,9 @@ async function createLeague(env, body) {
   }
   const user = await ensureUser(env, uid, body.nickname);
   if (!user.leagues.includes(code)) user.leagues.push(code);
-  await kvPut(env, `league:${code}`, { name, created: Date.now(), owner: uid, members: [uid] });
+  const names = {};
+  if (body.nickname) names[uid] = normNick(body.nickname); // creator's name in THIS league
+  await kvPut(env, `league:${code}`, { name, created: Date.now(), owner: uid, members: [uid], names });
   await kvPut(env, `user:${uid}`, user);
   return j({ code, name }, 200, env);
 }
@@ -133,20 +140,35 @@ async function joinLeague(env, body) {
   const user = await ensureUser(env, uid, body.nickname);
   if (!league.members.includes(uid)) league.members.push(uid);
   if (!user.leagues.includes(code)) user.leagues.push(code);
+  league.names = league.names || {};
+  if (body.nickname) league.names[uid] = normNick(body.nickname); // your name in THIS league
   await kvPut(env, `league:${code}`, league);
   await kvPut(env, `user:${uid}`, user);
   return j({ code, name: league.name }, 200, env);
 }
 
-// Edit your OWN nickname (global — shows in every league you're in). Identity is
-// the uid: only the device holding it can send this, which is the ownership check.
+// Edit your OWN display name. With a league `code`, sets it only in that league
+// (per-league name); without a code, sets the global default used as the
+// fallback for leagues where you haven't set a league-specific name. Identity is
+// the uid — only the device holding it can send this, which is the ownership check.
 async function setNickname(env, body) {
   const uid = String(body.uid || "").trim();
   const raw = String(body.nickname || "").trim();
+  const code = String(body.code || "").trim().toUpperCase();
   if (!uid) return j({ error: "uid required" }, 400, env);
   if (!raw) return j({ error: "nickname required" }, 400, env);
+  if (code) {
+    const league = await kvGet(env, `league:${code}`);
+    if (!league) return j({ error: "no such league" }, 404, env);
+    if (!(league.members || []).includes(uid)) return j({ error: "join the league first" }, 403, env);
+    league.names = league.names || {};
+    league.names[uid] = normNick(raw); // your name in THIS league only
+    await kvPut(env, `league:${code}`, league);
+    await bustTables(env, [code]);
+    return j({ ok: true, code, nickname: normNick(raw) }, 200, env);
+  }
   const user = await ensureUser(env, uid, raw);
-  user.nickname = normNick(raw);
+  user.nickname = normNick(raw); // global default
   await kvPut(env, `user:${uid}`, user);
   await bustTables(env, user.leagues || []); // reflect the new name immediately
   return j({ ok: true, uid, nickname: user.nickname }, 200, env);

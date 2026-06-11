@@ -161,14 +161,16 @@ test("ownership: nick edit, leave, admin kick/rename, and cross-league pick inte
   await call(env, "POST", "/pick", { body: { uid: "smithy", matchId: 50, s1: 0, s2: 0 }, ...at(-30) });
   MATCHES.matches[0] = { ...MATCHES.matches[0], status: "FT", score1: 2, score2: 1 };
 
-  // --- nickname edit (self) reflects everywhere ---
+  // --- per-league nickname edit (self) reflects in that league only ---
   const badName = (await call(env, "GET", `/state?code=${L1}`, at(180))).json.table.find((r) => r.uid === "adam");
   assert.equal(badName.nick, "Adma", "starts with the typo");
-  const ne = await call(env, "POST", "/nick", { body: { uid: "adam", nickname: "Adam" } });
+  const ne = await call(env, "POST", "/nick", { body: { uid: "adam", code: L1, nickname: "Adam" } });
   assert.equal(ne.status, 200);
   const fixed = (await call(env, "GET", `/state?code=${L1}`, at(180))).json.table.find((r) => r.uid === "adam");
-  assert.equal(fixed.nick, "Adam", "nick fixed in the table immediately (cache busted)");
+  assert.equal(fixed.nick, "Adam", "nick fixed in L1 immediately (cache busted)");
   assert.equal(fixed.pts, 3, "Adam's exact 2–1 scores");
+  const stillL2 = (await call(env, "GET", `/state?code=${L2}`, at(180))).json.table.find((r) => r.uid === "adam");
+  assert.equal(stillL2.nick, "Adma", "renaming in L1 does NOT change the name in L2");
 
   // --- ownership enforcement: Adam is NOT the admin of L2 (Smithy is) ---
   const badRename = await call(env, "POST", "/rename", { body: { uid: "adam", code: L2, name: "HIJACK" } });
@@ -201,6 +203,37 @@ test("ownership: nick edit, leave, admin kick/rename, and cross-league pick inte
   const kick = await call(env, "POST", "/kick", { body: { uid: "smithy", code: L2, target: "dave" } });
   assert.equal(kick.status, 200, "admin kick succeeds");
   assert.equal((await call(env, "GET", `/state?code=${L2}`, at(180))).json.table.find((r) => r.uid === "dave"), undefined);
+
+  MATCHES.matches[0] = { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null };
+});
+
+test("per-league names: one uid, different name per league; picks shared; reveals league-correct; migration", async () => {
+  const env = makeEnv();
+  const at = (off) => ({ now: koMs + off * MIN });
+  const A = (await call(env, "POST", "/league", { body: { uid: "u1", nickname: "Adam", name: "MATES" } })).json.code;
+  const B = (await call(env, "POST", "/league", { body: { uid: "u1", nickname: "Adam", name: "BROS" } })).json.code;
+  // same person, different display name in league B
+  assert.equal((await call(env, "POST", "/nick", { body: { uid: "u1", code: B, nickname: "Biggers" } })).status, 200);
+  // a non-member can't set a name in a league they're not in
+  assert.equal((await call(env, "POST", "/nick", { body: { uid: "stranger", code: A, nickname: "Hax" } })).status, 403);
+
+  // ONE shared pick scores in both leagues
+  await call(env, "POST", "/pick", { body: { uid: "u1", matchId: 50, s1: 2, s2: 1 }, ...at(-30) });
+  MATCHES.matches[0] = { ...MATCHES.matches[0], status: "FT", score1: 2, score2: 1 };
+  const sa = (await call(env, "GET", `/state?code=${A}`, at(180))).json;
+  const sb = (await call(env, "GET", `/state?code=${B}`, at(180))).json;
+  assert.equal(sa.table.find((r) => r.uid === "u1").nick, "Adam");
+  assert.equal(sb.table.find((r) => r.uid === "u1").nick, "Biggers");
+  assert.equal(sa.table.find((r) => r.uid === "u1").pts, 3, "shared pick scores in A");
+  assert.equal(sb.table.find((r) => r.uid === "u1").pts, 3, "...and in B");
+  // reveals show the league-correct name for the SAME uid
+  assert.equal(sa.reveals[0].picks.find((p) => p.uid === "u1").nick, "Adam");
+  assert.equal(sb.reveals[0].picks.find((p) => p.uid === "u1").nick, "Biggers");
+
+  // migration: a legacy league with no names map falls back to the global nickname
+  await env.KV.put("league:OLD123", JSON.stringify({ name: "Legacy", owner: "u1", members: ["u1"] }));
+  const old = (await call(env, "GET", "/state?code=OLD123", at(180))).json;
+  assert.equal(old.table.find((r) => r.uid === "u1").nick, "Adam", "legacy → global fallback");
 
   MATCHES.matches[0] = { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null };
 });

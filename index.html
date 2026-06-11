@@ -482,7 +482,7 @@ function viewLeague(){
       ${L.table.map((r,i)=>{
         const isMe = !DEMO && r.uid===me;
         const ctrl = DEMO ? "" :
-          isMe ? `<button class="lact" data-editnick title="Edit your nickname">✏️</button><button class="lact" data-leave="${L.code}" title="Leave this league">🚪</button>`
+          isMe ? `<button class="lact" data-editnick title="Your name in ${L.name}">✏️</button><button class="lact" data-leave="${L.code}" title="Leave this league">🚪</button>`
           : (iAmAdmin ? `<button class="lact" data-kick="${r.uid}" title="Remove ${r.nick}">✖</button>` : "");
         return `<div class="scrow">
         <span class="pc" style="width:22px;text-align:left;color:var(--faint)">${i+1}</span>
@@ -500,7 +500,7 @@ function viewLeague(){
       </div>`).join("")}
     <button class="invite" onclick="navigator.share?navigator.share({title:'${LEAGUE.name}',text:'Join my World Cup predictor league — window opens 60 min before every kick-off. Code: ${LEAGUE.code}',url:location.origin+location.pathname+'?league=${LEAGUE.code}'}):alert('League code: ${LEAGUE.code}')">📲 Invite mates · code ${LEAGUE.code}</button>
     <p class="note" style="margin-top:12px">The rules: predict the score before kick-off. 🎯 Exact score = 3 points. Correct result = 1 point. Miss the window = nothing. Highest total when the cup's lifted wins.</p>`
-   + (DEMO?"":`<p class="note" style="margin-top:10px">✏️ tap the pencil by your name to fix your nickname, 🚪 to leave a league.${iAmAdmin?" As admin you can ✏️ rename this league and ✖ remove members.":""} <button class="lact danger" data-startagain>↺ Start again</button> wipes your identity on this device and leaves every league.</p>`);
+   + (DEMO?"":`<p class="note" style="margin-top:10px">✏️ tap the pencil by your name to set the name you go by <i>in this league</i> (you can be someone else in another), 🚪 to leave.${iAmAdmin?" As admin you can ✏️ rename this league and ✖ remove members.":""} <button class="lact danger" data-startagain>↺ Start again</button> wipes your identity on this device and leaves every league.</p>`);
 }
 
 /* ---------- views ---------- */
@@ -695,11 +695,13 @@ document.addEventListener("click",async e=>{
     const L = LEAGUE;
     const editnick = e.target.closest("[data-editnick]");
     if (editnick){
-      const n = (prompt("Your nickname (everyone sees this):", myNick())||"").trim();
-      if (!n || n===myNick()) return;
-      const { status, j } = await api("/nick", { uid:uid(), nickname:n });
+      const myRow = L.table.find(r=>r.uid===uid());
+      const current = myRow ? myRow.nick : myNick();
+      const n = (prompt("Your name in "+L.name+" (you can go by a different name in each league):", current)||"").trim();
+      if (!n || n===current) return;
+      const { status, j } = await api("/nick", { uid:uid(), code:L.code, nickname:n });  // per-league
       if (status!==200){ alert(j.error||"Couldn't update your name."); return; }
-      setNick(n); await loadLeagues(); render(); return;
+      await loadLeagues(); render(); return;
     }
     const leave = e.target.closest("[data-leave]");
     if (leave){
