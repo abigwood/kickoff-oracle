@@ -1,0 +1,7 @@
+# local tooling / caches — never deploy these
+.claude/
+__pycache__/
+*.pyc
+worker/.wrangler/
+worker/node_modules/
+.DS_Store

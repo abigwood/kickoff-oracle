@@ -221,6 +221,7 @@ select.pill{appearance:none;-webkit-appearance:none}
   <button data-tab="england"><span class="ic">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>England</button>
 </nav>
 
+<script>window.WC_API = "https://kickoff-oracle-window.abigwood.workers.dev";  // THE WINDOW backend (unset → DEMO mode)</script>
 <script src="data/matches.js"></script>
 <script>
 "use strict";
@@ -340,7 +341,7 @@ const byDay = list => {
 const API = window.WC_API || null;           // Claude Code: set to Worker URL
 const DEMO = !API;
 let activeLeague = 0;
-const LEAGUES = [
+const DEMO_LEAGUES = [
  {code:"BNTR26", name:"THE BANTER CUP",
   table:[
     {nick:"Smithy", pts:9, exact:2, streak:"W3"},
@@ -370,8 +371,56 @@ const LEAGUES = [
     ]},
   ]},
 ];
+// LEAGUES is the demo array in DEMO mode, or fetched from the Worker when live.
+let LEAGUES = DEMO ? DEMO_LEAGUES : [];
 Object.defineProperty(window,"LEAGUE",{get:()=>LEAGUES[activeLeague]});
-let myPicks = {};   // in-memory; the Worker owns real state
+
+// ---- live identity (per-device, localStorage). Clearing Safari data loses it. ----
+function uid(){ let u=localStorage.getItem("wc_uid");
+  if(!u){ u="u_"+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem("wc_uid",u); }
+  return u; }
+const myNick = () => localStorage.getItem("wc_nick") || "";
+const setNick = n => localStorage.setItem("wc_nick", n);
+const myLeagueCodes = () => { try { return JSON.parse(localStorage.getItem("wc_leagues")||"[]"); } catch { return []; } };
+const setLeagueCodes = a => localStorage.setItem("wc_leagues", JSON.stringify([...new Set(a)]));
+// own picks cached locally so a returning player sees their locked-in pick while
+// the window is still open (the Worker hides everyone's picks until it shuts).
+let myPicks = DEMO ? {} : (()=>{ try { return JSON.parse(localStorage.getItem("wc_picks")||"{}"); } catch { return {}; } })();
+const saveMyPicks = () => { if(!DEMO) localStorage.setItem("wc_picks", JSON.stringify(myPicks)); };
+
+async function api(path, body){
+  const opts = body ? {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)} : {};
+  const r = await fetch(API+path, opts);
+  return { status:r.status, j: await r.json().catch(()=>({})) };
+}
+// map a Worker reveal block → the shape viewLeague()/revealCard() already render.
+const mapReveal = rv => ({ match: rv.match, picks: rv.picks.map(p => ({
+  nick: p.nick,
+  s: p.asleep ? "😴 no pick" : `${p.s1}–${p.s2}`,
+  hit: !!p.hit, exact: !!p.exact, asleep: !!p.asleep,
+  pts: !p.settled ? "" : (p.exact ? "+3 🎯" : p.hit ? "+1" : "0"),
+})) });
+async function loadLeagues(){
+  if (DEMO) return;
+  const codes = myLeagueCodes();
+  const states = await Promise.all(codes.map(c => api("/state?code="+encodeURIComponent(c)).catch(()=>({status:0}))));
+  LEAGUES = states.filter(s => s.status===200).map(s => ({
+    code: s.j.code, name: s.j.name, table: s.j.table || [], reveals: (s.j.reveals||[]).map(mapReveal),
+  }));
+  // drop any codes the server no longer recognises
+  setLeagueCodes(LEAGUES.map(l => l.code));
+  if (activeLeague >= LEAGUES.length) activeLeague = 0;
+}
+async function joinByCode(code){
+  let n = myNick();
+  if (!n){ n = (prompt("Pick a nickname your mates will see:")||"").trim(); if(!n) return false; setNick(n); }
+  const { status, j } = await api("/join", { uid:uid(), nickname:n, code:code.trim().toUpperCase() });
+  if (status!==200){ alert(j.error || "Couldn't join that league."); return false; }
+  setLeagueCodes([...myLeagueCodes(), j.code]);
+  await loadLeagues();
+  activeLeague = Math.max(0, LEAGUES.findIndex(l => l.code===j.code));
+  return true;
+}
 
 const windowState = m => {
   const ko = new Date(m.ukKickoff), now = new Date();
@@ -414,6 +463,7 @@ function viewLeague(){
     ${LEAGUES.map((lg,i)=>`<button class="pill ${i===activeLeague?"on":""}" data-lg="${i}">🏅 ${lg.name}</button>`).join("")}
     <button class="pill" data-lg="join">＋ Join / create</button>
   </div>`;
+  if (!DEMO && !L) return switcher + `<div class="demo-ribbon">You're not in a league yet. Tap <b>＋ Join / create</b> to start one (you'll get a 6-char code to share in the group chat) or enter a mate's code. You predict each match once — the pick counts in every league you're in.<br><br>🪟 The window opens 60 minutes before each kick-off and slams shut at kick-off. Picks stay hidden from your mates until it shuts.</div>`;
   return switcher
    + (DEMO?`<div class="demo-ribbon">DEMO MODE — sample leagues + working picker. Real shared leagues go live once the Cloudflare Worker is deployed (HANDOFF item 1). You predict each match once; the pick counts in every league you're in.</div>`:"")
    + `<div class="gtable ltable"><h3>🏅 ${L.name} · code ${L.code}</h3>
@@ -429,7 +479,7 @@ function viewLeague(){
       </div>
       <button class="sharecard" data-card="${ri}" style="margin:0 14px 14px;width:calc(100% - 28px)">📤 Share reveal card to the group chat</button>
       </div>`).join("")}
-    <button class="invite" onclick="navigator.share?navigator.share({title:'${LEAGUE.name}',text:'Join my World Cup predictor league — window opens 60 min before every kick-off. Code: ${LEAGUE.code}',url:location.href}):alert('League code: ${LEAGUE.code}')">📲 Invite mates · code ${LEAGUE.code}</button>
+    <button class="invite" onclick="navigator.share?navigator.share({title:'${LEAGUE.name}',text:'Join my World Cup predictor league — window opens 60 min before every kick-off. Code: ${LEAGUE.code}',url:location.origin+location.pathname+'?league=${LEAGUE.code}'}):alert('League code: ${LEAGUE.code}')">📲 Invite mates · code ${LEAGUE.code}</button>
     <p class="note" style="margin-top:12px">The rules: predict the score before kick-off. 🎯 Exact score = 3 points. Correct result = 1 point. Miss the window = nothing. Highest total when the cup's lifted wins.</p>`;
 }
 
@@ -583,19 +633,38 @@ function render(){
     wt(); setInterval(wt,1000);
   }
 }
-document.querySelector("nav").addEventListener("click",e=>{
+document.querySelector("nav").addEventListener("click",async e=>{
   const b = e.target.closest("button"); if(!b) return; tab=b.dataset.tab; render(); scrollTo(0,0);
+  if (tab==="league" && API){ await loadLeagues(); render(); }   // pull fresh table/reveals
 });
-document.addEventListener("click",e=>{
+document.addEventListener("click",async e=>{
   const p = e.target.closest(".pill[data-team]"); if(p){ teamFilter=p.dataset.team; render(); return; }
   const sc = e.target.closest(".sharecard"); if(sc){ shareCard(+sc.dataset.card); return; }
   const lg = e.target.closest("[data-lg]");
   if (lg){
     if (lg.dataset.lg==="join"){
-      const code = prompt("Enter a league code to join, or leave blank to create a new league:");
+      if (DEMO){
+        const code = prompt("Enter a league code to join, or leave blank to create a new league:");
+        if (code===null) return;
+        alert("Joining and creating leagues goes live with the Worker — this demo has two sample leagues to show how switching works.");
+        return;
+      }
+      let n = myNick();
+      if (!n){ n = (prompt("Pick a nickname your mates will see:")||"").trim(); if(!n) return; setNick(n); }
+      const code = prompt("Enter a mate's league code to JOIN — or leave blank to CREATE a new league:");
       if (code===null) return;
-      alert(DEMO ? "Joining and creating leagues goes live with the Worker — this demo has two sample leagues to show how switching works."
-                 : "Joining "+code.toUpperCase()+"…");
+      if (code.trim()===""){
+        const name = (prompt("Name your new league:")||"").trim() || "My League";
+        const { status, j } = await api("/league", { uid:uid(), nickname:n, name });
+        if (status!==200){ alert(j.error || "Couldn't create the league."); return; }
+        setLeagueCodes([...myLeagueCodes(), j.code]);
+        await loadLeagues();
+        activeLeague = Math.max(0, LEAGUES.findIndex(l=>l.code===j.code));
+        render();
+        alert("League created 🎉\n\nShare this code in the group chat:\n\n  "+j.code+"\n\nMates tap ＋ Join / create and enter it.");
+      } else if (await joinByCode(code)){
+        render();
+      }
       return;
     }
     activeLeague = +lg.dataset.lg; render(); return;
@@ -618,8 +687,19 @@ document.addEventListener("click",e=>{
     if (e.target.closest("[data-lock]")){
       const s1 = +w.querySelector('[data-v="s1"]').textContent,
             s2 = +w.querySelector('[data-v="s2"]').textContent;
-      myPicks[id] = {s1,s2};
-      if (API){ /* fetch(API+"/pick",{method:"POST",...}) — Worker wiring, see HANDOFF */ }
+      if (API){
+        const btn = e.target.closest("[data-lock]"); btn.disabled = true; btn.textContent = "Locking…";
+        // server-side window check is authoritative — the Worker rejects out-of-window picks
+        const { status, j } = await api("/pick", { uid:uid(), nickname:myNick()||"Anon", matchId:+id, s1, s2 });
+        if (status!==200){
+          btn.disabled = false; btn.textContent = "Lock it in";
+          alert(j.error==="window has shut" ? "Too late — the window shut at kick-off." :
+                j.error==="window not open yet" ? "The window isn't open yet — it opens 60 min before kick-off." :
+                (j.error || "Couldn't lock that in. Try again."));
+          return;
+        }
+      }
+      myPicks[id] = {s1,s2}; saveMyPicks();
       render(); return;
     }
   }
@@ -632,6 +712,22 @@ document.addEventListener("change",e=>{
 fetch("data/matches.json",{cache:"no-store"}).then(r=>r.json())
   .then(d=>{ DATA=d; render(); }).catch(()=>{});
 render();
+
+/* THE WINDOW: load the player's leagues, and honour ?league=CODE invite links */
+if (API){
+  (async () => {
+    const invite = new URLSearchParams(location.search).get("league");
+    if (invite && !myLeagueCodes().includes(invite.toUpperCase())){
+      if (confirm("Join the predictor league with code "+invite.toUpperCase()+"?")){
+        await joinByCode(invite);
+        tab = "league";
+        history.replaceState(null,"",location.pathname);   // drop the code from the URL
+      }
+    }
+    await loadLeagues();
+    render();
+  })();
+}
 setInterval(()=>fetch("data/matches.json",{cache:"no-store"}).then(r=>r.json())
   .then(d=>{ DATA=d; if(tab==="today") render(); }).catch(()=>{}), 60000);
 </script>

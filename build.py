@@ -11,6 +11,7 @@ Run in CI:    see .github/workflows/refresh.yml (every 15 min, free)
 """
 
 import json
+import os
 import re
 import sys
 import urllib.request
@@ -450,6 +451,30 @@ def main():
     # JS twin: lets index.html work when opened as a local file (no fetch/CORS)
     (OUT.parent / "matches.js").write_text("window.WC_DATA = " + payload + ";")
     print(f"Wrote {len(matches)} matches, {len(tables)} groups -> {OUT}")
+    ping_settle()
+
+
+def ping_settle():
+    """Tell THE WINDOW Worker to recompute league tables (matches may have
+    finished). No-op unless both env vars are set, so local runs stay offline.
+    Set in the GitHub Action: WINDOW_API + SETTLE_SECRET (Actions secret)."""
+    api = os.environ.get("WINDOW_API")
+    secret = os.environ.get("SETTLE_SECRET")
+    if not api or not secret:
+        return
+    try:
+        req = urllib.request.Request(
+            api.rstrip("/") + "/settle",
+            data=json.dumps({"secret": secret}).encode(),
+            # a real User-Agent is required: Cloudflare's edge blocks the default
+            # "Python-urllib" signature with error 1010 before it reaches the Worker.
+            headers={"content-type": "application/json", "User-Agent": "KickOffOracle-Build/1.0"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=15) as r:
+            print("settle pinged:", r.read().decode()[:120])
+    except Exception as e:  # never fail the data build over a league refresh
+        print("settle ping skipped:", e)
 
 
 if __name__ == "__main__":

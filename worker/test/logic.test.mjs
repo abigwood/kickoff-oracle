@@ -70,6 +70,7 @@ test("buildReveals hides open windows, reveals shut ones, scores when FT", () =>
   const members = [
     { uid: "a", nick: "Smithy" },
     { uid: "b", nick: "Adam" },
+    { uid: "c", nick: "Wrighty" }, // doesn't pick → should appear asleep
   ];
   const now = Date.parse("2026-06-17T22:00:00+01:00");
   const matches = [
@@ -85,9 +86,13 @@ test("buildReveals hides open windows, reveals shut ones, scores when FT", () =>
   const reveals = buildReveals(members, matches, picks, now);
   assert.equal(reveals.length, 1, "only the shut match is revealed");
   assert.equal(reveals[0].matchId, 10);
+  assert.equal(reveals[0].picks.length, 3, "whole league shown, incl. non-pickers");
   const smithy = reveals[0].picks.find((p) => p.nick === "Smithy");
   assert.equal(smithy.pts, 3);
   assert.equal(smithy.exact, true);
+  const wrighty = reveals[0].picks.find((p) => p.nick === "Wrighty");
+  assert.equal(wrighty.asleep, true, "no pick → asleep");
+  assert.equal(wrighty.pts, 0);
 });
 
 test("makeCode — 6 chars, unambiguous alphabet, deterministic given bytes", () => {

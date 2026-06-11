@@ -84,23 +84,16 @@ export function buildReveals(members, matches, picksByMatch, nowMs) {
     const koMs = Date.parse(m.ukKickoff);
     if (windowState(koMs, nowMs) !== "shut") continue; // hide until window shuts
     const picks = picksByMatch[m.id] || {};
-    const memberPicks = members
-      .filter((mem) => picks[mem.uid])
-      .map((mem) => {
-        const p = picks[mem.uid];
-        const res = scorePick(p, { s1: m.score1, s2: m.score2 });
-        return {
-          uid: mem.uid,
-          nick: nickOf[mem.uid] || "?",
-          s1: p.s1,
-          s2: p.s2,
-          hit: res.hit,
-          exact: res.exact,
-          pts: res.pts,
-          settled: res.settled,
-        };
-      });
-    if (!memberPicks.length) continue;
+    if (!members.some((mem) => picks[mem.uid])) continue; // nobody engaged → no reveal
+    const settled = m.score1 != null && m.score2 != null;
+    // reveal the WHOLE league: everyone's pick, plus who fell asleep (no pick).
+    const memberPicks = members.map((mem) => {
+      const p = picks[mem.uid];
+      if (!p)
+        return { uid: mem.uid, nick: nickOf[mem.uid] || "?", asleep: true, s1: null, s2: null, hit: false, exact: false, pts: 0, settled };
+      const res = scorePick(p, { s1: m.score1, s2: m.score2 });
+      return { uid: mem.uid, nick: nickOf[mem.uid] || "?", s1: p.s1, s2: p.s2, hit: res.hit, exact: res.exact, pts: res.pts, settled: res.settled };
+    });
     out.push({
       matchId: m.id,
       match: `${m.team1} v ${m.team2}`,

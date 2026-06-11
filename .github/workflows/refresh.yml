@@ -17,6 +17,9 @@ jobs:
         with:
           python-version: "3.12"
       - name: Build data
+        env:
+          WINDOW_API: https://kickoff-oracle-window.abigwood.workers.dev
+          SETTLE_SECRET: ${{ secrets.SETTLE_SECRET }}
         run: |
           python3 find_highlights.py || true
           python3 build.py
