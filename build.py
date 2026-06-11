@@ -395,6 +395,15 @@ def add_weather(matches):
         print(f"weather: {fetched} match forecasts from Open-Meteo")
 
 
+# Manual final-score overrides for when the openfootball feed is slow to publish
+# a result. Keyed "team1|team2|YYYY-MM-DD" (UK kick-off date), score is [team1,
+# team2]. Used ONLY while the feed has no score for that match — once openfootball
+# posts the real result it takes over, so entries here are safe to leave or remove.
+RESULTS_OVERRIDE = {
+    "Mexico|South Africa|2026-06-11": [2, 0],
+}
+
+
 def main():
     try:
         with urllib.request.urlopen(FEED, timeout=30) as r:
@@ -420,6 +429,11 @@ def main():
             ft = m["score"].get("ft") or []
             if len(ft) == 2:
                 s1, s2 = ft
+        # manual override while the feed is slow (feed wins once it has the score)
+        if s1 is None or s2 is None:
+            ovr = RESULTS_OVERRIDE.get(f'{m["team1"]}|{m["team2"]}|{ko.strftime("%Y-%m-%d")}')
+            if ovr:
+                s1, s2 = ovr
         played = s1 is not None and s2 is not None
         live = (not played) and ko <= now <= ko + timedelta(hours=2, minutes=15)
 
