@@ -9,6 +9,12 @@ on:
 permissions:
   contents: write
 
+# Cloudflare cron drives this every 5 min — never let two runs overlap and race
+# on the data push (queue the next instead).
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
 jobs:
   refresh:
     runs-on: ubuntu-latest
@@ -29,5 +35,7 @@ jobs:
           git config user.name "wc26-bot"
           git config user.email "actions@github.com"
           git add data/
-          git diff --cached --quiet || git commit -m "data refresh $(date -u +'%Y-%m-%d %H:%M')"
+          if git diff --cached --quiet; then echo "no data change"; exit 0; fi
+          git commit -m "data refresh $(date -u +'%Y-%m-%d %H:%M')"
+          git pull --rebase origin main || true   # tolerate concurrent refresh pushes
           git push
