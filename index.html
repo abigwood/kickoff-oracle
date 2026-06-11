@@ -68,6 +68,7 @@ h2.day b{color:var(--text)}
 .team.winner .score{color:var(--win)}
 .meta{display:flex; flex-wrap:wrap; gap:6px 12px; margin-top:10px; font-size:.72rem; color:var(--dim)}
 .meta .tag{color:var(--faint)}
+.meta .tag.wx{color:var(--dim);font-variant-numeric:tabular-nums}
 .badge{font-size:.66rem;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:6px}
 .badge.live{background:var(--live);color:#fff;animation:pulse 1.4s infinite}
 .badge.late{background:var(--raise);color:var(--bbc);border:1px solid var(--line)}
@@ -288,6 +289,7 @@ function card(m){
       ${cls.length?`<span class="badge clash">⚡ Clashes: ${cls.map(c=>c.team1+" v "+c.team2).join(", ")}</span>`:""}
       <span class="tag">${m.stage==="Group"?"Group "+m.group:m.round}</span>
       <span class="tag">${m.ground}</span>
+      ${m.weather?`<span class="tag wx" title="${m.weather.desc} at kick-off (local time)">${m.weather.icon} ${m.weather.temp}°C</span>`:""}
     </div>
     ${probStrip(m)}
     ${goalTimeline(m)}

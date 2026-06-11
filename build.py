@@ -320,6 +320,81 @@ def uk_datetime(date_str, time_str):
     return utc.replace(tzinfo=timezone.utc).astimezone(UK)
 
 
+# The 16 WC26 stadiums (lat, lon), keyed by the `ground` strings in the feed.
+VENUE_COORDS = {
+    "Atlanta": (33.7554, -84.4008),                       # Mercedes-Benz Stadium
+    "Boston (Foxborough)": (42.0909, -71.2643),           # Gillette Stadium
+    "Dallas (Arlington)": (32.7473, -97.0945),            # AT&T Stadium
+    "Guadalajara (Zapopan)": (20.6818, -103.4626),        # Estadio Akron
+    "Houston": (29.6847, -95.4107),                       # NRG Stadium
+    "Kansas City": (39.0490, -94.4839),                   # Arrowhead Stadium
+    "Los Angeles (Inglewood)": (33.9535, -118.3392),      # SoFi Stadium
+    "Mexico City": (19.3029, -99.1505),                   # Estadio Azteca
+    "Miami (Miami Gardens)": (25.9580, -80.2389),         # Hard Rock Stadium
+    "Monterrey (Guadalupe)": (25.6694, -100.2444),        # Estadio BBVA
+    "New York/New Jersey (East Rutherford)": (40.8136, -74.0744),  # MetLife Stadium
+    "Philadelphia": (39.9008, -75.1675),                  # Lincoln Financial Field
+    "San Francisco Bay Area (Santa Clara)": (37.4030, -121.9700),  # Levi's Stadium
+    "Seattle": (47.5952, -122.3316),                      # Lumen Field
+    "Toronto": (43.6332, -79.4185),                       # BMO Field
+    "Vancouver": (49.2768, -123.1119),                    # BC Place
+}
+
+# WMO weather codes → (emoji, short text). Open-Meteo returns these codes.
+WX_CODES = {
+    0: ("☀️", "Clear"), 1: ("🌤️", "Mainly clear"), 2: ("⛅", "Partly cloudy"), 3: ("☁️", "Overcast"),
+    45: ("🌫️", "Fog"), 48: ("🌫️", "Fog"),
+    51: ("🌦️", "Light drizzle"), 53: ("🌦️", "Drizzle"), 55: ("🌧️", "Heavy drizzle"),
+    56: ("🌧️", "Freezing drizzle"), 57: ("🌧️", "Freezing drizzle"),
+    61: ("🌦️", "Light rain"), 63: ("🌧️", "Rain"), 65: ("🌧️", "Heavy rain"),
+    66: ("🌧️", "Freezing rain"), 67: ("🌧️", "Freezing rain"),
+    71: ("🌨️", "Light snow"), 73: ("🌨️", "Snow"), 75: ("❄️", "Heavy snow"), 77: ("🌨️", "Snow grains"),
+    80: ("🌦️", "Showers"), 81: ("🌧️", "Showers"), 82: ("⛈️", "Violent showers"),
+    85: ("🌨️", "Snow showers"), 86: ("🌨️", "Snow showers"),
+    95: ("⛈️", "Thunderstorm"), 96: ("⛈️", "Thunderstorm with hail"), 99: ("⛈️", "Thunderstorm with hail"),
+}
+
+
+def add_weather(matches):
+    """Attach a kick-off weather forecast to each upcoming match from Open-Meteo
+    (free, no key). Grouped by venue+date → one API call each. Open-Meteo only
+    forecasts ~16 days out, so distant matches simply get no weather yet; the
+    15-min Action fills them in as they come into range. Never fails the build."""
+    groups = {}  # (lat, lon, utc_date) -> [(match, "YYYY-MM-DDTHH:00 UTC")]
+    for m in matches:
+        if m["status"] == "FT":
+            continue
+        coords = VENUE_COORDS.get(m["ground"])
+        if not coords:
+            continue
+        ko_utc = datetime.fromisoformat(m["ukKickoff"]).astimezone(timezone.utc)
+        key = (coords[0], coords[1], ko_utc.strftime("%Y-%m-%d"))
+        groups.setdefault(key, []).append((m, ko_utc.strftime("%Y-%m-%dT%H:00")))
+
+    fetched = 0
+    for (lat, lon, date), items in groups.items():
+        url = (f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}"
+               f"&hourly=temperature_2m,weather_code&start_date={date}&end_date={date}&timezone=GMT")
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "KickOffOracle-Build/1.0"})
+            with urllib.request.urlopen(req, timeout=20) as r:
+                data = json.loads(r.read())
+        except Exception:
+            continue  # out of forecast range or transient — skip quietly
+        hourly = data.get("hourly", {})
+        idx = {t: i for i, t in enumerate(hourly.get("time", []))}
+        temps, codes = hourly.get("temperature_2m", []), hourly.get("weather_code", [])
+        for m, hour_key in items:
+            i = idx.get(hour_key)
+            if i is None or temps[i] is None:
+                continue
+            emoji, desc = WX_CODES.get(codes[i], ("🌡️", ""))
+            m["weather"] = {"temp": round(temps[i]), "code": codes[i], "icon": emoji, "desc": desc}
+            fetched += 1
+    if fetched:
+        print(f"weather: {fetched} match forecasts from Open-Meteo")
+
+
 def main():
     try:
         with urllib.request.urlopen(FEED, timeout=30) as r:
@@ -437,6 +512,8 @@ def main():
         for m in matches:
             if str(m["id"]) in hl:
                 m["youtube"] = hl[str(m["id"])]
+
+    add_weather(matches)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     payload = json.dumps({
