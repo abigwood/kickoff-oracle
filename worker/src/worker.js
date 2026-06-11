@@ -398,7 +398,10 @@ export default {
   // every 5 min it asks the GitHub Action to refresh data. No-op without the
   // token, so the Worker still deploys before the secret is set.
   async scheduled(event, env, ctx) {
-    if (!env.GH_DISPATCH_TOKEN) return;
+    if (!env.GH_DISPATCH_TOKEN) {
+      console.log("scheduled: GH_DISPATCH_TOKEN not set — skipping");
+      return;
+    }
     ctx.waitUntil(
       fetch("https://api.github.com/repos/abigwood/kickoff-oracle/actions/workflows/refresh.yml/dispatches", {
         method: "POST",
@@ -409,7 +412,8 @@ export default {
           "User-Agent": "kickoff-oracle-window",
         },
         body: JSON.stringify({ ref: "main" }),
-      })
+      }).then(async (r) => console.log("dispatch refresh →", r.status, r.status === 204 ? "ok" : await r.text()))
+        .catch((e) => console.log("dispatch error:", String(e)))
     );
   },
   async fetch(request, env) {
