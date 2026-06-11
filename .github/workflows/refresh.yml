@@ -2,7 +2,8 @@ name: Refresh match data
 
 on:
   schedule:
-    - cron: "*/15 * * * *"   # every 15 min (free on public repos)
+    - cron: "*/5 * * * *"    # every 5 min — tables update fast after full-time
+                             # (GitHub may delay/coalesce scheduled runs under load)
   workflow_dispatch:          # manual run button
 
 permissions:

@@ -26,7 +26,6 @@ import {
   normNick,
 } from "./logic.js";
 
-const TABLE_TTL_MS = 60 * 1000; // recompute standings cache if older than this
 const MATCHES_TTL_MS = 5 * 60 * 1000; // in-memory matches.json cache
 
 // ---- module-scope matches cache (per warm isolate) ----
@@ -93,16 +92,31 @@ async function bustTables(env, codes) {
   await Promise.all([...new Set(codes)].map((c) => env.KV.delete(`table:${c}`)));
 }
 
-async function standings(env, code, { useCache = true } = {}) {
-  if (useCache) {
-    const cached = await kvGet(env, `table:${code}`);
-    if (cached && Date.now() - cached.ts < TABLE_TTL_MS) return cached.rows;
-  }
+// Freshest FT scores, pushed by build.py to KV `results:ft` ({matchId: [s1,s2]}).
+// This is what lets tables update right after the whistle without waiting for
+// Pages to redeploy matches.json.
+async function getResults(env) {
+  return (await kvGet(env, "results:ft")) || {};
+}
+
+// Match list (metadata from Pages) with the freshest FT scores overlaid.
+async function scoredMatches(env) {
+  const matches = await getMatches(env);
+  const results = await getResults(env);
+  return matches.map((m) => {
+    const r = results[m.id];
+    return r ? { ...m, score1: r[0], score2: r[1], status: "FT" } : m;
+  });
+}
+
+// Compute + write a league's standings cache. The cache has NO time-to-live:
+// it's invalidated explicitly when results change (/settle) or membership
+// changes (bustTables), so read traffic never triggers a write.
+async function recomputeLeague(env, code) {
   const league = await kvGet(env, `league:${code}`);
   if (!league) return null;
   const members = await resolveMembers(env, league);
-  const matches = await getMatches(env);
-  const ft = matches
+  const ft = (await scoredMatches(env))
     .filter((m) => m.status === "FT" && m.score1 != null)
     .sort((a, b) => Date.parse(a.ukKickoff) - Date.parse(b.ukKickoff))
     .map((m) => ({ id: m.id, s1: m.score1, s2: m.score2 }));
@@ -110,6 +124,13 @@ async function standings(env, code, { useCache = true } = {}) {
   const rows = computeTable(members, ft, picksByMatch);
   await kvPut(env, `table:${code}`, { rows, ts: Date.now() });
   return rows;
+}
+
+// Read path: serve the cached table (one KV read, no write); recompute on miss.
+async function standings(env, code) {
+  const cached = await kvGet(env, `table:${code}`);
+  if (cached) return cached.rows;
+  return await recomputeLeague(env, code);
 }
 
 // ---- route handlers ----
@@ -278,8 +299,7 @@ async function getPicks(env, url) {
   const matchId = Number(url.searchParams.get("matchId"));
   if (!code || !Number.isInteger(matchId))
     return j({ error: "code and matchId required" }, 400, env);
-  const matches = await getMatches(env);
-  const match = matches.find((m) => m.id === matchId);
+  const match = (await scoredMatches(env)).find((m) => m.id === matchId);
   if (!match) return j({ error: "no such match" }, 404, env);
   // picks stay hidden until the window shuts (KO)
   if (windowState(Date.parse(match.ukKickoff), Date.now()) !== "shut")
@@ -299,10 +319,16 @@ async function getState(env, url) {
   const league = await kvGet(env, `league:${code}`);
   if (!league) return j({ error: "no such league" }, 404, env);
   const members = await resolveMembers(env, league);
-  const matches = await getMatches(env);
   const rows = await standings(env, code);
-  const picksByMatch = await loadPicksByMatch(env, matches.map((m) => m.id));
-  const reveals = buildReveals(members, matches, picksByMatch, Date.now()).slice(0, 12);
+  const now = Date.now();
+  // reveal feed: only shut-window matches, most recent 12 — bounds KV reads so
+  // live-refresh polling stays well inside the free tier.
+  const shut = (await scoredMatches(env))
+    .filter((m) => windowState(Date.parse(m.ukKickoff), now) === "shut")
+    .sort((a, b) => Date.parse(b.ukKickoff) - Date.parse(a.ukKickoff))
+    .slice(0, 12);
+  const picksByMatch = await loadPicksByMatch(env, shut.map((m) => m.id));
+  const reveals = buildReveals(members, shut, picksByMatch, now);
   return j({ code, name: league.name, owner: leagueOwner(league), table: rows, reveals }, 200, env);
 }
 
@@ -314,20 +340,34 @@ async function getTable(env, url) {
   return j({ code, table: rows }, 200, env);
 }
 
+// stable compare of a {matchId:[s1,s2]} results map, order-independent
+const normResults = (o) => JSON.stringify(Object.keys(o || {}).sort().map((k) => [k, o[k]]));
+
 async function settle(env, body) {
   if (!env.SETTLE_SECRET || body.secret !== env.SETTLE_SECRET)
     return j({ error: "forbidden" }, 403, env);
-  // Recompute + warm every league's standings cache. Called by the Action's
-  // build step after a data refresh when matches finish.
-  await getMatches(env, { fresh: true });
+  // build.py pushes {results: {matchId: [s1,s2]}} for finished matches so tables
+  // can update the instant the whistle blows — no waiting for Pages to redeploy.
+  // Fallback (manual pings without a body): derive results from a fresh Pages fetch.
+  let results = body.results;
+  if (!results) {
+    results = {};
+    for (const m of await getMatches(env, { fresh: true }))
+      if (m.status === "FT" && m.score1 != null) results[m.id] = [m.score1, m.score2];
+  }
+  // Frugal: if the result set hasn't changed since last time, do nothing — no
+  // writes. This is what keeps a fast (5-min) cron inside the KV free tier.
+  const prev = await getResults(env);
+  if (!body.force && normResults(prev) === normResults(results))
+    return j({ ok: true, unchanged: true }, 200, env);
+  await kvPut(env, "results:ft", results);
   const list = await env.KV.list({ prefix: "league:" });
   let n = 0;
   for (const k of list.keys) {
-    const code = k.name.slice("league:".length);
-    await standings(env, code, { useCache: false });
+    await recomputeLeague(env, k.name.slice("league:".length));
     n++;
   }
-  return j({ ok: true, leagues: n }, 200, env);
+  return j({ ok: true, leagues: n, changed: true }, 200, env);
 }
 
 // Full KV export for backups (secret-gated, same secret as /settle). Paginates

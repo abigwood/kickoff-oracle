@@ -528,21 +528,25 @@ def main():
     # JS twin: lets index.html work when opened as a local file (no fetch/CORS)
     (OUT.parent / "matches.js").write_text("window.WC_DATA = " + payload + ";")
     print(f"Wrote {len(matches)} matches, {len(tables)} groups -> {OUT}")
-    ping_settle()
+    ping_settle(matches)
 
 
-def ping_settle():
-    """Tell THE WINDOW Worker to recompute league tables (matches may have
-    finished). No-op unless both env vars are set, so local runs stay offline.
-    Set in the GitHub Action: WINDOW_API + SETTLE_SECRET (Actions secret)."""
+def ping_settle(matches):
+    """Push finished-match results to THE WINDOW Worker so league tables update
+    the moment a match ends (no waiting for Pages to redeploy this data). The
+    Worker only recomputes when the result set actually changed. No-op unless
+    both env vars are set, so local runs stay offline. Set in the GitHub Action:
+    WINDOW_API + SETTLE_SECRET (Actions secret)."""
     api = os.environ.get("WINDOW_API")
     secret = os.environ.get("SETTLE_SECRET")
     if not api or not secret:
         return
+    results = {str(m["id"]): [m["score1"], m["score2"]]
+               for m in matches if m["status"] == "FT" and m["score1"] is not None}
     try:
         req = urllib.request.Request(
             api.rstrip("/") + "/settle",
-            data=json.dumps({"secret": secret}).encode(),
+            data=json.dumps({"secret": secret, "results": results}).encode(),
             # a real User-Agent is required: Cloudflare's edge blocks the default
             # "Python-urllib" signature with error 1010 before it reaches the Worker.
             headers={"content-type": "application/json", "User-Agent": "KickOffOracle-Build/1.0"},

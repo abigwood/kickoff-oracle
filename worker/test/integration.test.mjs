@@ -238,6 +238,25 @@ test("per-league names: one uid, different name per league; picks shared; reveal
   MATCHES.matches[0] = { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null };
 });
 
+test("fast settle: scores from pushed results (no Pages wait) and is frugal on no change", async () => {
+  const env = makeEnv();
+  const code = (await call(env, "POST", "/league", { body: { uid: "adam", nickname: "Adam", name: "X" } })).json.code;
+  await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 50, s1: 2, s2: 1 }, now: koMs - 30 * MIN });
+  // MATCHES (the Pages feed) still shows match 50 UPCOMING — push the result straight to the Worker
+  const s1 = await call(env, "POST", "/settle", { body: { secret: "s3cr3t", results: { "50": [2, 1] } } });
+  assert.equal(s1.json.changed, true);
+  const t1 = (await call(env, "GET", `/table?code=${code}`, { now: koMs + 10 * MIN })).json.table;
+  assert.equal(t1.find((r) => r.uid === "adam").pts, 3, "scored from pushed results, not Pages");
+  // identical results again → no recompute (keeps a 5-min cron inside the free tier)
+  const s2 = await call(env, "POST", "/settle", { body: { secret: "s3cr3t", results: { "50": [2, 1] } } });
+  assert.equal(s2.json.unchanged, true);
+  // a corrected result → recompute, table reflects it
+  const s3 = await call(env, "POST", "/settle", { body: { secret: "s3cr3t", results: { "50": [1, 1] } } });
+  assert.equal(s3.json.changed, true);
+  const t2 = (await call(env, "GET", `/table?code=${code}`, { now: koMs + 10 * MIN })).json.table;
+  assert.equal(t2.find((r) => r.uid === "adam").pts, 0, "2–1 pick vs 1–1 result → 0; table updated");
+});
+
 test("/export — secret-gated full KV backup", async () => {
   const env = makeEnv();
   const code = (await call(env, "POST", "/league", { body: { uid: "u1", nickname: "Adam", name: "MATES" } })).json.code;

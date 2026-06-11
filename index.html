@@ -796,8 +796,14 @@ if (API){
     render();
   })();
 }
-setInterval(()=>fetch("data/matches.json",{cache:"no-store"}).then(r=>r.json())
-  .then(d=>{ DATA=d; if(tab==="today") render(); }).catch(()=>{}), 60000);
+// live refresh: keep the visible tab current — match scores on Today, and the
+// league table + reveals on League (so tables update right after full-time).
+setInterval(async ()=>{
+  if (document.hidden) return;                       // don't poll in the background
+  try { DATA = await (await fetch("data/matches.json",{cache:"no-store"})).json(); } catch {}
+  if (tab==="league" && API){ try { await loadLeagues(); } catch {} render(); }
+  else if (tab==="today") render();
+}, 60000);
 </script>
 </body>
 </html>
