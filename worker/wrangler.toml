@@ -15,5 +15,12 @@ binding = "KV"
 id = "af6f15108e9b4ff4b80fac4f4a211514"
 preview_id = "6723af1a106b42a79e6787e60e5ed912"
 
-# Secret (do NOT put it here — set it once with):
+# Cloudflare Cron Trigger — reliably pokes the GitHub Action every 5 min
+# (GitHub's own scheduler is throttled/unreliable). Needs the GH_DISPATCH_TOKEN
+# secret (a fine-grained PAT with Actions: read/write on this repo).
+[triggers]
+crons = ["*/5 * * * *"]
+
+# Secrets (do NOT put them here — set once with):
 #   npx wrangler secret put SETTLE_SECRET
+#   npx wrangler secret put GH_DISPATCH_TOKEN

@@ -394,6 +394,24 @@ async function exportAll(env, body) {
 }
 
 export default {
+  // Cloudflare Cron Trigger (reliable, unlike GitHub's throttled scheduler):
+  // every 5 min it asks the GitHub Action to refresh data. No-op without the
+  // token, so the Worker still deploys before the secret is set.
+  async scheduled(event, env, ctx) {
+    if (!env.GH_DISPATCH_TOKEN) return;
+    ctx.waitUntil(
+      fetch("https://api.github.com/repos/abigwood/kickoff-oracle/actions/workflows/refresh.yml/dispatches", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`,
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+          "User-Agent": "kickoff-oracle-window",
+        },
+        body: JSON.stringify({ ref: "main" }),
+      })
+    );
+  },
   async fetch(request, env) {
     if (request.method === "OPTIONS") return new Response(null, { headers: cors(env) });
     const url = new URL(request.url);
