@@ -327,6 +327,29 @@ async function settle(env, body) {
   return j({ ok: true, leagues: n }, 200, env);
 }
 
+// Full KV export for backups (secret-gated, same secret as /settle). Paginates
+// list so it survives growth. The caller is expected to store it privately
+// (encrypted) — it contains uids, nicknames and picks.
+async function exportAll(env, body) {
+  if (!env.SETTLE_SECRET || body.secret !== env.SETTLE_SECRET)
+    return j({ error: "forbidden" }, 403, env);
+  const data = {};
+  let cursor;
+  do {
+    const res = await env.KV.list({ cursor });
+    for (const k of res.keys) {
+      const raw = await env.KV.get(k.name);
+      try {
+        data[k.name] = JSON.parse(raw);
+      } catch {
+        data[k.name] = raw;
+      }
+    }
+    cursor = res.list_complete ? null : res.cursor;
+  } while (cursor);
+  return j({ exportedAt: Date.now(), count: Object.keys(data).length, data }, 200, env);
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") return new Response(null, { headers: cors(env) });
@@ -349,6 +372,7 @@ export default {
         if (path === "/rename") return await renameLeague(env, body);
         if (path === "/pick") return await makePick(env, body);
         if (path === "/settle") return await settle(env, body);
+        if (path === "/export") return await exportAll(env, body);
       }
       return j({ error: "not found" }, 404, env);
     } catch (err) {

@@ -1,0 +1,44 @@
+name: KV backup
+
+# Nightly encrypted backup of THE WINDOW's league data (uids, nicknames, picks).
+# Artifacts on a PUBLIC repo are publicly downloadable, so the dump is encrypted
+# with BACKUP_KEY before upload. Decrypt locally with:
+#   openssl enc -d -aes-256-cbc -pbkdf2 -pass pass:$BACKUP_KEY \
+#     -in kv-backup.json.enc -out kv-backup.json
+
+on:
+  schedule:
+    - cron: "17 4 * * *"   # daily 04:17 UTC
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Export KV from the Worker
+        env:
+          WINDOW_API: https://kickoff-oracle-window.abigwood.workers.dev
+          SETTLE_SECRET: ${{ secrets.SETTLE_SECRET }}
+        run: |
+          curl -sf -X POST "$WINDOW_API/export" \
+            -H "content-type: application/json" \
+            --data "{\"secret\":\"$SETTLE_SECRET\"}" -o kv-backup.json
+          COUNT=$(python3 -c "import json;print(json.load(open('kv-backup.json'))['count'])")
+          echo "exported $COUNT keys"
+          # fail loudly if the export looks empty/broken, so a silent backup gap can't happen
+          if [ "$COUNT" -lt 1 ]; then echo "::error::export returned $COUNT keys"; exit 1; fi
+
+      - name: Encrypt
+        env:
+          BACKUP_KEY: ${{ secrets.BACKUP_KEY }}
+        run: |
+          openssl enc -aes-256-cbc -pbkdf2 -salt -pass "pass:$BACKUP_KEY" \
+            -in kv-backup.json -out kv-backup.json.enc
+          rm -f kv-backup.json   # never upload plaintext
+
+      - name: Upload encrypted artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kv-backup-${{ github.run_id }}
+          path: kv-backup.json.enc
+          retention-days: 90

@@ -238,6 +238,18 @@ test("per-league names: one uid, different name per league; picks shared; reveal
   MATCHES.matches[0] = { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null };
 });
 
+test("/export — secret-gated full KV backup", async () => {
+  const env = makeEnv();
+  const code = (await call(env, "POST", "/league", { body: { uid: "u1", nickname: "Adam", name: "MATES" } })).json.code;
+  const denied = await call(env, "POST", "/export", { body: {} });
+  assert.equal(denied.status, 403, "export without the secret is forbidden");
+  const dump = await call(env, "POST", "/export", { body: { secret: "s3cr3t" } });
+  assert.equal(dump.status, 200);
+  assert.ok(dump.json.count >= 2, "exports league + user keys");
+  assert.equal(dump.json.data[`league:${code}`].name, "MATES", "values are included and parsed");
+  assert.ok(dump.json.data["user:u1"], "user record present");
+});
+
 test("validation: bad scores and missing fields are rejected", async () => {
   const env = makeEnv();
   await call(env, "POST", "/league", { body: { uid: "adam", nickname: "Adam" } });
