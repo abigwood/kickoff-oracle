@@ -166,6 +166,7 @@ function render(){
         <div class="stick" data-flip>
           <div class="card">
             <div class="face">
+              ${p.number ? `<div class="numtag">${p.number}</div>` : ""}
               <div class="bust">${p.photo ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">` : bust(T.colors, p.name)}</div>
               <div class="plate"><div class="nm">${p.name}</div><div class="ps">${team.toUpperCase()}</div></div>
             </div>
