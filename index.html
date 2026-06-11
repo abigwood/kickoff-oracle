@@ -344,7 +344,8 @@ function viewStats(){
 const byDay = list => {
   const days = {};
   list.forEach(m => (days[m.ukDate] = days[m.ukDate]||[]).push(m));
-  return Object.entries(days).map(([d,ms]) =>
+  // the feed is ordered by group, not date — sort day-groups chronologically
+  return Object.entries(days).sort((a,b)=>a[0].localeCompare(b[0])).map(([d,ms]) =>
     `<h2 class="day">${fmtDay(d)}${d===todayUK()?" · <b>Today</b>":""}</h2>` +
     ms.sort((a,b)=>a.ukKickoff.localeCompare(b.ukKickoff)).map(card).join(""));
 };
@@ -511,7 +512,7 @@ function viewToday(){
       <div class="cd" id="cd" data-ko="${next.ukKickoff}">—</div>
       <div class="who">${next.flag1} ${next.team1} <span class="vs">v</span> ${next.team2} ${next.flag2}</div></div>`;
   if (!todays.length){
-    const up = DATA.matches.filter(m=>m.ukDate>t).slice(0,6);
+    const up = DATA.matches.filter(m=>m.ukDate>t).sort((a,b)=>a.ukKickoff.localeCompare(b.ukKickoff)).slice(0,6);
     return hero + `<div class="empty">No matches today.<br>Here's what's next:</div>` + byDay(up).join("");
   }
   return hero + byDay(todays).join("");
