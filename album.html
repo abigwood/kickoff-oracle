@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2A1F14">
+<title>The Album — KickOff Oracle WC26</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📔</text></svg>">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFE3C8; --paper2:#E6D7B4; --ink:#3A2E1C; --faded:#8A7A5C;
+  --sticker:#FDFBF4; --foilA:#E8C766; --foilB:#F8ECC2;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  background:
+    radial-gradient(1200px 500px at 50% -10%, rgba(255,250,235,.7), transparent 60%),
+    repeating-linear-gradient(0deg, transparent 0 34px, rgba(120,95,55,.05) 34px 35px),
+    var(--paper);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;
+  min-height:100vh; padding-bottom:40px;
+}
+header{
+  padding:calc(16px + env(safe-area-inset-top)) 16px 6px; text-align:center;
+}
+header h1{font-family:"Archivo";font-weight:900;font-stretch:115%;font-size:1.5rem;
+          letter-spacing:.02em;text-transform:uppercase}
+header h1 span{color:#B8242A}
+header .sub{font-family:"Caveat",cursive;font-size:1.15rem;color:var(--faded);margin-top:2px}
+header a{color:var(--faded);font-size:.72rem;text-decoration:none;font-weight:600}
+
+.teambar{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;-webkit-overflow-scrolling:touch;
+         position:sticky;top:0;z-index:20;background:rgba(239,227,200,.92);
+         -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+         border-bottom:1px dashed rgba(120,95,55,.35)}
+.teambar::-webkit-scrollbar{display:none}
+.tchip{flex:0 0 auto;background:var(--sticker);border:1.5px solid rgba(120,95,55,.4);
+       border-radius:8px;padding:6px 11px;font-size:.8rem;font-weight:700;color:var(--ink);
+       box-shadow:1px 2px 0 rgba(120,95,55,.25);cursor:pointer;white-space:nowrap}
+.tchip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+main{padding:14px 14px 0;max-width:560px;margin:0 auto}
+
+/* foil team-badge header sticker */
+.foil{
+  margin:6px auto 16px; width:230px; padding:14px 12px; text-align:center;
+  border-radius:12px; border:3px solid #fff; transform:rotate(-1.2deg);
+  background:linear-gradient(115deg,var(--foilA),var(--foilB) 28%,#D9A93C 45%,var(--foilB) 62%,var(--foilA));
+  background-size:260% 260%; animation:foil 4.5s ease-in-out infinite;
+  box-shadow:2px 4px 10px rgba(60,45,20,.35);
+}
+@keyframes foil{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@media (prefers-reduced-motion: reduce){ .foil{animation:none} }
+.foil .flag{font-size:2.3rem;line-height:1}
+.foil .nm{font-family:"Archivo";font-weight:900;font-size:.95rem;letter-spacing:.06em;
+          text-transform:uppercase;color:#4A3413;margin-top:4px}
+.foil .grp{font-size:.62rem;font-weight:700;letter-spacing:.18em;color:#7A5A1E}
+
+.note{font-family:"Caveat",cursive;font-size:1.05rem;color:var(--faded);text-align:center;margin:0 0 14px}
+
+/* sticker grid */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 10px}
+.sec{grid-column:1/-1;font-family:"Archivo";font-weight:800;font-size:.66rem;
+     letter-spacing:.22em;color:var(--faded);text-transform:uppercase;
+     border-bottom:1px solid rgba(120,95,55,.3);padding-bottom:4px;margin-top:10px}
+
+.stick{perspective:600px;cursor:pointer}
+.card{position:relative;width:100%;aspect-ratio:3/4.1;transform-style:preserve-3d;
+      transition:transform .5s}
+.stick.flip .card{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+      border-radius:7px;background:var(--sticker);border:3px solid #fff;
+      box-shadow:1.5px 3px 6px rgba(60,45,20,.3);overflow:hidden}
+.face.back{transform:rotateY(180deg);display:flex;flex-direction:column;
+           align-items:center;justify-content:center;gap:5px;padding:8px;text-align:center}
+.face.back .pos{font-family:"Archivo";font-weight:900;font-size:1rem}
+.face.back .club{font-size:.68rem;font-weight:600;color:var(--faded);line-height:1.3}
+.face.back .wc{font-size:.55rem;letter-spacing:.14em;color:var(--faded)}
+.tmlink{font-size:.6rem;font-weight:700;color:var(--ink);background:var(--foilA);
+  border-radius:6px;padding:4px 8px;text-decoration:none;margin-top:2px}
+.face.back .cred{font-size:.48rem;color:var(--faded);line-height:1.3;padding:0 2px}
+
+.bust{height:68%;display:flex;align-items:flex-end;justify-content:center;
+      background:linear-gradient(180deg,#CFE3EE,#A9C8DC)}
+.bust svg{width:78%;display:block}
+.bust img{width:100%;height:100%;object-fit:cover;display:block}
+.plate{height:32%;padding:5px 5px 4px;text-align:center;display:flex;flex-direction:column;justify-content:center}
+.plate .nm{font-family:"Archivo";font-weight:800;font-size:.6rem;line-height:1.15;
+           text-transform:uppercase;letter-spacing:.02em}
+.plate .ps{font-size:.52rem;font-weight:700;letter-spacing:.16em;color:var(--faded);margin-top:2px}
+.numtag{position:absolute;top:5px;left:5px;background:#fff;border-radius:5px;
+        font-family:"Archivo";font-weight:900;font-size:.6rem;padding:2px 5px;
+        box-shadow:0 1px 2px rgba(0,0,0,.2)}
+
+/* unopened pack placeholder */
+.pack{grid-column:1/-1;text-align:center;padding:30px 20px;}
+.pack .wrap{display:inline-block;background:linear-gradient(150deg,#B8242A,#7E1418);
+            border-radius:10px;padding:26px 30px;transform:rotate(-2deg);
+            box-shadow:3px 5px 12px rgba(60,45,20,.4);border:2px solid #fff}
+.pack .wrap .t{font-family:"Archivo";font-weight:900;color:#fff;font-size:.9rem;
+               letter-spacing:.1em;text-transform:uppercase}
+.pack .wrap .s{font-family:"Caveat",cursive;color:#F3D9A4;font-size:1.1rem;margin-top:4px}
+footer{text-align:center;font-size:.62rem;color:var(--faded);padding:26px 16px 12px;line-height:1.6}
+</style>
+</head>
+<body>
+<header>
+  <h1>The <span>Album</span></h1>
+  <div class="sub">World Cup 26 · got, got, need…</div>
+  <a href="index.html">← back to KickOff Oracle</a>
+</header>
+<div class="teambar" id="teambar"></div>
+<main id="main"></main>
+<footer>An original tribute to the sticker albums of childhood.<br>
+Squads update as packs are "opened" — England in first, naturally.</footer>
+
+<script src="data/squads.js"></script>
+<script>
+"use strict";
+let SQ = (window.WC_SQUADS||{teams:{}}).teams;
+const GROUPS = {"England":"L","Scotland":"C","Spain":"E","Argentina":"J","France":"I","Brazil":"C","Germany":"D","Portugal":"K","Netherlands":"F","Mexico":"A","USA":"D","Canada":"B"};
+const FLAG = {"England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Algeria":"🇩🇿","Argentina":"🇦🇷","Australia":"🇦🇺","Austria":"🇦🇹","Belgium":"🇧🇪","Bosnia & Herzegovina":"🇧🇦","Brazil":"🇧🇷","Canada":"🇨🇦","Cape Verde":"🇨🇻","Colombia":"🇨🇴","Croatia":"🇭🇷","Curaçao":"🇨🇼","Czech Republic":"🇨🇿","DR Congo":"🇨🇩","Ecuador":"🇪🇨","Egypt":"🇪🇬","France":"🇫🇷","Germany":"🇩🇪","Ghana":"🇬🇭","Haiti":"🇭🇹","Iran":"🇮🇷","Iraq":"🇮🇶","Ivory Coast":"🇨🇮","Japan":"🇯🇵","Jordan":"🇯🇴","Mexico":"🇲🇽","Morocco":"🇲🇦","Netherlands":"🇳🇱","New Zealand":"🇳🇿","Norway":"🇳🇴","Panama":"🇵🇦","Paraguay":"🇵🇾","Portugal":"🇵🇹","Qatar":"🇶🇦","Saudi Arabia":"🇸🇦","Senegal":"🇸🇳","South Africa":"🇿🇦","South Korea":"🇰🇷","Spain":"🇪🇸","Sweden":"🇸🇪","Switzerland":"🇨🇭","Tunisia":"🇹🇳","Turkey":"🇹🇷","USA":"🇺🇸","Uruguay":"🇺🇾","Uzbekistan":"🇺🇿"};
+let team = "England";
+
+const initials = n => n.split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+
+function bust(colors, name){
+  const [shirt, trim] = colors;
+  const skin = "#C89B7B", hair = "#3B2A1E";
+  return `<svg viewBox="0 0 100 92">
+    <ellipse cx="50" cy="96" rx="46" ry="26" fill="${shirt}" stroke="${trim}" stroke-width="2.5"/>
+    <path d="M22 92 Q24 70 38 65 L62 65 Q76 70 78 92 Z" fill="${shirt}" stroke="${trim}" stroke-width="2.5"/>
+    <path d="M40 66 L50 76 L60 66 L56 63 L50 68 L44 63 Z" fill="${trim}"/>
+    <rect x="33" y="56" width="34" height="12" rx="5" fill="${skin}"/>
+    <circle cx="50" cy="38" r="20" fill="${skin}"/>
+    <path d="M30 36 Q30 16 50 16 Q70 16 70 36 Q70 28 62 25 Q52 21 42 26 Q32 29 30 36Z" fill="${hair}"/>
+    <text x="50" y="88" text-anchor="middle" font-family="Archivo,sans-serif" font-weight="900"
+      font-size="13" fill="${trim}" opacity="0.9">${initials(name)}</text>
+  </svg>`;
+}
+
+function render(){
+  const bar = Object.keys(SQ).sort((a,b)=> (SQ[b].players.length?1:0)-(SQ[a].players.length?1:0) || a.localeCompare(b));
+  document.getElementById("teambar").innerHTML =
+    bar.map(t=>`<button class="tchip ${t===team?"on":""}" data-t="${t}">${FLAG[t]||"⚽"} ${t}${SQ[t].players.length?"":" 🔒"}</button>`).join("");
+
+  const T = SQ[team]; const g = GROUPS[team] ? ` · GROUP ${GROUPS[team]}` : "";
+  let html = `<div class="foil"><div class="flag">${FLAG[team]||"⚽"}</div>
+      <div class="nm">${team}</div><div class="grp">WORLD CUP 26${g}</div></div>`;
+
+  if (!T.players.length){
+    html += `<div class="grid"><div class="pack"><div class="wrap">
+      <div class="t">Pack not opened</div>
+      <div class="s">${team}'s 26 stickers drop in the next update</div>
+    </div></div></div>`;
+  } else {
+    html += `<p class="note">tap a sticker to flip it over</p>`;
+    const secs = [["GK","Goalkeepers"],["DEF","Defenders"],["MID","Midfielders"],["FWD","Forwards"]];
+    html += `<div class="grid">` + secs.map(([k,label])=>{
+      const ps = T.players.filter(p=>p.pos===k);
+      if (!ps.length) return "";
+      return `<div class="sec">${label}</div>` + ps.map(p=>`
+        <div class="stick" data-flip>
+          <div class="card">
+            <div class="face">
+              <div class="bust">${p.photo ? `<img src="${p.photo}" alt="${p.name}" loading="lazy">` : bust(T.colors, p.name)}</div>
+              <div class="plate"><div class="nm">${p.name}</div><div class="ps">${team.toUpperCase()}</div></div>
+            </div>
+            <div class="face back">
+              <div class="pos">${p.pos}</div>
+              <div class="club">${p.club}</div>
+              <div class="wc">WC26 · ${team.toUpperCase()}</div>
+              ${p.credit ? `<div class="cred">📷 ${p.credit}</div>` : ""}
+              <a class="tmlink" href="https://www.transfermarkt.com/schnellsuche/ergebnis/schnellsuche?query=${encodeURIComponent(p.name)}"
+                 target="_blank" rel="noopener" onclick="event.stopPropagation()">💶 Market value →</a>
+            </div>
+          </div>
+        </div>`).join("");
+    }).join("") + `</div>`;
+  }
+  document.getElementById("main").innerHTML = html;
+}
+
+document.addEventListener("click", e=>{
+  const c = e.target.closest(".tchip");
+  if (c){ team = c.dataset.t; render(); scrollTo(0,0); return; }
+  const s = e.target.closest("[data-flip]");
+  if (s) s.classList.toggle("flip");
+});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0B0D14">
+<title>KickOff Oracle — World Cup 2026 UK TV Guide</title>
+<meta name="description" content="Every World Cup 2026 match: UK kick-off time and BBC/ITV channel, groups, bracket and England's route to the final.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📺</text></svg>">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B0D14; --surface:#131724; --raise:#1A2032; --line:#242C42;
+  --text:#EEF1F7; --dim:#8A93A8; --faint:#5A6378;
+  --bbc:#FFD230; --itv:#2BD9CE; --live:#FF4D5A; --win:#39D98A;
+  --pad:16px; --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Segoe UI,Roboto,sans-serif;
+  padding-bottom:calc(76px + env(safe-area-inset-bottom));
+  min-height:100vh; overscroll-behavior-y:none;
+}
+.arc{font-family:"Archivo",-apple-system,sans-serif}
+header{
+  position:sticky; top:0; z-index:30; background:rgba(11,13,20,.85);
+  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+  padding:calc(10px + env(safe-area-inset-top)) var(--pad) 10px;
+  display:flex; align-items:baseline; justify-content:space-between;
+}
+.wordmark{font-family:"Archivo";font-weight:900;font-stretch:115%;font-size:1.15rem;letter-spacing:-.01em}
+.wordmark .tv{color:var(--bbc)}
+.updated{font-size:.68rem;color:var(--faint)}
+main{padding:var(--pad)}
+h2.day{
+  font-family:"Archivo";font-weight:800;font-size:.78rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);margin:22px 2px 10px;
+}
+h2.day:first-child{margin-top:4px}
+h2.day b{color:var(--text)}
+
+/* ---- match card: the kick-off time is the hero ---- */
+.match{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  padding:14px 14px 12px; margin-bottom:10px; position:relative; overflow:hidden;
+}
+.match .toprow{display:flex; justify-content:space-between; align-items:flex-start; gap:10px}
+.ko{font-family:"Archivo"; font-weight:900; font-stretch:110%;
+    font-size:2.1rem; line-height:1; font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+.ko small{display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;color:var(--faint);
+          text-transform:uppercase;margin-top:3px}
+.chip{
+  display:inline-block; font-family:"Archivo"; font-weight:800; font-size:.72rem;
+  letter-spacing:.04em; padding:5px 10px; border-radius:7px; color:#0B0D14; white-space:nowrap;
+}
+.chip.bbc{background:var(--bbc)} .chip.itv{background:var(--itv)}
+.chip.tbc{background:var(--raise);color:var(--dim);border:1px solid var(--line)}
+.teams{margin-top:10px}
+.team{display:flex; align-items:center; gap:9px; font-size:1.05rem; font-weight:600; padding:3px 0}
+.team .flag{font-size:1.25rem;width:1.5rem;text-align:center}
+.team .score{margin-left:auto;font-family:"Archivo";font-weight:900;font-size:1.2rem;font-variant-numeric:tabular-nums}
+.team.winner .score{color:var(--win)}
+.meta{display:flex; flex-wrap:wrap; gap:6px 12px; margin-top:10px; font-size:.72rem; color:var(--dim)}
+.meta .tag{color:var(--faint)}
+.badge{font-size:.66rem;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:6px}
+.badge.live{background:var(--live);color:#fff;animation:pulse 1.4s infinite}
+.badge.late{background:var(--raise);color:var(--bbc);border:1px solid var(--line)}
+.badge.clash{background:var(--raise);color:var(--itv);border:1px solid var(--line)}
+.badge.stars{background:var(--raise);color:var(--dim);border:1px solid var(--line)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.timeline{margin-top:10px;border-top:1px dashed var(--line);padding-top:9px;font-size:.74rem;color:var(--dim)}
+.timeline .gl{display:flex;gap:8px;padding:2px 0;font-variant-numeric:tabular-nums}
+.timeline .gl .min{color:var(--faint);width:34px;flex:none;text-align:right}
+.hl-btn{display:block;width:100%;margin-top:10px;background:var(--raise);border:1px solid var(--line);
+  border-radius:9px;color:var(--text);font-family:"Archivo";font-weight:800;font-size:.74rem;
+  padding:10px;cursor:pointer}
+.hl-frame{margin-top:10px;border-radius:10px;overflow:hidden;aspect-ratio:16/9;background:#000}
+.hl-frame iframe{width:100%;height:100%;border:0;display:block}
+.ics{position:absolute;top:12px;right:12px;font-size:1.05rem;text-decoration:none;
+     color:var(--faint);padding:6px;line-height:1}
+.match .toprow{padding-right:30px}
+
+/* hero countdown */
+.next{
+  background:linear-gradient(160deg,var(--raise),var(--surface));
+  border:1px solid var(--line); border-radius:var(--radius);
+  padding:16px; margin-bottom:18px; text-align:center;
+}
+.next .lbl{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:700}
+.next .cd{font-family:"Archivo";font-weight:900;font-size:2.4rem;font-variant-numeric:tabular-nums;
+          letter-spacing:-.02em;margin:6px 0 2px}
+.next .who{font-size:.92rem;color:var(--text)}
+.next .who .vs{color:var(--faint)}
+
+/* tabs */
+nav{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  display:flex; background:rgba(15,18,28,.92);
+  -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
+  border-top:1px solid var(--line); padding:8px 4px calc(8px + env(safe-area-inset-bottom));
+}
+nav button{
+  flex:1; min-width:0; background:none; border:0; color:var(--faint); font-family:"Archivo";
+  font-weight:700; font-size:.66rem; letter-spacing:.04em; padding:4px 0; cursor:pointer;
+}
+nav button .ic{display:block;font-size:1.25rem;margin-bottom:2px;filter:grayscale(1) opacity(.55)}
+nav button.on{color:var(--text)} nav button.on .ic{filter:none}
+
+/* filter pills */
+.pills{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 12px; -webkit-overflow-scrolling:touch}
+.pills::-webkit-scrollbar{display:none}
+.pill{flex:0 0 auto; background:var(--surface); border:1px solid var(--line); color:var(--dim);
+      border-radius:99px; padding:7px 14px; font-size:.78rem; font-weight:600; cursor:pointer}
+.pill.on{background:var(--text); color:var(--bg); border-color:var(--text)}
+select.pill{appearance:none;-webkit-appearance:none}
+
+/* groups */
+.gtable{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+        margin-bottom:14px;overflow:hidden}
+.gtable h3{font-family:"Archivo";font-weight:800;font-size:.8rem;letter-spacing:.12em;
+           padding:10px 14px;border-bottom:1px solid var(--line);color:var(--dim)}
+.gtable table{width:100%;border-collapse:collapse;font-size:.82rem}
+.gtable th{font-size:.6rem;letter-spacing:.08em;color:var(--faint);font-weight:700;text-align:center;padding:6px 2px}
+.gtable th:first-child{text-align:left;padding-left:14px}
+.gtable td{padding:7px 2px;text-align:center;font-variant-numeric:tabular-nums;border-top:1px solid var(--line)}
+.gtable td.t{text-align:left;padding-left:14px;font-weight:600;white-space:nowrap}
+.gtable tr.q td{box-shadow:inset 3px 0 0 var(--win)}
+.gtable td.pts{font-weight:800}
+
+/* bracket */
+.bracket{display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; -webkit-overflow-scrolling:touch}
+.bcol{flex:0 0 230px}
+.bcol h3{font-family:"Archivo";font-weight:800;font-size:.7rem;letter-spacing:.14em;
+         text-transform:uppercase;color:var(--dim);margin:0 2px 8px}
+.bmatch{background:var(--surface);border:1px solid var(--line);border-radius:10px;
+        padding:9px 11px;margin-bottom:8px;font-size:.82rem}
+.bmatch .row{display:flex;justify-content:space-between;gap:8px;padding:2px 0;font-weight:600}
+.bmatch .row .sc{font-variant-numeric:tabular-nums;color:var(--dim)}
+.bmatch .sub{font-size:.66rem;color:var(--faint);margin-top:4px;display:flex;justify-content:space-between}
+
+/* england view */
+.routecard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+           padding:14px;margin-bottom:14px}
+.routecard h3{font-family:"Archivo";font-weight:800;font-size:.78rem;letter-spacing:.12em;
+              text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.rstep{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:.88rem}
+.rstep:first-of-type{border-top:0}
+.rstep .stg{font-family:"Archivo";font-weight:800;font-size:.7rem;color:var(--faint);width:52px;flex:none}
+.rstep .chip{margin-left:auto}
+.note{font-size:.72rem;color:var(--faint);margin-top:10px;line-height:1.5}
+.empty{color:var(--dim);text-align:center;padding:40px 20px;font-size:.9rem;line-height:1.6}
+/* stats: supercomputer + golden boot */
+.scrow{display:flex;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--line);font-size:.86rem}
+.scrow:first-of-type{border-top:0}
+.scrow .nm{font-weight:600;width:118px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scrow .bar{flex:1;height:8px;background:var(--raise);border-radius:99px;overflow:hidden}
+.scrow .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--itv),var(--bbc));border-radius:99px}
+.scrow .pc{font-family:"Archivo";font-weight:800;font-variant-numeric:tabular-nums;width:52px;text-align:right;flex:none}
+.probs{display:flex;height:6px;border-radius:99px;overflow:hidden;margin-top:10px}
+.probs i{display:block;height:100%}
+.problbl{display:flex;justify-content:space-between;font-size:.64rem;color:var(--faint);margin-top:4px;font-variant-numeric:tabular-nums}
+
+/* THE WINDOW — prediction picker */
+.window{margin-top:12px;border-top:1px dashed var(--line);padding-top:11px}
+.window .wlbl{display:flex;justify-content:space-between;align-items:center;font-family:"Archivo";
+  font-weight:800;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase}
+.window .wlbl .open{color:var(--win)} .window .wlbl .wait{color:var(--faint)}
+.window .wlbl .cdown{font-variant-numeric:tabular-nums;color:var(--text)}
+.picker{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 0 10px}
+.step{display:flex;align-items:center;gap:8px}
+.step button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);
+  background:var(--raise);color:var(--text);font-size:1.15rem;font-weight:700;cursor:pointer}
+.step .v{font-family:"Archivo";font-weight:900;font-size:1.7rem;width:30px;text-align:center;
+  font-variant-numeric:tabular-nums}
+.picker .dash{color:var(--faint);font-weight:800}
+.wrow{display:flex;gap:8px;align-items:center}
+.banker{flex:1;background:var(--raise);border:1px solid var(--line);border-radius:9px;color:var(--dim);
+  font-size:.72rem;font-weight:700;padding:9px;cursor:pointer}
+.banker.on{background:var(--bbc);color:#0B0D14;border-color:var(--bbc)}
+.lockbtn{flex:1.4;background:var(--win);border:0;border-radius:9px;color:#06280F;
+  font-family:"Archivo";font-weight:800;font-size:.78rem;padding:10px;cursor:pointer}
+.locked{background:var(--raise);border:1px solid var(--win);border-radius:9px;padding:9px;
+  text-align:center;font-size:.78rem;color:var(--win);font-weight:700}
+.reveal{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.rpick{background:var(--raise);border:1px solid var(--line);border-radius:7px;padding:5px 9px;
+  font-size:.7rem;font-weight:600}
+.rpick b{font-family:"Archivo";font-variant-numeric:tabular-nums}
+.rpick.oracle{border-color:var(--itv)} .rpick.hit{border-color:var(--win)}
+.rpick .asleep{color:var(--faint)}
+/* league table */
+.ltable .scrow .nm{width:auto;flex:1}
+.lmeta{display:flex;gap:10px;font-size:.62rem;color:var(--faint);font-variant-numeric:tabular-nums}
+.demo-ribbon{background:var(--raise);border:1px dashed var(--itv);border-radius:10px;color:var(--itv);
+  font-size:.7rem;font-weight:700;padding:9px 12px;margin-bottom:14px;line-height:1.5}
+.sharecard{background:var(--itv);color:#06281F;border:0;border-radius:9px;
+  font-family:"Archivo";font-weight:800;font-size:.76rem;padding:11px;cursor:pointer}
+.invite{display:block;width:100%;background:var(--text);color:var(--bg);border:0;border-radius:10px;
+  font-family:"Archivo";font-weight:800;padding:12px;font-size:.82rem;margin-top:12px;cursor:pointer}
+@media (prefers-reduced-motion: reduce){ .badge.live{animation:none} }
+</style>
+</head>
+<body>
+<header>
+  <div class="wordmark">KICKOFF <span class="tv">ORACLE</span> <span style="color:var(--faint);font-weight:600;font-size:.7rem">WC26</span></div>
+  <div style="display:flex;gap:12px;align-items:baseline"><a href="album.html" style="color:var(--bbc);font-size:.7rem;font-weight:800;text-decoration:none;letter-spacing:.06em">📔 ALBUM</a><div class="updated" id="updated"></div></div>
+</header>
+<main id="main"></main>
+<nav>
+  <button data-tab="today" class="on"><span class="ic">📺</span>Today</button>
+  <button data-tab="fixtures"><span class="ic">🗓</span>Fixtures</button>
+  <button data-tab="groups"><span class="ic">🏆</span>Groups</button>
+  <button data-tab="bracket"><span class="ic">🛣</span>Bracket</button>
+  <button data-tab="stats"><span class="ic">🔮</span>Stats</button>
+  <button data-tab="league"><span class="ic">🏅</span>League</button>
+  <button data-tab="england"><span class="ic">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>England</button>
+</nav>
+
+<script src="data/matches.js"></script>
+<script>
+"use strict";
+let DATA = window.WC_DATA || {matches:[],groups:{}};
+let tab = "today", teamFilter = "All", tickTimer = null;
+const $ = s => document.querySelector(s);
+const MARQUEE = new Set(["England","Scotland","Brazil","Argentina","France","Spain","Germany","Portugal","Netherlands","Mexico","USA"]);
+
+/* ---------- helpers ---------- */
+const fmtDay = iso => new Date(iso+"T12:00:00").toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+const todayUK = () => new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/London"}).format(new Date());
+const chipClass = ch => ch==="TBC" ? "tbc" : (ch.startsWith("BBC") ? "bbc" : "itv");
+const isLate = m => { const h = +m.ukTime.slice(0,2); return h >= 23 || h < 6; };
+const stars = m => {                                  // "worth staying up" v1 heuristic
+  let s = 1;
+  if (m.stage !== "Group") s = 3;
+  else {
+    if (MARQUEE.has(m.team1) || MARQUEE.has(m.team2)) s++;
+    if (/Matchday (9|1[0-8])/.test(m.round)) s++;     // final group round = decisive
+  }
+  return "●".repeat(s) + "○".repeat(3-s);
+};
+const clashes = m => DATA.matches.filter(x => x.id!==m.id && x.ukKickoff===m.ukKickoff);
+const ics = m => {
+  const dt = new Date(m.ukKickoff), end = new Date(dt.getTime()+115*60000);
+  const z = d => d.toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
+  return "data:text/calendar;charset=utf-8," + encodeURIComponent(
+    ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//KickOffOracle//WC26//EN","BEGIN:VEVENT",
+     `UID:wc26-${m.id}@kickofforacle`,`DTSTART:${z(dt)}`,`DTEND:${z(end)}`,
+     `SUMMARY:⚽ ${m.team1} v ${m.team2} — ${m.channel}`,
+     `DESCRIPTION:${m.round} · ${m.ground} · UK TV: ${m.channel}`,
+     `LOCATION:${m.channel}`,"END:VEVENT","END:VCALENDAR"].join("\r\n"));
+};
+
+/* ---------- match card ---------- */
+function card(m){
+  const cls = clashes(m);
+  const w1 = m.status==="FT" && m.score1>m.score2, w2 = m.status==="FT" && m.score2>m.score1;
+  return `<article class="match">
+    <a class="ics" href="${ics(m)}" download="${m.team1}-v-${m.team2}.ics" aria-label="Add to calendar">＋</a>
+    <div class="toprow">
+      <div class="ko">${m.ukTime}<small>UK time</small></div>
+      <span class="chip ${chipClass(m.channel)}">${m.channel}</span>
+    </div>
+    <div class="teams">
+      <div class="team ${w1?"winner":""}"><span class="flag">${m.flag1}</span>${m.team1}
+        ${m.score1!=null?`<span class="score">${m.score1}</span>`:""}</div>
+      <div class="team ${w2?"winner":""}"><span class="flag">${m.flag2}</span>${m.team2}
+        ${m.score2!=null?`<span class="score">${m.score2}</span>`:""}</div>
+    </div>
+    <div class="meta">
+      ${m.status==="LIVE"?`<span class="badge live">LIVE</span>`:""}
+      ${isLate(m)&&m.status!=="FT"?`<span class="badge late">🌙 Late one ${stars(m)}</span>`:""}
+      ${cls.length?`<span class="badge clash">⚡ Clashes: ${cls.map(c=>c.team1+" v "+c.team2).join(", ")}</span>`:""}
+      <span class="tag">${m.stage==="Group"?"Group "+m.group:m.round}</span>
+      <span class="tag">${m.ground}</span>
+    </div>
+    ${probStrip(m)}
+    ${goalTimeline(m)}
+    ${windowWidget(m)}
+  </article>`;
+}
+
+function goalTimeline(m){
+  if (m.status!=="FT" || (!m.goals?.length && !m.youtube)) return "";
+  const rows = (m.goals||[]).map(g=>`<div class="gl">
+      <span class="min">${g.minute??""}'</span>
+      <span>⚽ ${g.name}${g.pen?" (pen)":""}${g.og?" (OG)":""} <span style="color:var(--faint)">· ${g.team}</span></span>
+    </div>`).join("");
+  const hl = m.youtube
+    ? `<button class="hl-btn" data-hl="${m.youtube}">▶ Watch official highlights</button><div class="hl-slot"></div>`
+    : "";
+  return `<div class="timeline">${rows}${hl}</div>`;
+}
+
+function probStrip(m){
+  const p = (DATA.matchProbs||{})[String(m.id)];
+  if (!p || m.status==="FT") return "";
+  const [w,d,l] = p.map(x=>Math.round(x*100));
+  return `<div class="probs">
+      <i style="width:${w}%;background:var(--itv)"></i>
+      <i style="width:${d}%;background:var(--raise)"></i>
+      <i style="width:${l}%;background:var(--bbc)"></i></div>
+    <div class="problbl"><span>${m.team1} ${w}%</span><span>draw ${d}%</span><span>${m.team2} ${l}%</span></div>`;
+}
+
+function viewStats(){
+  const P = (DATA.predictions||{}).teams || [];
+  const sims = (DATA.predictions||{}).sims || 0;
+  const top = P.filter(t=>t.win>0.2).slice(0,16);
+  const max = top.length ? top[0].win : 1;
+  const sc = DATA.scorers || [];
+  return `<div class="gtable"><h3>🔮 THE ORACLE — WIN THE LOT</h3>
+      ${top.map(t=>`<div class="scrow"><span class="nm">${t.flag} ${t.team}</span>
+        <span class="bar"><i style="width:${Math.max(2,100*t.win/max)}%"></i></span>
+        <span class="pc">${t.win}%</span></div>`).join("")}
+      <p class="note" style="padding:0 14px 12px">The Oracle: Elo-rated teams, ${sims.toLocaleString()} tournament simulations, re-run after every result. Match cards show each game's win/draw/win odds. Information, not betting advice.</p>
+    </div>
+    <div class="gtable"><h3>⚽ GOLDEN BOOT</h3>
+      ${sc.length ? sc.slice(0,15).map((s,i)=>`<div class="scrow">
+          <span class="pc" style="width:24px;text-align:left;color:var(--faint)">${i+1}</span>
+          <span class="nm" style="width:auto;flex:1">${s.name} <span style="color:var(--faint)">· ${s.flag} ${s.team}</span></span>
+          <span class="pc">${s.goals}</span></div>`).join("")
+        : `<p class="empty" style="padding:24px">No goals yet — the race starts with the first match. Scorers appear here automatically.</p>`}
+    </div>`;
+}
+
+const byDay = list => {
+  const days = {};
+  list.forEach(m => (days[m.ukDate] = days[m.ukDate]||[]).push(m));
+  return Object.entries(days).map(([d,ms]) =>
+    `<h2 class="day">${fmtDay(d)}${d===todayUK()?" · <b>Today</b>":""}</h2>` +
+    ms.sort((a,b)=>a.ukKickoff.localeCompare(b.ukKickoff)).map(card).join(""));
+};
+
+/* ---------- THE WINDOW (demo mode until Worker is wired) ---------- */
+const API = window.WC_API || null;           // Claude Code: set to Worker URL
+const DEMO = !API;
+let activeLeague = 0;
+const LEAGUES = [
+ {code:"BNTR26", name:"THE BANTER CUP",
+  table:[
+    {nick:"Smithy", pts:9, exact:2, streak:"W3"},
+    {nick:"Adam", pts:7, exact:1, streak:"W1"},
+    {nick:"Dave", pts:4, exact:0, streak:"L1"},
+    {nick:"Wrighty", pts:2, exact:0, streak:"😴1"},
+  ],
+  reveals:[
+    {match:"Mexico v South Africa", picks:[
+      {nick:"Smithy", s:"2–0", hit:true, pts:"+3 🎯", exact:true},
+      {nick:"Adam", s:"1–0", hit:true, pts:"+1"},
+      {nick:"Dave", s:"1–1", hit:false, pts:"0"},
+      {nick:"Wrighty", s:"😴 no pick", hit:false, pts:"0", asleep:true},
+    ]},
+  ]},
+ {code:"BROS99", name:"BROS ONLY",
+  table:[
+    {nick:"Adam", pts:5, exact:1, streak:"W2"},
+    {nick:"Big Bro", pts:4, exact:0, streak:"W1"},
+    {nick:"Little Bro", pts:1, exact:0, streak:"L3"},
+  ],
+  reveals:[
+    {match:"Mexico v South Africa", picks:[
+      {nick:"Adam", s:"1–0", hit:true, pts:"+1"},
+      {nick:"Big Bro", s:"2–1", hit:true, pts:"+1"},
+      {nick:"Little Bro", s:"0–2", hit:false, pts:"0"},
+    ]},
+  ]},
+];
+Object.defineProperty(window,"LEAGUE",{get:()=>LEAGUES[activeLeague]});
+let myPicks = {};   // in-memory; the Worker owns real state
+
+const windowState = m => {
+  const ko = new Date(m.ukKickoff), now = new Date();
+  const opens = new Date(ko.getTime() - 60*60000);
+  if (m.status !== "UPCOMING") return "done";
+  if (DEMO && m.id === nextUpId()) return "open";          // demo: force next match open
+  return now < opens ? "pre" : (now < ko ? "open" : "done");
+};
+const nextUpId = () => { const n = DATA.matches.filter(x=>x.status==="UPCOMING")
+  .sort((a,b)=>a.ukKickoff.localeCompare(b.ukKickoff))[0]; return n && n.id; };
+
+function windowWidget(m){
+  if (m.team1.length<4 && /\d/.test(m.team1)) return "";   // placeholder teams
+  const st = windowState(m);
+  if (st==="pre") return `<div class="window"><div class="wlbl">
+      <span class="wait">🪟 Window opens at ${new Date(new Date(m.ukKickoff)-36e5)
+        .toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</span>
+      <span class="wait">KO−60</span></div></div>`;
+  if (st!=="open") return "";
+  const p = myPicks[m.id];
+  if (p) return `<div class="window"><div class="wlbl"><span class="open">🪟 WINDOW OPEN</span>
+      <span class="cdown" data-wcd="${m.ukKickoff}"></span></div>
+      <div class="locked">🔒 Locked: ${m.team1} ${p.s1}–${p.s2} ${m.team2}<br>
+      <span style="color:var(--dim);font-weight:400;font-size:.68rem">Hidden from your mates until the window shuts</span></div></div>`;
+  return `<div class="window" data-wid="${m.id}"><div class="wlbl">
+      <span class="open">🪟 WINDOW OPEN</span><span class="cdown" data-wcd="${m.ukKickoff}"></span></div>
+    <div class="picker">
+      <div class="step"><button data-st="s1,-1">−</button><span class="v" data-v="s1">0</span><button data-st="s1,1">＋</button></div>
+      <span class="dash">–</span>
+      <div class="step"><button data-st="s2,-1">−</button><span class="v" data-v="s2">0</span><button data-st="s2,1">＋</button></div>
+    </div>
+    <div class="wrow">
+      <button class="lockbtn" data-lock>Lock it in</button>
+    </div></div>`;
+}
+
+function viewLeague(){
+  const L = LEAGUE;
+  const switcher = `<div class="pills">
+    ${LEAGUES.map((lg,i)=>`<button class="pill ${i===activeLeague?"on":""}" data-lg="${i}">🏅 ${lg.name}</button>`).join("")}
+    <button class="pill" data-lg="join">＋ Join / create</button>
+  </div>`;
+  return switcher
+   + (DEMO?`<div class="demo-ribbon">DEMO MODE — sample leagues + working picker. Real shared leagues go live once the Cloudflare Worker is deployed (HANDOFF item 1). You predict each match once; the pick counts in every league you're in.</div>`:"")
+   + `<div class="gtable ltable"><h3>🏅 ${L.name} · code ${L.code}</h3>
+      ${L.table.map((r,i)=>`<div class="scrow">
+        <span class="pc" style="width:22px;text-align:left;color:var(--faint)">${i+1}</span>
+        <span class="nm">${r.nick}<div class="lmeta"><span>${r.exact} exact</span><span>${r.streak}</span></div></span>
+        <span class="pc">${r.pts}</span></div>`).join("")}
+    </div>
+    ${L.reveals.map((rv,ri)=>`<div class="gtable"><h3>🪟 REVEAL — ${rv.match}</h3>
+      <div class="reveal" style="padding:12px 14px">
+        ${rv.picks.map(p=>`<span class="rpick ${p.hit?"hit":""} ${p.oracle?"oracle":""}">
+          ${p.nick}: <b class="${p.asleep?"asleep":""}">${p.s}</b> ${p.exact?"🎯":""} <span style="color:var(--faint)">${p.pts}</span></span>`).join("")}
+      </div>
+      <button class="sharecard" data-card="${ri}" style="margin:0 14px 14px;width:calc(100% - 28px)">📤 Share reveal card to the group chat</button>
+      </div>`).join("")}
+    <button class="invite" onclick="navigator.share?navigator.share({title:'${LEAGUE.name}',text:'Join my World Cup predictor league — window opens 60 min before every kick-off. Code: ${LEAGUE.code}',url:location.href}):alert('League code: ${LEAGUE.code}')">📲 Invite mates · code ${LEAGUE.code}</button>
+    <p class="note" style="margin-top:12px">The rules: predict the score before kick-off. 🎯 Exact score = 3 points. Correct result = 1 point. Miss the window = nothing. Highest total when the cup's lifted wins.</p>`;
+}
+
+/* ---------- views ---------- */
+function viewToday(){
+  const t = todayUK();
+  const todays = DATA.matches.filter(m=>m.ukDate===t);
+  const next = DATA.matches.filter(m=>m.status==="UPCOMING" && new Date(m.ukKickoff)>new Date())
+                           .sort((a,b)=>a.ukKickoff.localeCompare(b.ukKickoff))[0];
+  let hero = "";
+  if (next) hero = `<div class="next"><div class="lbl">Next kick-off · ${next.channel}</div>
+      <div class="cd" id="cd" data-ko="${next.ukKickoff}">—</div>
+      <div class="who">${next.flag1} ${next.team1} <span class="vs">v</span> ${next.team2} ${next.flag2}</div></div>`;
+  if (!todays.length){
+    const up = DATA.matches.filter(m=>m.ukDate>t).slice(0,6);
+    return hero + `<div class="empty">No matches today.<br>Here's what's next:</div>` + byDay(up).join("");
+  }
+  return hero + byDay(todays).join("");
+}
+
+function viewFixtures(){
+  const teams = [...new Set(DATA.matches.flatMap(m=>[m.team1,m.team2]))]
+                .filter(t=>!/^\d|^W\d|\//.test(t)).sort();
+  let list = DATA.matches;
+  if (teamFilter!=="All") list = list.filter(m=>m.team1===teamFilter||m.team2===teamFilter);
+  const quick = ["All","England","Scotland"];
+  return `<div class="pills">
+      ${quick.map(q=>`<button class="pill ${teamFilter===q?"on":""}" data-team="${q}">${q}</button>`).join("")}
+      <select class="pill" id="teamsel">
+        <option value="">More teams…</option>
+        ${teams.map(t=>`<option ${teamFilter===t?"selected":""}>${t}</option>`).join("")}
+      </select>
+    </div>` + byDay(list).join("");
+}
+
+function viewGroups(){
+  return Object.entries(DATA.groups).map(([g,rows])=>`
+    <div class="gtable"><h3>GROUP ${g}</h3><table>
+      <tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr>
+      ${rows.map((r,i)=>`<tr class="${i<2?"q":""}">
+        <td class="t">${r.flag} ${r.team}</td><td>${r.p}</td><td>${r.w}</td>
+        <td>${r.d}</td><td>${r.l}</td><td>${r.gd>0?"+":""}${r.gd}</td><td class="pts">${r.pts}</td></tr>`).join("")}
+    </table></div>`).join("")
+    + `<p class="note">Top two qualify automatically (green bar); the eight best third-placed teams also advance.</p>`;
+}
+
+function viewBracket(){
+  const order = ["Round of 32","Round of 16","Quarter-final","Semi-final","Match for third place","Final"];
+  return `<div class="bracket">` + order.map(r=>{
+    const ms = DATA.matches.filter(m=>m.round===r).sort((a,b)=>a.ukKickoff.localeCompare(b.ukKickoff));
+    if(!ms.length) return "";
+    return `<div class="bcol"><h3>${r}</h3>` + ms.map(m=>`
+      <div class="bmatch">
+        <div class="row"><span>${m.flag1!=="⚽"?m.flag1+" ":""}${m.team1}</span><span class="sc">${m.score1??""}</span></div>
+        <div class="row"><span>${m.flag2!=="⚽"?m.flag2+" ":""}${m.team2}</span><span class="sc">${m.score2??""}</span></div>
+        <div class="sub"><span>${fmtDay(m.ukDate).replace(/ \d+ .+$/,"")} ${m.ukDate.slice(8)}/${m.ukDate.slice(5,7)} · ${m.ukTime}</span>
+        <span class="chip ${chipClass(m.channel)}" style="padding:2px 7px;font-size:.6rem">${m.channel}</span></div>
+      </div>`).join("") + `</div>`;
+  }).join("") + `</div>
+  <p class="note">Placeholders like 1A / 2B / 3C-D-F mean group winner, runner-up or best third-placed team. Names drop in automatically as groups finish. Knockout channels are confirmed by BBC/ITV after each draw.</p>`;
+}
+
+function viewEngland(){
+  const eng = DATA.matches.filter(m=>m.team1==="England"||m.team2==="England");
+  const route = [["R32","BBC expected"],["R16","BBC expected"],["QF","ITV expected"],["SF","BBC expected"],["Final","BBC & ITV"]];
+  return byDay(eng).join("") + `
+    <div class="routecard"><h3>Route to the final — who shows it</h3>
+      ${route.map(([s,c])=>`<div class="rstep"><span class="stg">${s}</span>
+        <span>If England get there</span>
+        <span class="chip ${c.includes("ITV")&&!c.includes("BBC")?"itv":"bbc"}">${c}</span></div>`).join("")}
+      <p class="note">Based on the broadcasters' announced picks: the BBC has England's round-of-32, round-of-16 and semi-final, ITV a quarter-final, and both show the final. Subject to change once draws are made.</p>
+    </div>
+    <div class="routecard"><h3>Squad &amp; availability</h3>
+      <p class="note">Coming in v2 — suspensions, players one yellow from a ban, and confirmed line-ups about an hour before kick-off.</p>
+    </div>`;
+}
+
+/* ---------- reveal card: canvas image for the group chat ---------- */
+async function revealCard(rv){
+  const W=1080,H=1350, c=document.createElement("canvas"); c.width=W; c.height=H;
+  const x=c.getContext("2d");
+  // night-broadcast backdrop
+  const g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,"#10141F"); g.addColorStop(1,"#0B0D14");
+  x.fillStyle=g; x.fillRect(0,0,W,H);
+  x.fillStyle="#1A2032"; for(let i=0;i<W;i+=72){ x.fillRect(i,0,1,H); }   // faint pitch lines
+  // header
+  x.fillStyle="#FFD230"; x.font="900 54px -apple-system,Archivo,sans-serif";
+  x.fillText("🪟 WINDOW SHUT",60,120);
+  x.fillStyle="#EEF1F7"; x.font="800 64px -apple-system,sans-serif";
+  wrapText(x, rv.match, 60, 210, W-120, 74);
+  x.fillStyle="#8A93A8"; x.font="600 34px -apple-system,sans-serif";
+  x.fillText("Everyone's picks, locked before kick-off:",60,300);
+  // pick rows
+  let y=370;
+  rv.picks.forEach(p=>{
+    x.fillStyle = p.exact ? "#16321F" : (p.hit ? "#15271B" : "#161B2A");
+    rRect(x,60,y-58,W-120,96,18); x.fill();
+    x.strokeStyle = p.exact ? "#39D98A" : (p.hit ? "#2BD9CE" : "#242C42"); x.lineWidth=3;
+    rRect(x,60,y-58,W-120,96,18); x.stroke();
+    x.fillStyle = p.asleep ? "#5A6378" : "#EEF1F7";
+    x.font="700 42px -apple-system,sans-serif"; x.fillText(p.nick,92,y);
+    x.font="900 46px -apple-system,sans-serif"; x.textAlign="center";
+    x.fillText(p.s + (p.exact?" 🎯":""), W/2+120, y);
+    x.textAlign="right"; x.fillStyle="#8A93A8"; x.font="700 38px -apple-system,sans-serif";
+    x.fillText(p.pts, W-92, y); x.textAlign="left";
+    y+=124;
+  });
+  // footer
+  x.fillStyle="#242C42"; x.fillRect(60,H-150,W-120,2);
+  x.fillStyle="#8A93A8"; x.font="700 32px -apple-system,sans-serif";
+  x.fillText("🎯 exact = 3 pts · result = 1 pt",60,H-90);
+  x.textAlign="right"; x.fillStyle="#FFD230"; x.font="900 36px -apple-system,sans-serif";
+  x.fillText("KICKOFF ORACLE · "+LEAGUE.name, W-60, H-90); x.textAlign="left";
+  return new Promise(res=>c.toBlob(res,"image/png"));
+}
+function rRect(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+function wrapText(x,t,a,b,maxW,lh){const words=t.split(" ");let line="",yy=b;
+  for(const w of words){const test=line?line+" "+w:w;
+    if(x.measureText(test).width>maxW && line){x.fillText(line,a,yy);line=w;yy+=lh;}else line=test;}
+  x.fillText(line,a,yy);}
+async function shareCard(ri){
+  const blob = await revealCard(LEAGUE.reveals[ri]);
+  const file = new File([blob],"reveal.png",{type:"image/png"});
+  if (navigator.canShare && navigator.canShare({files:[file]})){
+    try{ await navigator.share({files:[file],title:"Window shut — picks revealed"}); return;}catch(e){}
+  }
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="reveal.png"; a.click();
+}
+
+/* ---------- render & wire-up ---------- */
+function render(){
+  const views = {today:viewToday,fixtures:viewFixtures,groups:viewGroups,bracket:viewBracket,stats:viewStats,league:viewLeague,england:viewEngland};
+  $("#main").innerHTML = views[tab]();
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  if (DATA.updated) $("#updated").textContent = "Updated " +
+    new Date(DATA.updated).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+  clearInterval(tickTimer);
+  const cd = $("#cd");
+  if (cd){
+    const tick = ()=>{ const d = new Date(cd.dataset.ko)-Date.now();
+      if (d<=0){ cd.textContent="KICK-OFF"; return; }
+      const h=Math.floor(d/36e5), m=Math.floor(d%36e5/6e4), s=Math.floor(d%6e4/1e3);
+      cd.textContent = (h?`${h}h `:"")+`${String(m).padStart(2,"0")}m ${String(s).padStart(2,"0")}s`; };
+    tick(); tickTimer = setInterval(tick,1000);
+  }
+  const wcds = document.querySelectorAll("[data-wcd]");
+  if (wcds.length){
+    const wt = ()=>wcds.forEach(el=>{ const d = new Date(el.dataset.wcd)-Date.now();
+      el.textContent = d<=0 ? "SHUT" : "shuts in "+Math.floor(d/6e4)+":"+String(Math.floor(d%6e4/1e3)).padStart(2,"0"); });
+    wt(); setInterval(wt,1000);
+  }
+}
+document.querySelector("nav").addEventListener("click",e=>{
+  const b = e.target.closest("button"); if(!b) return; tab=b.dataset.tab; render(); scrollTo(0,0);
+});
+document.addEventListener("click",e=>{
+  const p = e.target.closest(".pill[data-team]"); if(p){ teamFilter=p.dataset.team; render(); return; }
+  const sc = e.target.closest(".sharecard"); if(sc){ shareCard(+sc.dataset.card); return; }
+  const lg = e.target.closest("[data-lg]");
+  if (lg){
+    if (lg.dataset.lg==="join"){
+      const code = prompt("Enter a league code to join, or leave blank to create a new league:");
+      if (code===null) return;
+      alert(DEMO ? "Joining and creating leagues goes live with the Worker — this demo has two sample leagues to show how switching works."
+                 : "Joining "+code.toUpperCase()+"…");
+      return;
+    }
+    activeLeague = +lg.dataset.lg; render(); return;
+  }
+  const hb = e.target.closest(".hl-btn");
+  if (hb){
+    const slot = hb.nextElementSibling;
+    slot.innerHTML = `<div class="hl-frame"><iframe
+      src="https://www.youtube-nocookie.com/embed/${hb.dataset.hl}"
+      title="Official match highlights" loading="lazy" allowfullscreen
+      allow="encrypted-media; picture-in-picture"></iframe></div>`;
+    hb.remove(); return;
+  }
+  const w = e.target.closest("[data-wid]");
+  if (w){
+    const id = w.dataset.wid;
+    const st = e.target.closest("[data-st]");
+    if (st){ const [k,d] = st.dataset.st.split(","); const v = w.querySelector(`[data-v="${k}"]`);
+      v.textContent = Math.max(0, Math.min(9, +v.textContent + +d)); return; }
+    if (e.target.closest("[data-lock]")){
+      const s1 = +w.querySelector('[data-v="s1"]').textContent,
+            s2 = +w.querySelector('[data-v="s2"]').textContent;
+      myPicks[id] = {s1,s2};
+      if (API){ /* fetch(API+"/pick",{method:"POST",...}) — Worker wiring, see HANDOFF */ }
+      render(); return;
+    }
+  }
+});
+document.addEventListener("change",e=>{
+  if(e.target.id==="teamsel" && e.target.value){ teamFilter=e.target.value; render(); }
+});
+
+/* try to refresh from JSON when hosted (falls back silently on file://) */
+fetch("data/matches.json",{cache:"no-store"}).then(r=>r.json())
+  .then(d=>{ DATA=d; render(); }).catch(()=>{});
+render();
+setInterval(()=>fetch("data/matches.json",{cache:"no-store"}).then(r=>r.json())
+  .then(d=>{ DATA=d; if(tab==="today") render(); }).catch(()=>{}), 60000);
+</script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+#!/usr/bin/env python3
+"""
+World Cup 2026 UK TV Guide — data builder.
+
+Fetches the openfootball public-domain fixture/result feed, converts every
+kick-off to UK time, merges in the UK TV channel for each match, computes
+live group standings, and writes data/matches.json for the app.
+
+Run locally:  python3 build.py
+Run in CI:    see .github/workflows/refresh.yml (every 15 min, free)
+"""
+
+import json
+import re
+import sys
+import urllib.request
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+FEED = "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json"
+OUT = Path(__file__).parent / "data" / "matches.json"
+UK = ZoneInfo("Europe/London")
+
+# ---------------------------------------------------------------------------
+# UK TV channels — group stage confirmed by BBC/ITV. Knockout channels are
+# announced by the broadcasters after each draw; update KNOCKOUT_CHANNELS as
+# they confirm (key: "YYYY-MM-DD HH:MM" UK kick-off, value: channel).
+# Known editorial picks: England's R32, R16 and SF are BBC; a QF would be ITV;
+# the final is on both. Scotland's R32 (if they advance) expected BBC.
+# ---------------------------------------------------------------------------
+GROUP_CHANNELS = {
+    # key: "team1|team2" exactly as in the openfootball feed
+    "Mexico|South Africa": "ITV1",
+    "South Korea|Czech Republic": "ITV1",
+    "Canada|Bosnia & Herzegovina": "BBC One",
+    "USA|Paraguay": "BBC One",
+    "Qatar|Switzerland": "ITV1",
+    "Brazil|Morocco": "BBC One",
+    "Haiti|Scotland": "BBC One",
+    "Australia|Turkey": "ITV1",
+    "Germany|Curaçao": "ITV1",
+    "Netherlands|Japan": "ITV1",
+    "Ivory Coast|Ecuador": "BBC One",
+    "Sweden|Tunisia": "ITV1",
+    "Spain|Cape Verde": "ITV1",
+    "Belgium|Egypt": "BBC One",
+    "Saudi Arabia|Uruguay": "ITV1",
+    "Iran|New Zealand": "BBC One",
+    "France|Senegal": "BBC One",
+    "Iraq|Norway": "BBC One",
+    "Argentina|Algeria": "ITV1",
+    "Austria|Jordan": "BBC One",
+    "Portugal|DR Congo": "BBC One",
+    "England|Croatia": "ITV1",
+    "Ghana|Panama": "ITV1",
+    "Uzbekistan|Colombia": "BBC One",
+    "Czech Republic|South Africa": "BBC One",
+    "Switzerland|Bosnia & Herzegovina": "ITV1",
+    "Canada|Qatar": "ITV1",
+    "Mexico|South Korea": "BBC One",
+    "USA|Australia": "BBC One",
+    "Scotland|Morocco": "ITV1",
+    "Brazil|Haiti": "ITV1",
+    "Turkey|Paraguay": "ITV1",
+    "Netherlands|Sweden": "BBC One",
+    "Germany|Ivory Coast": "ITV1",
+    "Ecuador|Curaçao": "BBC One",
+    "Tunisia|Japan": "BBC One",
+    "Spain|Saudi Arabia": "BBC One",
+    "Belgium|Iran": "ITV1",
+    "Uruguay|Cape Verde": "BBC One",
+    "New Zealand|Egypt": "ITV1",
+    "Argentina|Austria": "BBC One",
+    "France|Iraq": "BBC One",
+    "Norway|Senegal": "ITV1",
+    "Jordan|Algeria": "ITV1",
+    "Portugal|Uzbekistan": "ITV1",
+    "England|Ghana": "BBC One",
+    "Panama|Croatia": "BBC One",
+    "Colombia|DR Congo": "ITV1",
+    "Bosnia & Herzegovina|Qatar": "ITV4",
+    "Switzerland|Canada": "ITV1",
+    "Morocco|Haiti": "BBC Two",
+    "Scotland|Brazil": "BBC One",
+    "Czech Republic|Mexico": "BBC One",
+    "South Africa|South Korea": "BBC Two",
+    "Curaçao|Ivory Coast": "BBC Two",
+    "Ecuador|Germany": "BBC One",
+    "Japan|Sweden": "BBC Two",
+    "Tunisia|Netherlands": "BBC One",
+    "Paraguay|Australia": "ITV4",
+    "Turkey|USA": "ITV1",
+    "Norway|France": "ITV1",
+    "Senegal|Iraq": "ITV4",
+    "Cape Verde|Saudi Arabia": "ITV4",
+    "Uruguay|Spain": "ITV1",
+    "Egypt|Iran": "BBC Two",
+    "New Zealand|Belgium": "BBC One",
+    "Croatia|Ghana": "ITV4",
+    "Panama|England": "ITV1",
+    "Colombia|Portugal": "BBC One",
+    "DR Congo|Uzbekistan": "BBC Two",
+    "Algeria|Austria": "BBC Two",
+    "Jordan|Argentina": "BBC One",
+}
+
+KNOCKOUT_CHANNELS = {
+    # Fill in as BBC/ITV announce picks after each draw, e.g.:
+    # "2026-06-29 21:30": "BBC One",
+    "2026-07-19 20:00": "BBC & ITV",   # the final is shown on both, as is custom
+}
+
+FLAGS = {
+    "Algeria": "🇩🇿", "Argentina": "🇦🇷", "Australia": "🇦🇺", "Austria": "🇦🇹",
+    "Belgium": "🇧🇪", "Bosnia & Herzegovina": "🇧🇦", "Brazil": "🇧🇷",
+    "Canada": "🇨🇦", "Cape Verde": "🇨🇻", "Colombia": "🇨🇴", "Croatia": "🇭🇷",
+    "Curaçao": "🇨🇼", "Czech Republic": "🇨🇿", "DR Congo": "🇨🇩",
+    "Ecuador": "🇪🇨", "Egypt": "🇪🇬", "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "France": "🇫🇷",
+    "Germany": "🇩🇪", "Ghana": "🇬🇭", "Haiti": "🇭🇹", "Iran": "🇮🇷",
+    "Iraq": "🇮🇶", "Ivory Coast": "🇨🇮", "Japan": "🇯🇵", "Jordan": "🇯🇴",
+    "Mexico": "🇲🇽", "Morocco": "🇲🇦", "Netherlands": "🇳🇱",
+    "New Zealand": "🇳🇿", "Norway": "🇳🇴", "Panama": "🇵🇦", "Paraguay": "🇵🇾",
+    "Portugal": "🇵🇹", "Qatar": "🇶🇦", "Saudi Arabia": "🇸🇦",
+    "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "Senegal": "🇸🇳", "South Africa": "🇿🇦",
+    "South Korea": "🇰🇷", "Spain": "🇪🇸", "Sweden": "🇸🇪",
+    "Switzerland": "🇨🇭", "Tunisia": "🇹🇳", "Turkey": "🇹🇷", "USA": "🇺🇸",
+    "Uruguay": "🇺🇾", "Uzbekistan": "🇺🇿",
+}
+
+STAGE = {
+    "Round of 32": ("R32", 4), "Round of 16": ("R16", 5),
+    "Quarter-final": ("QF", 6), "Semi-final": ("SF", 7),
+    "Match for third place": ("3rd Place", 8), "Final": ("Final", 9),
+}
+
+# ---------------------------------------------------------------------------
+# THE TELLY SUPERCOMPUTER — Elo-seeded Monte Carlo tournament simulator.
+# Seeds: eloratings.net scale (top teams per published Jan 2026 table; others
+# estimated — v2 task: refresh all 48 seeds from eloratings.net). Ratings
+# self-correct as real results land via the standard Elo update below, so
+# the model sharpens automatically every matchday.
+# ---------------------------------------------------------------------------
+ELO = {
+    "Spain": 2171, "Argentina": 2113, "France": 2063, "England": 2042,
+    "Colombia": 1998, "Brazil": 1979, "Portugal": 1976, "Netherlands": 1959,
+    "Croatia": 1933, "Ecuador": 1933, "Norway": 1922, "Germany": 1910,
+    "Switzerland": 1897, "Uruguay": 1890, "Turkey": 1880, "Japan": 1879,
+    "Senegal": 1869, "Belgium": 1849, "Morocco": 1840, "Mexico": 1810,
+    "Austria": 1800, "USA": 1790, "Iran": 1760, "Sweden": 1750,
+    "South Korea": 1740, "Paraguay": 1740, "Algeria": 1740, "Australia": 1730,
+    "Canada": 1730, "Czech Republic": 1720, "Egypt": 1720, "Ivory Coast": 1720,
+    "Tunisia": 1700, "Scotland": 1700, "Bosnia & Herzegovina": 1660,
+    "Ghana": 1650, "Qatar": 1620, "Saudi Arabia": 1620, "Panama": 1610,
+    "DR Congo": 1610, "Iraq": 1600, "South Africa": 1600, "Uzbekistan": 1600,
+    "Jordan": 1580, "Cape Verde": 1550, "New Zealand": 1500, "Haiti": 1480,
+    "Curaçao": 1450,
+}
+
+VENUE_COUNTRY = {
+    "Mexico City": "Mexico", "Guadalajara (Zapopan)": "Mexico",
+    "Monterrey (Guadalupe)": "Mexico", "Toronto": "Canada",
+    "Vancouver": "Canada",
+}  # every other venue is USA
+HOME_BONUS = 100
+SIMS = 4000
+
+
+def venue_bonus(team, ground):
+    return HOME_BONUS if VENUE_COUNTRY.get(ground, "USA") == team else 0
+
+
+def elo_update(played):
+    """Standard eloratings.net update (K=60 World Cup, goal-diff multiplier)."""
+    import math
+    elo = dict(ELO)
+    for m in played:
+        t1, t2, s1, s2 = m["team1"], m["team2"], m["score1"], m["score2"]
+        if t1 not in elo or t2 not in elo:
+            continue
+        d = (elo[t1] + venue_bonus(t1, m["ground"])) - (elo[t2] + venue_bonus(t2, m["ground"]))
+        we = 1 / (1 + 10 ** (-d / 400))
+        w = 1.0 if s1 > s2 else (0.5 if s1 == s2 else 0.0)
+        gd = abs(s1 - s2)
+        g = 1 if gd <= 1 else (1.5 if gd == 2 else (11 + gd) / 8)
+        delta = 60 * g * (w - we)
+        elo[t1] += delta
+        elo[t2] -= delta
+    return elo
+
+
+def lambdas(elo, m):
+    """Expected goals for each side from the Elo difference."""
+    d = (elo.get(m["team1"], 1600) + venue_bonus(m["team1"], m["ground"])) \
+        - (elo.get(m["team2"], 1600) + venue_bonus(m["team2"], m["ground"]))
+    l1 = min(3.4, max(0.25, 1.35 * 10 ** (d / 1100)))
+    l2 = min(3.4, max(0.25, 1.35 * 10 ** (-d / 1100)))
+    return l1, l2
+
+
+def match_probs(elo, m):
+    """Analytic P(win/draw/loss) from a Poisson goal grid."""
+    import math
+    l1, l2 = lambdas(elo, m)
+    p1 = [math.exp(-l1) * l1 ** k / math.factorial(k) for k in range(11)]
+    p2 = [math.exp(-l2) * l2 ** k / math.factorial(k) for k in range(11)]
+    w = sum(p1[a] * p2[b] for a in range(11) for b in range(11) if a > b)
+    d = sum(p1[k] * p2[k] for k in range(11))
+    return round(w, 3), round(d, 3), round(max(0.0, 1 - w - d), 3)
+
+
+def _poisson(lam, rnd):
+    L, k, p = pow(2.718281828, -lam), 0, 1.0
+    while True:
+        p *= rnd.random()
+        if p <= L:
+            return k
+        k += 1
+
+
+def simulate(matches, elo, base_tables):
+    """Monte Carlo the rest of the tournament SIMS times."""
+    import random
+    rnd = random.Random(26)
+    group_ms = [m for m in matches if m["stage"] == "Group"]
+    ko_ms = [m for m in matches if m["stage"] != "Group"]
+    reach = {t: {"r32": 0, "r16": 0, "qf": 0, "sf": 0, "final": 0, "win": 0} for t in ELO}
+
+    def sim_match(t1, t2, ground):
+        l1, l2 = lambdas(elo, {"team1": t1, "team2": t2, "ground": ground})
+        return _poisson(l1, rnd), _poisson(l2, rnd)
+
+    for _ in range(SIMS):
+        # --- group stage: real results stand, the rest are sampled ---
+        tb = {g: {t: dict(row) for t, row in rows.items()} for g, rows in base_tables.items()}
+        for m in group_ms:
+            if m["score1"] is not None:
+                continue
+            s1, s2 = sim_match(m["team1"], m["team2"], m["ground"])
+            for team, gf, ga in ((m["team1"], s1, s2), (m["team2"], s2, s1)):
+                r = tb[m["group"]][team]
+                r["pts"] += 3 if gf > ga else (1 if gf == ga else 0)
+                r["gd"] += gf - ga
+                r["gf"] += gf
+        ranked = {g: sorted(rows.values(), key=lambda x: (-x["pts"], -x["gd"], -x["gf"], rnd.random()))
+                  for g, rows in tb.items()}
+        firsts = {g: r[0]["team"] for g, r in ranked.items()}
+        seconds = {g: r[1]["team"] for g, r in ranked.items()}
+        thirds = sorted(((g, r[2]) for g, r in ranked.items()),
+                        key=lambda x: (-x[1]["pts"], -x[1]["gd"], -x[1]["gf"], rnd.random()))
+        qual_thirds = {g: row["team"] for g, row in thirds[:8]}
+
+        # --- resolve R32 slots; assign qualified thirds to constrained slots ---
+        winners = {}          # FIFA match number -> winning team
+        third_slots = [(i, m) for i, m in enumerate(ko_ms) if "/" in m["team2"]]
+        assigned, used = {}, set()
+        for i, m in third_slots:  # greedy assignment within each slot's allowed groups
+            allowed = m["team2"][1:].split("/")
+            pick = next((g for g in allowed if g in qual_thirds and g not in used), None)
+            if pick is None:
+                pick = next((g for g in qual_thirds if g not in used), None)
+            if pick:
+                used.add(pick)
+                assigned[i] = qual_thirds[pick]
+
+        def resolve(label, idx):
+            if label.startswith("W"):
+                return winners.get(int(label[1:]))
+            if label.startswith("L"):  # third-place match
+                return losers.get(int(label[1:]))
+            if "/" in label:
+                return assigned.get(idx)
+            g = label[1]
+            return firsts[g] if label[0] == "1" else seconds[g]
+
+        losers = {}
+        for i, m in enumerate(ko_ms):
+            num = 73 + i if m["round"] != "Final" else 104
+            t1 = resolve(m["team1"], i)
+            t2 = resolve(m["team2"], i)
+            if not t1 or not t2:
+                continue
+            if m["round"] == "Round of 32":
+                reach[t1]["r32"] += 1; reach[t2]["r32"] += 1
+            elif m["round"] == "Round of 16":
+                reach[t1]["r16"] += 1; reach[t2]["r16"] += 1
+            elif m["round"] == "Quarter-final":
+                reach[t1]["qf"] += 1; reach[t2]["qf"] += 1
+            elif m["round"] == "Semi-final":
+                reach[t1]["sf"] += 1; reach[t2]["sf"] += 1
+            elif m["round"] == "Final":
+                reach[t1]["final"] += 1; reach[t2]["final"] += 1
+            if m["score1"] is not None and m["score1"] != m["score2"]:
+                s1, s2 = m["score1"], m["score2"]
+            else:
+                s1, s2 = sim_match(t1, t2, m["ground"])
+                if s1 == s2:  # extra time / pens: weight by Elo expectancy
+                    d = elo.get(t1, 1600) - elo.get(t2, 1600)
+                    s1, s2 = (1, 0) if rnd.random() < 1 / (1 + 10 ** (-d / 400)) else (0, 1)
+            win, lose = (t1, t2) if s1 > s2 else (t2, t1)
+            winners[num], losers[num] = win, lose
+            if m["round"] == "Final":
+                reach[win]["win"] += 1
+
+    pct = lambda n: round(100 * n / SIMS, 1)
+    return sorted(
+        ({"team": t, "flag": FLAGS.get(t, "⚽"), "elo": round(elo.get(t, 1600)),
+          "win": pct(r["win"]), "final": pct(r["final"]), "sf": pct(r["sf"]),
+          "qf": pct(r["qf"]), "r16": pct(r["r16"])} for t, r in reach.items()),
+        key=lambda x: (-x["win"], -x["final"], -x["elo"]))
+
+
+def uk_datetime(date_str, time_str):
+    """'2026-06-11' + '13:00 UTC-6' -> aware datetime in Europe/London."""
+    m = re.match(r"(\d{1,2}):(\d{2})\s*UTC([+-]\d+)", time_str)
+    h, mi, off = int(m.group(1)), int(m.group(2)), int(m.group(3))
+    local = datetime.fromisoformat(date_str).replace(hour=h, minute=mi)
+    utc = local - timedelta(hours=off)
+    return utc.replace(tzinfo=timezone.utc).astimezone(UK)
+
+
+def main():
+    try:
+        with urllib.request.urlopen(FEED, timeout=30) as r:
+            feed = json.load(r)
+    except Exception as e:  # keep last good data on feed failure
+        print(f"Feed fetch failed ({e}); keeping existing data.", file=sys.stderr)
+        sys.exit(0 if OUT.exists() else 1)
+
+    matches, standings = [], {}
+    now = datetime.now(UK)
+
+    for i, m in enumerate(feed["matches"]):
+        ko = uk_datetime(m["date"], m["time"])
+        is_group = m["round"].startswith("Matchday")
+        stage, order = ("Group", 1) if is_group else STAGE.get(m["round"], (m["round"], 3))
+        key = f'{m["team1"]}|{m["team2"]}'
+        channel = (GROUP_CHANNELS.get(key)
+                   or KNOCKOUT_CHANNELS.get(ko.strftime("%Y-%m-%d %H:%M"))
+                   or "TBC")
+        s1, s2 = m.get("score1"), m.get("score2")
+        # openfootball sometimes nests scores; be defensive
+        if s1 is None and isinstance(m.get("score"), dict):
+            ft = m["score"].get("ft") or []
+            if len(ft) == 2:
+                s1, s2 = ft
+        played = s1 is not None and s2 is not None
+        live = (not played) and ko <= now <= ko + timedelta(hours=2, minutes=15)
+
+        events = []
+        for side, team in (("goals1", m["team1"]), ("goals2", m["team2"])):
+            for g in m.get(side) or []:
+                nm = g.get("name") or g.get("scorer")
+                if nm:
+                    events.append({"name": nm, "minute": g.get("minute"),
+                                   "team": team, "og": bool(g.get("owngoal")),
+                                   "pen": bool(g.get("penalty"))})
+        events.sort(key=lambda e: (e["minute"] is None, e["minute"]))
+
+        rec = {
+            "id": i + 1,
+            "stage": stage,
+            "stageOrder": order,
+            "round": m["round"],
+            "group": m.get("group", "").replace("Group ", ""),
+            "team1": m["team1"], "team2": m["team2"],
+            "flag1": FLAGS.get(m["team1"], "⚽"), "flag2": FLAGS.get(m["team2"], "⚽"),
+            "ground": m["ground"],
+            "ukKickoff": ko.isoformat(),
+            "ukDate": ko.strftime("%Y-%m-%d"),
+            "ukTime": ko.strftime("%H:%M"),
+            "channel": channel,
+            "score1": s1, "score2": s2,
+            "goals": events,
+            "status": "FT" if played else ("LIVE" if live else "UPCOMING"),
+        }
+        matches.append(rec)
+
+        if is_group and played:
+            g = standings.setdefault(rec["group"], {})
+            for team, gf, ga in ((m["team1"], s1, s2), (m["team2"], s2, s1)):
+                t = g.setdefault(team, {"team": team, "flag": FLAGS.get(team, "⚽"),
+                                        "p": 0, "w": 0, "d": 0, "l": 0,
+                                        "gf": 0, "ga": 0, "gd": 0, "pts": 0})
+                t["p"] += 1
+                t["gf"] += gf
+                t["ga"] += ga
+                t["gd"] = t["gf"] - t["ga"]
+                if gf > ga:
+                    t["w"] += 1; t["pts"] += 3
+                elif gf == ga:
+                    t["d"] += 1; t["pts"] += 1
+                else:
+                    t["l"] += 1
+
+    # ensure every group lists all four teams even before results
+    for m in matches:
+        if m["stage"] == "Group":
+            g = standings.setdefault(m["group"], {})
+            for team, flag in ((m["team1"], m["flag1"]), (m["team2"], m["flag2"])):
+                g.setdefault(team, {"team": team, "flag": flag, "p": 0, "w": 0,
+                                    "d": 0, "l": 0, "gf": 0, "ga": 0, "gd": 0, "pts": 0})
+
+    tables = {
+        grp: sorted(t.values(), key=lambda x: (-x["pts"], -x["gd"], -x["gf"], x["team"]))
+        for grp, t in sorted(standings.items())
+    }
+
+    # --- Golden Boot: aggregate scorers from the feed (appear as results land) ---
+    boot = {}
+    for raw, rec in zip(feed["matches"], matches):
+        for side, team in (("goals1", rec["team1"]), ("goals2", rec["team2"])):
+            for g in raw.get(side) or []:
+                name = g.get("name") or g.get("scorer")
+                if not name or g.get("owngoal"):
+                    continue
+                k = (name, team)
+                boot[k] = boot.get(k, 0) + 1
+    scorers = sorted(({"name": n, "team": t, "flag": FLAGS.get(t, "⚽"), "goals": c}
+                      for (n, t), c in boot.items()),
+                     key=lambda x: (-x["goals"], x["name"]))[:25]
+
+    # --- Telly Supercomputer: update Elo from real results, then simulate ---
+    played_all = [m for m in matches if m["score1"] is not None]
+    elo_now = elo_update(played_all)
+    base = {g: {r["team"]: dict(r) for r in rows} for g, rows in tables.items()}
+    predictions = simulate(matches, elo_now, base)
+    mprobs = {str(m["id"]): match_probs(elo_now, m)
+              for m in matches
+              if m["status"] == "UPCOMING" and m["team1"] in ELO and m["team2"] in ELO}
+
+    # merge YouTube highlight IDs found by find_highlights.py
+    hl_file = OUT.parent / "highlights.json"
+    if hl_file.exists():
+        hl = json.loads(hl_file.read_text())
+        for m in matches:
+            if str(m["id"]) in hl:
+                m["youtube"] = hl[str(m["id"])]
+
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps({
+        "updated": now.isoformat(),
+        "matches": matches,
+        "groups": tables,
+        "scorers": scorers,
+        "predictions": {"sims": SIMS, "teams": predictions},
+        "matchProbs": mprobs,
+    }, ensure_ascii=False, indent=1)
+    OUT.write_text(payload)
+    # JS twin: lets index.html work when opened as a local file (no fetch/CORS)
+    (OUT.parent / "matches.js").write_text("window.WC_DATA = " + payload + ";")
+    print(f"Wrote {len(matches)} matches, {len(tables)} groups -> {OUT}")
+
+
+if __name__ == "__main__":
+    main()
