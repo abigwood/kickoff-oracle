@@ -1,0 +1,12 @@
+{
+  "name": "kickoff-oracle-window",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "THE WINDOW — Cloudflare Worker backend for KickOff Oracle's prediction league.",
+  "scripts": {
+    "test": "node --test",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  }
+}

@@ -1,0 +1,19 @@
+name = "kickoff-oracle-window"
+main = "src/worker.js"
+compatibility_date = "2025-01-01"
+
+# Vars are public config (not secrets).
+[vars]
+MATCHES_URL = "https://abigwood.github.io/kickoff-oracle/data/matches.json"
+ALLOWED_ORIGIN = "https://abigwood.github.io"
+
+# Workers KV. Create the namespace, then paste its id below:
+#   npx wrangler kv namespace create WINDOW
+#   npx wrangler kv namespace create WINDOW --preview
+[[kv_namespaces]]
+binding = "KV"
+id = "REPLACE_WITH_KV_ID"
+preview_id = "REPLACE_WITH_PREVIEW_KV_ID"
+
+# Secret (do NOT put it here — set it once with):
+#   npx wrangler secret put SETTLE_SECRET

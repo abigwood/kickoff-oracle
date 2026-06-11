@@ -1,0 +1,98 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import {
+  windowState,
+  scorePick,
+  streakLabel,
+  computeTable,
+  buildReveals,
+  makeCode,
+} from "../src/logic.js";
+
+const KO = Date.parse("2026-06-17T21:00:00+01:00"); // England v Croatia
+const MIN = 60 * 1000;
+
+test("window edges — the integrity core (HANDOFF spec)", () => {
+  assert.equal(windowState(KO, KO - 61 * MIN), "pre", "KO−61: too early, reject");
+  assert.equal(windowState(KO, KO - 60 * MIN), "open", "KO−60: window opens exactly here");
+  assert.equal(windowState(KO, KO - 59 * MIN), "open", "KO−59: accept");
+  assert.equal(windowState(KO, KO - 1 * MIN), "open", "KO−1: still open");
+  assert.equal(windowState(KO, KO), "shut", "KO exactly: shut — no more picks");
+  assert.equal(windowState(KO, KO + 1 * MIN), "shut", "KO+1: shut, reject");
+});
+
+test("scoring — 3 exact / 1 result / 0 otherwise, no bankers", () => {
+  const A = { s1: 2, s2: 0 };
+  assert.deepEqual(scorePick({ s1: 2, s2: 0 }, A), { pts: 3, exact: true, hit: true, settled: true });
+  assert.deepEqual(scorePick({ s1: 1, s2: 0 }, A), { pts: 1, exact: false, hit: true, settled: true });
+  assert.deepEqual(scorePick({ s1: 1, s2: 1 }, A), { pts: 0, exact: false, hit: false, settled: true });
+  assert.deepEqual(scorePick({ s1: 0, s2: 2 }, A), { pts: 0, exact: false, hit: false, settled: true });
+  // draw result
+  assert.equal(scorePick({ s1: 0, s2: 0 }, { s1: 1, s2: 1 }).pts, 1, "any draw = correct result");
+  assert.equal(scorePick({ s1: 1, s2: 1 }, { s1: 1, s2: 1 }).pts, 3, "exact draw = 3");
+  // unsettled / no pick
+  assert.equal(scorePick({ s1: 1, s2: 0 }, { s1: null, s2: null }).settled, false);
+  assert.equal(scorePick(null, A).pts, 0, "no pick = 0");
+});
+
+test("streak labels mirror the demo UI", () => {
+  assert.equal(streakLabel([]), "—");
+  assert.equal(streakLabel(["W", "W", "W"]), "W3");
+  assert.equal(streakLabel(["W", "L"]), "L1");
+  assert.equal(streakLabel(["W", "S"]), "😴1");
+  assert.equal(streakLabel(["L", "W", "W"]), "W2");
+});
+
+test("computeTable — points sum across matches, sorted, multi-member", () => {
+  const members = [
+    { uid: "a", nick: "Smithy" },
+    { uid: "b", nick: "Adam" },
+    { uid: "c", nick: "Dave" },
+  ];
+  const ft = [
+    { id: 1, s1: 2, s2: 0 },
+    { id: 2, s1: 1, s2: 1 },
+  ];
+  const picks = {
+    1: { a: { s1: 2, s2: 0 }, b: { s1: 1, s2: 0 }, c: { s1: 0, s2: 1 } },
+    2: { a: { s1: 1, s2: 1 }, b: { s1: 0, s2: 0 } }, // Dave missed the window on match 2
+  };
+  const rows = computeTable(members, ft, picks);
+  assert.deepEqual(rows.map((r) => [r.nick, r.pts, r.exact]), [
+    ["Smithy", 6, 2], // 3 + 3
+    ["Adam", 2, 0], // 1 + 1
+    ["Dave", 0, 0], // wrong, then no pick
+  ]);
+  assert.equal(rows[2].streak, "😴1", "Dave's last outcome was no-pick");
+});
+
+test("buildReveals hides open windows, reveals shut ones, scores when FT", () => {
+  const members = [
+    { uid: "a", nick: "Smithy" },
+    { uid: "b", nick: "Adam" },
+  ];
+  const now = Date.parse("2026-06-17T22:00:00+01:00");
+  const matches = [
+    // shut + FT
+    { id: 10, team1: "X", team2: "Y", ukKickoff: "2026-06-17T20:00:00+01:00", status: "FT", score1: 2, score2: 0 },
+    // window still open (KO in the future) → must be hidden
+    { id: 11, team1: "P", team2: "Q", ukKickoff: "2026-06-17T22:30:00+01:00", status: "UPCOMING", score1: null, score2: null },
+  ];
+  const picks = {
+    10: { a: { s1: 2, s2: 0 }, b: { s1: 0, s2: 1 } },
+    11: { a: { s1: 1, s2: 1 } },
+  };
+  const reveals = buildReveals(members, matches, picks, now);
+  assert.equal(reveals.length, 1, "only the shut match is revealed");
+  assert.equal(reveals[0].matchId, 10);
+  const smithy = reveals[0].picks.find((p) => p.nick === "Smithy");
+  assert.equal(smithy.pts, 3);
+  assert.equal(smithy.exact, true);
+});
+
+test("makeCode — 6 chars, unambiguous alphabet, deterministic given bytes", () => {
+  const code = makeCode((n) => new Uint8Array(n).fill(0));
+  assert.equal(code.length, 6);
+  assert.match(code, /^[A-HJ-NP-Z2-9]{6}$/, "no 0/O/1/I");
+  assert.equal(makeCode(() => Uint8Array.from([0, 1, 2, 3, 4, 5])), "ABCDEF");
+});
