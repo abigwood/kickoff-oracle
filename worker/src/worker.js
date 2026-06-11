@@ -78,6 +78,15 @@ async function ensureUser(env, uid, nickname) {
   return u;
 }
 
+// The league creator is the admin. Older leagues predate the `owner` field —
+// fall back to the first member (the creator was added first) so admin still works.
+const leagueOwner = (league) => league.owner || (league.members && league.members[0]);
+
+// Drop standings caches so membership/nickname edits show up immediately.
+async function bustTables(env, codes) {
+  await Promise.all([...new Set(codes)].map((c) => env.KV.delete(`table:${c}`)));
+}
+
 async function standings(env, code, { useCache = true } = {}) {
   if (useCache) {
     const cached = await kvGet(env, `table:${code}`);
@@ -110,7 +119,7 @@ async function createLeague(env, body) {
   }
   const user = await ensureUser(env, uid, body.nickname);
   if (!user.leagues.includes(code)) user.leagues.push(code);
-  await kvPut(env, `league:${code}`, { name, created: Date.now(), members: [uid] });
+  await kvPut(env, `league:${code}`, { name, created: Date.now(), owner: uid, members: [uid] });
   await kvPut(env, `user:${uid}`, user);
   return j({ code, name }, 200, env);
 }
@@ -127,6 +136,87 @@ async function joinLeague(env, body) {
   await kvPut(env, `league:${code}`, league);
   await kvPut(env, `user:${uid}`, user);
   return j({ code, name: league.name }, 200, env);
+}
+
+// Edit your OWN nickname (global — shows in every league you're in). Identity is
+// the uid: only the device holding it can send this, which is the ownership check.
+async function setNickname(env, body) {
+  const uid = String(body.uid || "").trim();
+  const raw = String(body.nickname || "").trim();
+  if (!uid) return j({ error: "uid required" }, 400, env);
+  if (!raw) return j({ error: "nickname required" }, 400, env);
+  const user = await ensureUser(env, uid, raw);
+  user.nickname = normNick(raw);
+  await kvPut(env, `user:${uid}`, user);
+  await bustTables(env, user.leagues || []); // reflect the new name immediately
+  return j({ ok: true, uid, nickname: user.nickname }, 200, env);
+}
+
+// Leave a league (remove your own entrant). Your picks stay intact globally, so
+// they keep scoring in your OTHER leagues — they just stop counting in this one.
+async function leaveLeague(env, body) {
+  const uid = String(body.uid || "").trim();
+  const code = String(body.code || "").trim().toUpperCase();
+  if (!uid || !code) return j({ error: "uid and code required" }, 400, env);
+  const league = await kvGet(env, `league:${code}`);
+  if (!league) return j({ error: "no such league" }, 404, env);
+  const wasOwner = leagueOwner(league) === uid;
+  league.members = (league.members || []).filter((m) => m !== uid);
+  let deleted = false;
+  if (wasOwner) {
+    if (league.members.length) league.owner = league.members[0]; // hand admin to the next member
+    else {
+      await env.KV.delete(`league:${code}`); // last one out — bin the empty league
+      await env.KV.delete(`table:${code}`);
+      deleted = true;
+    }
+  }
+  if (!deleted) await kvPut(env, `league:${code}`, league);
+  const user = await kvGet(env, `user:${uid}`);
+  if (user) {
+    user.leagues = (user.leagues || []).filter((c) => c !== code);
+    await kvPut(env, `user:${uid}`, user);
+  }
+  if (!deleted) await bustTables(env, [code]);
+  return j({ ok: true, deleted }, 200, env);
+}
+
+// Admin only: remove another member from your league.
+async function kickMember(env, body) {
+  const uid = String(body.uid || "").trim();
+  const code = String(body.code || "").trim().toUpperCase();
+  const target = String(body.target || "").trim();
+  if (!uid || !code || !target) return j({ error: "uid, code and target required" }, 400, env);
+  const league = await kvGet(env, `league:${code}`);
+  if (!league) return j({ error: "no such league" }, 404, env);
+  if (leagueOwner(league) !== uid)
+    return j({ error: "only the league admin can remove members" }, 403, env);
+  if (target === leagueOwner(league))
+    return j({ error: "the admin can't be removed — leave the league instead" }, 400, env);
+  league.members = (league.members || []).filter((m) => m !== target);
+  await kvPut(env, `league:${code}`, league);
+  const tu = await kvGet(env, `user:${target}`);
+  if (tu) {
+    tu.leagues = (tu.leagues || []).filter((c) => c !== code);
+    await kvPut(env, `user:${target}`, tu);
+  }
+  await bustTables(env, [code]);
+  return j({ ok: true }, 200, env);
+}
+
+// Admin only: rename the league.
+async function renameLeague(env, body) {
+  const uid = String(body.uid || "").trim();
+  const code = String(body.code || "").trim().toUpperCase();
+  const name = String(body.name || "").trim().slice(0, 40);
+  if (!uid || !code || !name) return j({ error: "uid, code and name required" }, 400, env);
+  const league = await kvGet(env, `league:${code}`);
+  if (!league) return j({ error: "no such league" }, 404, env);
+  if (leagueOwner(league) !== uid)
+    return j({ error: "only the league admin can rename it" }, 403, env);
+  league.name = name;
+  await kvPut(env, `league:${code}`, league);
+  return j({ ok: true, name }, 200, env);
 }
 
 async function makePick(env, body) {
@@ -188,7 +278,7 @@ async function getState(env, url) {
   const rows = await standings(env, code);
   const picksByMatch = await loadPicksByMatch(env, matches.map((m) => m.id));
   const reveals = buildReveals(members, matches, picksByMatch, Date.now()).slice(0, 12);
-  return j({ code, name: league.name, table: rows, reveals }, 200, env);
+  return j({ code, name: league.name, owner: leagueOwner(league), table: rows, reveals }, 200, env);
 }
 
 async function getTable(env, url) {
@@ -231,6 +321,10 @@ export default {
         const body = await request.json().catch(() => ({}));
         if (path === "/league") return await createLeague(env, body);
         if (path === "/join") return await joinLeague(env, body);
+        if (path === "/nick") return await setNickname(env, body);
+        if (path === "/leave") return await leaveLeague(env, body);
+        if (path === "/kick") return await kickMember(env, body);
+        if (path === "/rename") return await renameLeague(env, body);
         if (path === "/pick") return await makePick(env, body);
         if (path === "/settle") return await settle(env, body);
       }

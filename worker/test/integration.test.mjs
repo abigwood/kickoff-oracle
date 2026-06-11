@@ -19,6 +19,7 @@ function makeKV() {
       return type === "json" ? JSON.parse(v) : v;
     },
     async put(k, v) { m.set(k, v); },
+    async delete(k) { m.delete(k); },
     async list({ prefix } = {}) {
       return { keys: [...m.keys()].filter((k) => !prefix || k.startsWith(prefix)).map((name) => ({ name })) };
     },
@@ -143,6 +144,64 @@ test("full lifecycle: create → join → pick window edges → reveal gating �
   assert.equal(settled.json.leagues, 1);
 
   // reset fixture for re-runs
+  MATCHES.matches[0] = { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null };
+});
+
+test("ownership: nick edit, leave, admin kick/rename, and cross-league pick integrity", async () => {
+  const env = makeEnv();
+  const at = (off) => ({ now: koMs + off * MIN });
+  // L1 owned by Adam; L2 owned by Smithy; both are members of both.
+  const L1 = (await call(env, "POST", "/league", { body: { uid: "adam", nickname: "Adma", name: "L ONE" } })).json.code;
+  await call(env, "POST", "/join", { body: { uid: "smithy", nickname: "Smithy", code: L1 } });
+  const L2 = (await call(env, "POST", "/league", { body: { uid: "smithy", nickname: "Smithy", name: "L TWO" } })).json.code;
+  await call(env, "POST", "/join", { body: { uid: "adam", nickname: "Adma", code: L2 } });
+
+  // both pick match 50 while the window is open
+  await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 50, s1: 2, s2: 1 }, ...at(-30) });
+  await call(env, "POST", "/pick", { body: { uid: "smithy", matchId: 50, s1: 0, s2: 0 }, ...at(-30) });
+  MATCHES.matches[0] = { ...MATCHES.matches[0], status: "FT", score1: 2, score2: 1 };
+
+  // --- nickname edit (self) reflects everywhere ---
+  const badName = (await call(env, "GET", `/state?code=${L1}`, at(180))).json.table.find((r) => r.uid === "adam");
+  assert.equal(badName.nick, "Adma", "starts with the typo");
+  const ne = await call(env, "POST", "/nick", { body: { uid: "adam", nickname: "Adam" } });
+  assert.equal(ne.status, 200);
+  const fixed = (await call(env, "GET", `/state?code=${L1}`, at(180))).json.table.find((r) => r.uid === "adam");
+  assert.equal(fixed.nick, "Adam", "nick fixed in the table immediately (cache busted)");
+  assert.equal(fixed.pts, 3, "Adam's exact 2–1 scores");
+
+  // --- ownership enforcement: Adam is NOT the admin of L2 (Smithy is) ---
+  const badRename = await call(env, "POST", "/rename", { body: { uid: "adam", code: L2, name: "HIJACK" } });
+  assert.equal(badRename.status, 403, "non-admin rename rejected");
+  const badKick = await call(env, "POST", "/kick", { body: { uid: "adam", code: L2, target: "smithy" } });
+  assert.equal(badKick.status, 403, "non-admin kick rejected");
+
+  // --- admin actions on L1 (Adam IS the admin) ---
+  const rn = await call(env, "POST", "/rename", { body: { uid: "adam", code: L1, name: "THE REAL CUP" } });
+  assert.equal(rn.status, 200);
+  assert.equal((await call(env, "GET", `/state?code=${L1}`, at(180))).json.name, "THE REAL CUP");
+  const cantKickSelf = await call(env, "POST", "/kick", { body: { uid: "adam", code: L1, target: "adam" } });
+  assert.equal(cantKickSelf.status, 400, "admin can't kick themselves — must leave");
+
+  // --- cross-league pick integrity: Adam leaves L1, picks still score in L2 ---
+  const lv = await call(env, "POST", "/leave", { body: { uid: "adam", code: L1 } });
+  assert.equal(lv.status, 200);
+  const s1 = await call(env, "GET", `/state?code=${L1}`, at(180));
+  assert.equal(s1.json.table.find((r) => r.uid === "adam"), undefined, "Adam gone from L1 table");
+  assert.equal(s1.json.owner, "smithy", "admin handed to remaining member on owner-leave");
+  const s2 = await call(env, "GET", `/state?code=${L2}`, at(180));
+  const adamInL2 = s2.json.table.find((r) => r.uid === "adam");
+  assert.equal(adamInL2.pts, 3, "Adam's pick still counts in L2 — pick was never deleted");
+  // the global pick record is intact
+  const picks = await env.KV.get("picks:50", "json");
+  assert.deepEqual({ s1: picks.adam.s1, s2: picks.adam.s2 }, { s1: 2, s2: 1 });
+
+  // --- admin kick removes a member from their league ---
+  await call(env, "POST", "/join", { body: { uid: "dave", nickname: "Dave", code: L2 } });
+  const kick = await call(env, "POST", "/kick", { body: { uid: "smithy", code: L2, target: "dave" } });
+  assert.equal(kick.status, 200, "admin kick succeeds");
+  assert.equal((await call(env, "GET", `/state?code=${L2}`, at(180))).json.table.find((r) => r.uid === "dave"), undefined);
+
   MATCHES.matches[0] = { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null };
 });
 

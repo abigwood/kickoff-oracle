@@ -196,6 +196,16 @@ select.pill{appearance:none;-webkit-appearance:none}
 /* league table */
 .ltable .scrow .nm{width:auto;flex:1}
 .lmeta{display:flex;gap:10px;font-size:.62rem;color:var(--faint);font-variant-numeric:tabular-nums}
+.lctrls{display:flex;gap:4px;flex:none}
+.lact{background:var(--raise);border:1px solid var(--line);border-radius:7px;color:var(--dim);
+  font-size:.8rem;line-height:1;padding:5px 7px;cursor:pointer}
+.lact:active{transform:scale(.94)}
+.lact.danger{color:#E5687A;border-color:#E5687A;font-size:.66rem;font-weight:700;padding:3px 8px}
+h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
+.adminbadge{font-size:.56rem;font-weight:800;letter-spacing:.06em;color:var(--bbc);
+  border:1px solid var(--bbc);border-radius:5px;padding:1px 5px;vertical-align:middle}
+.youtag{font-size:.56rem;font-weight:800;color:var(--faint);border:1px solid var(--line);
+  border-radius:5px;padding:1px 5px;margin-left:4px;vertical-align:middle}
 .demo-ribbon{background:var(--raise);border:1px dashed var(--itv);border-radius:10px;color:var(--itv);
   font-size:.7rem;font-weight:700;padding:9px 12px;margin-bottom:14px;line-height:1.5}
 .sharecard{background:var(--itv);color:#06281F;border:0;border-radius:9px;
@@ -405,7 +415,7 @@ async function loadLeagues(){
   const codes = myLeagueCodes();
   const states = await Promise.all(codes.map(c => api("/state?code="+encodeURIComponent(c)).catch(()=>({status:0}))));
   LEAGUES = states.filter(s => s.status===200).map(s => ({
-    code: s.j.code, name: s.j.name, table: s.j.table || [], reveals: (s.j.reveals||[]).map(mapReveal),
+    code: s.j.code, name: s.j.name, owner: s.j.owner, table: s.j.table || [], reveals: (s.j.reveals||[]).map(mapReveal),
   }));
   // drop any codes the server no longer recognises
   setLeagueCodes(LEAGUES.map(l => l.code));
@@ -464,13 +474,22 @@ function viewLeague(){
     <button class="pill" data-lg="join">＋ Join / create</button>
   </div>`;
   if (!DEMO && !L) return switcher + `<div class="demo-ribbon">You're not in a league yet. Tap <b>＋ Join / create</b> to start one (you'll get a 6-char code to share in the group chat) or enter a mate's code. You predict each match once — the pick counts in every league you're in.<br><br>🪟 The window opens 60 minutes before each kick-off and slams shut at kick-off. Picks stay hidden from your mates until it shuts.</div>`;
+  const me = DEMO ? null : uid();
+  const iAmAdmin = !DEMO && L && L.owner === me;
   return switcher
    + (DEMO?`<div class="demo-ribbon">DEMO MODE — sample leagues + working picker. Real shared leagues go live once the Cloudflare Worker is deployed (HANDOFF item 1). You predict each match once; the pick counts in every league you're in.</div>`:"")
-   + `<div class="gtable ltable"><h3>🏅 ${L.name} · code ${L.code}</h3>
-      ${L.table.map((r,i)=>`<div class="scrow">
+   + `<div class="gtable ltable"><h3>🏅 ${L.name}${iAmAdmin?` <button class="lact" data-rename="${L.code}" title="Rename league">✏️</button> <span class="adminbadge">ADMIN</span>`:""} · code ${L.code}</h3>
+      ${L.table.map((r,i)=>{
+        const isMe = !DEMO && r.uid===me;
+        const ctrl = DEMO ? "" :
+          isMe ? `<button class="lact" data-editnick title="Edit your nickname">✏️</button><button class="lact" data-leave="${L.code}" title="Leave this league">🚪</button>`
+          : (iAmAdmin ? `<button class="lact" data-kick="${r.uid}" title="Remove ${r.nick}">✖</button>` : "");
+        return `<div class="scrow">
         <span class="pc" style="width:22px;text-align:left;color:var(--faint)">${i+1}</span>
-        <span class="nm">${r.nick}<div class="lmeta"><span>${r.exact} exact</span><span>${r.streak}</span></div></span>
-        <span class="pc">${r.pts}</span></div>`).join("")}
+        <span class="nm">${r.nick}${isMe?` <span class="youtag">you</span>`:""}<div class="lmeta"><span>${r.exact} exact</span><span>${r.streak}</span></div></span>
+        ${ctrl?`<span class="lctrls">${ctrl}</span>`:""}
+        <span class="pc">${r.pts}</span></div>`;
+      }).join("")}
     </div>
     ${L.reveals.map((rv,ri)=>`<div class="gtable"><h3>🪟 REVEAL — ${rv.match}</h3>
       <div class="reveal" style="padding:12px 14px">
@@ -480,7 +499,8 @@ function viewLeague(){
       <button class="sharecard" data-card="${ri}" style="margin:0 14px 14px;width:calc(100% - 28px)">📤 Share reveal card to the group chat</button>
       </div>`).join("")}
     <button class="invite" onclick="navigator.share?navigator.share({title:'${LEAGUE.name}',text:'Join my World Cup predictor league — window opens 60 min before every kick-off. Code: ${LEAGUE.code}',url:location.origin+location.pathname+'?league=${LEAGUE.code}'}):alert('League code: ${LEAGUE.code}')">📲 Invite mates · code ${LEAGUE.code}</button>
-    <p class="note" style="margin-top:12px">The rules: predict the score before kick-off. 🎯 Exact score = 3 points. Correct result = 1 point. Miss the window = nothing. Highest total when the cup's lifted wins.</p>`;
+    <p class="note" style="margin-top:12px">The rules: predict the score before kick-off. 🎯 Exact score = 3 points. Correct result = 1 point. Miss the window = nothing. Highest total when the cup's lifted wins.</p>`
+   + (DEMO?"":`<p class="note" style="margin-top:10px">✏️ tap the pencil by your name to fix your nickname, 🚪 to leave a league.${iAmAdmin?" As admin you can ✏️ rename this league and ✖ remove members.":""} <button class="lact danger" data-startagain>↺ Start again</button> wipes your identity on this device and leaves every league.</p>`);
 }
 
 /* ---------- views ---------- */
@@ -669,6 +689,53 @@ document.addEventListener("click",async e=>{
     }
     activeLeague = +lg.dataset.lg; render(); return;
   }
+
+  // ---- THE WINDOW: self-service + admin controls (live mode) ----
+  if (API && e.target.closest(".lact")){
+    const L = LEAGUE;
+    const editnick = e.target.closest("[data-editnick]");
+    if (editnick){
+      const n = (prompt("Your nickname (everyone sees this):", myNick())||"").trim();
+      if (!n || n===myNick()) return;
+      const { status, j } = await api("/nick", { uid:uid(), nickname:n });
+      if (status!==200){ alert(j.error||"Couldn't update your name."); return; }
+      setNick(n); await loadLeagues(); render(); return;
+    }
+    const leave = e.target.closest("[data-leave]");
+    if (leave){
+      if (!confirm("Leave "+L.name+"? Your row drops out of this league's table. Your picks stay yours and keep counting in your other leagues.")) return;
+      const code = leave.dataset.leave;
+      const { status, j } = await api("/leave", { uid:uid(), code });
+      if (status!==200){ alert(j.error||"Couldn't leave."); return; }
+      setLeagueCodes(myLeagueCodes().filter(c=>c!==code));
+      activeLeague = 0; await loadLeagues(); render(); return;
+    }
+    const kick = e.target.closest("[data-kick]");
+    if (kick){
+      const target = kick.dataset.kick;
+      const row = L.table.find(r=>r.uid===target);
+      if (!confirm("Remove "+(row?row.nick:"this member")+" from "+L.name+"?")) return;
+      const { status, j } = await api("/kick", { uid:uid(), code:L.code, target });
+      if (status!==200){ alert(j.error||"Couldn't remove them."); return; }
+      await loadLeagues(); render(); return;
+    }
+    const rename = e.target.closest("[data-rename]");
+    if (rename){
+      const name = (prompt("Rename league:", L.name)||"").trim();
+      if (!name || name===L.name) return;
+      const { status, j } = await api("/rename", { uid:uid(), code:rename.dataset.rename, name });
+      if (status!==200){ alert(j.error||"Couldn't rename."); return; }
+      await loadLeagues(); render(); return;
+    }
+    if (e.target.closest("[data-startagain]")){
+      if (!confirm("Start again? You'll leave every league and your nickname/identity on this device is wiped. This can't be undone.")) return;
+      for (const code of myLeagueCodes()){ await api("/leave", { uid:uid(), code }); }
+      ["wc_uid","wc_nick","wc_leagues","wc_picks"].forEach(k=>localStorage.removeItem(k));
+      LEAGUES = []; activeLeague = 0; myPicks = {};
+      render(); return;
+    }
+  }
+
   const hb = e.target.closest(".hl-btn");
   if (hb){
     const slot = hb.nextElementSibling;
