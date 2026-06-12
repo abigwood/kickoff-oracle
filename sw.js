@@ -4,7 +4,7 @@
      and league tables are never stale; offline falls back to the last response
      tagged so the app can show an "offline" note.
    Bump VERSION on each deploy to roll the caches. */
-const VERSION = "v12-2026-06-12";
+const VERSION = "v13-2026-06-12";
 const SHELL = VERSION + "-shell";
 const RUNTIME = VERSION + "-runtime";
 const API_HOST = "kickoff-oracle-window.abigwood.workers.dev";
@@ -17,10 +17,16 @@ const SHELL_ASSETS = [
 ];
 
 self.addEventListener("install", (e) => {
-  // Precache the shell, but DON'T skipWaiting here — the page triggers it (via the
-  // message below) once its controllerchange listener is wired, so the takeover
-  // never races the page and the one-launch reload is reliable.
-  e.waitUntil(caches.open(SHELL).then((c) => Promise.allSettled(SHELL_ASSETS.map((a) => c.add(a)))));
+  // Precache the shell. cache:"reload" BYPASSES the browser HTTP cache so a new
+  // version stores the FRESH index.html, not a stale copy — this is what makes
+  // an update actually contain new content. We DON'T skipWaiting here: the page
+  // triggers it (via the message below) once its controllerchange listener is
+  // wired, so the takeover never races the page and the one-launch reload sticks.
+  e.waitUntil(
+    caches.open(SHELL).then((c) =>
+      Promise.allSettled(SHELL_ASSETS.map((a) => c.add(new Request(a, { cache: "reload" }))))
+    )
+  );
 });
 
 // the page asks us to take over the instant it's ready for the update
