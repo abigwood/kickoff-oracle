@@ -485,7 +485,10 @@ def _parse_football_boxes(wt):
         n1, n2 = FIFA_CODE.get(c1.group(0)), FIFA_CODE.get(c2.group(0))
         if not (n1 and n2):
             continue
-        out[(_canon(n1), _canon(n2))] = (int(nums[-1][0]), int(nums[-1][1]))
+        # finished/full-time signal: attendance is only recorded after the match
+        att = re.search(r"\|\s*attendance\s*=([^\n]*)", box)
+        finished = bool(att and re.search(r"\d", att.group(1)))
+        out[(_canon(n1), _canon(n2))] = {"score": [int(nums[-1][0]), int(nums[-1][1])], "finished": finished}
     return out
 
 
@@ -502,8 +505,36 @@ def fetch_wikipedia_results(groups, knockout):
         except Exception as e:
             print(f"wikipedia source skipped ({p}): {e}")
     if out:
-        print(f"wikipedia: {len(out)} results from {len(pages)} page(s)")
+        print(f"wikipedia: {len(out)} match scores seen on {len(pages)} page(s)")
     return out
+
+
+def confirm_wikipedia(wiki, prev_pending, now):
+    """Finality gate for Wikipedia scores. Accept a score only if EITHER the page
+    marks the match finished (attendance recorded), OR the SAME score has now
+    persisted across two polls >=5 min apart. A score that changed since the last
+    poll is live — never settle it; carry it forward and re-check next run.
+    Returns (confirmed {(c1,c2): [s1,s2]}, new_pending {key: {score, first_seen}})."""
+    confirmed, pending = {}, {}
+    for key, info in wiki.items():
+        score = list(info["score"])
+        k = "|".join(key)
+        if info.get("finished"):
+            confirmed[key] = score
+            continue
+        prev = prev_pending.get(k)
+        if prev and list(prev.get("score", [])) == score:
+            first = prev.get("first_seen", now.isoformat())
+            pending[k] = {"score": score, "first_seen": first}  # keep the original sighting time
+            try:
+                if now - datetime.fromisoformat(first) >= timedelta(minutes=5):
+                    confirmed[key] = score  # stable across two polls → final
+            except Exception:
+                pass
+        else:
+            # first sighting, or the score changed since last poll → it's live, wait
+            pending[k] = {"score": score, "first_seen": now.isoformat()}
+    return confirmed, pending
 
 
 def fetch_balldontlie_results():
@@ -585,10 +616,24 @@ def main():
             need_groups.add(g.upper())
         else:
             need_knockout = True
-    bdl_results, wiki_results = {}, {}
+    # two-poll finality state for Wikipedia scores, persisted across cron runs
+    pending_file = OUT.parent / "wiki_pending.json"
+    prev_pending = {}
+    if pending_file.exists():
+        try:
+            prev_pending = json.loads(pending_file.read_text())
+        except Exception:
+            prev_pending = {}
+    bdl_results, wiki_results, new_pending = {}, {}, {}
     if need_groups or need_knockout:
         bdl_results = fetch_balldontlie_results()                 # primary (key-gated)
-        wiki_results = fetch_wikipedia_results(need_groups, need_knockout)  # fallback
+        wiki_raw = fetch_wikipedia_results(need_groups, need_knockout)
+        # only settle a wiki score if the page says finished, or it's stable across 2 polls
+        wiki_results, new_pending = confirm_wikipedia(wiki_raw, prev_pending, now)
+        if wiki_raw:
+            print(f"wikipedia: {len(wiki_results)} confirmed final, {len(new_pending)} awaiting confirmation")
+    pending_file.parent.mkdir(parents=True, exist_ok=True)
+    pending_file.write_text(json.dumps(new_pending, ensure_ascii=False, indent=1))
 
     for i, m in enumerate(feed["matches"]):
         ko = uk_datetime(m["date"], m["time"])

@@ -51,13 +51,13 @@ jobs:
           git config user.name "wc26-bot"
           git config user.email "actions@github.com"
           tmp=$(mktemp -d)
-          for f in matches.json matches.js highlights.json; do
+          for f in matches.json matches.js highlights.json wiki_pending.json; do
             [ -f "data/$f" ] && cp "data/$f" "$tmp/$f"
           done
           for attempt in 1 2 3 4 5; do
             git fetch -q origin main
             git reset -q --hard origin/main          # clean slate at latest remote — no merge, no conflict
-            for f in matches.json matches.js highlights.json; do
+            for f in matches.json matches.js highlights.json wiki_pending.json; do
               [ -f "$tmp/$f" ] && cp "$tmp/$f" "data/$f"
             done
             git add data/
