@@ -4,11 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KickOff Oracle">
 <meta name="theme-color" content="#0B0D14">
 <title>KickOff Oracle — World Cup 2026 UK TV Guide</title>
 <meta name="description" content="Every World Cup 2026 match: UK kick-off time and BBC/ITV channel, groups, bracket and England's route to the final.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📺</text></svg>">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&display=swap" rel="stylesheet">
 <style>
@@ -511,7 +516,7 @@ function viewLeague(){
     ${LEAGUES.map((lg,i)=>`<button class="pill ${i===activeLeague?"on":""}" data-lg="${i}">🏅 ${lg.name}</button>`).join("")}
     <button class="pill" data-lg="join">＋ Join / create</button>
   </div>`;
-  if (!DEMO && !L) return switcher + `<div class="demo-ribbon">📱 <b>First time?</b> Add this to your Home Screen and always open it from that icon — then your identity stays put.<br><br>You're not in a league yet. Tap <b>＋ Join / create</b> to start one (you'll get a code to share) or enter a mate's code. You predict each match once — the pick counts in every league you're in.<br><br>🪟 Pick the score anytime before kick-off — change it until KO, when picks lock and reveal.</div>
+  if (!DEMO && !L) return switcher + `<div class="demo-ribbon">📱 <b>Install the app:</b> Share → Add to Home Screen — then always open it from that icon, so your identity stays put.<br><br>You're not in a league yet. Tap <b>＋ Join / create</b> to start one (you'll get a code to share) or enter a mate's code. You predict each match once — the pick counts in every league you're in.<br><br>🪟 Pick the score anytime before kick-off — change it until KO, when picks lock and reveal.</div>
     <p class="note" style="margin-top:4px">Been here before on another device? <button class="lact" data-restore>🔑 Restore my identity</button></p>`;
   const me = DEMO ? null : uid();
   const iAmAdmin = !DEMO && L && L.owner === me;
@@ -747,6 +752,8 @@ function render(){
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
   if (DATA.updated) $("#updated").textContent = "Updated " +
     new Date(DATA.updated).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+  if (!navigator.onLine && $("#updated")){ $("#updated").textContent = "⚠️ Offline · last saved data"; $("#updated").style.color = "var(--live)"; }
+  else if ($("#updated")) $("#updated").style.color = "";
   clearInterval(tickTimer);
   const cd = $("#cd");
   if (cd){
@@ -930,6 +937,14 @@ setInterval(async ()=>{
   if (tab==="league" && API){ try { await loadLeagues(); } catch {} render(); }
   else if (tab==="today") render();
 }, 60000);
+
+// PWA: register the service worker (offline shell + always-fresh data/API)
+if ("serviceWorker" in navigator)
+  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+// reflect connectivity + pull fresh the moment we're back online
+addEventListener("offline", render);
+addEventListener("online", () => { fetch("data/matches.json",{cache:"no-store"}).then(r=>r.json())
+  .then(d=>{ DATA=d; if(tab==="league"&&API){ loadLeagues().then(render); } else render(); }).catch(render); });
 </script>
 </body>
 </html>
