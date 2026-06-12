@@ -411,7 +411,7 @@ async function api(path, body){
   return { status:r.status, j: await r.json().catch(()=>({})) };
 }
 // map a Worker reveal block → the shape viewLeague()/revealCard() already render.
-const mapReveal = rv => ({ match: rv.match, picks: rv.picks.map(p => ({
+const mapReveal = rv => ({ match: rv.match, ko: rv.ko, picks: rv.picks.map(p => ({
   nick: p.nick,
   s: p.asleep ? "😴 no pick" : `${p.s1}–${p.s2}`,
   hit: !!p.hit, exact: !!p.exact, asleep: !!p.asleep,
@@ -523,6 +523,14 @@ function viewLeague(){
         return `<div class="scrow"><span class="nm">"${o.nick}" · ${o.matches.length} pick${o.matches.length>1?"s":""} on an unlinked device</span>
           ${m?`<button class="lact" data-merge="${o.uid}|${m.uid}|${L.code}">Merge into ${m.nick}</button>`:`<span style="color:var(--faint);font-size:.64rem">no matching member</span>`}</div>`;
       }).join("")}</div>` : "";
+  // reveals drop off the view 48h after kick-off — data is kept, just filtered here, newest first
+  const REVEAL_WINDOW = 48*3600*1000;
+  const allReveals = L.reveals || [];
+  const shownReveals = allReveals
+    .filter(rv => !rv.ko || (Date.now()-Date.parse(rv.ko)) < REVEAL_WINDOW)
+    .sort((a,b) => (Date.parse(b.ko)||0) - (Date.parse(a.ko)||0));
+  L.shownReveals = shownReveals;                 // shareCard indexes into this
+  const revealsHidden = allReveals.length - shownReveals.length;
   return switcher
    + (DEMO?`<div class="demo-ribbon">DEMO MODE — sample leagues + working picker. Pick the score anytime before kick-off — you can change it until KO, when picks lock and reveal. You predict each match once; the pick counts in every league you're in.</div>`:"")
    + `<div class="gtable ltable"><h3>🏅 ${L.name}${iAmAdmin?` <button class="lact" data-rename="${L.code}" title="Rename league">✏️</button> <span class="adminbadge">ADMIN</span>`:""} · code ${L.code}</h3>
@@ -540,7 +548,8 @@ function viewLeague(){
     </div>
     <button class="sharecard" data-sharetable style="margin:12px 14px 0;width:calc(100% - 28px)">📤 Share table to the group chat</button>
     ${adminMerge}
-    ${L.reveals.map((rv,ri)=>`<div class="gtable"><h3>🪟 REVEAL — ${rv.match}</h3>
+    ${shownReveals.length?`<p class="note" style="margin:12px 14px 0">🪟 Recent reveals${revealsHidden>0?` · ${revealsHidden} older hidden`:""} — cards drop off 48h after kick-off</p>`:""}
+    ${shownReveals.map((rv,ri)=>`<div class="gtable"><h3>🪟 REVEAL — ${rv.match}</h3>
       <div class="reveal" style="padding:12px 14px">
         ${rv.picks.map(p=>`<span class="rpick ${p.hit?"hit":""} ${p.oracle?"oracle":""}">
           ${p.nick}: <b class="${p.asleep?"asleep":""}">${p.s}</b> ${p.exact?"🎯":""} <span style="color:var(--faint)">${p.pts}</span></span>`).join("")}
@@ -673,7 +682,7 @@ function wrapText(x,t,a,b,maxW,lh){const words=t.split(" ");let line="",yy=b;
     if(x.measureText(test).width>maxW && line){x.fillText(line,a,yy);line=w;yy+=lh;}else line=test;}
   x.fillText(line,a,yy);}
 async function shareCard(ri){
-  const blob = await revealCard(LEAGUE.reveals[ri]);
+  const blob = await revealCard((LEAGUE.shownReveals||LEAGUE.reveals)[ri]);
   const file = new File([blob],"reveal.png",{type:"image/png"});
   if (navigator.canShare && navigator.canShare({files:[file]})){
     try{ await navigator.share({files:[file],title:"Window shut — picks revealed"}); return;}catch(e){}
