@@ -245,7 +245,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v4-2026-06-12";   // build marker (bumped each shell deploy)
+window.__BUILD = "v5-2026-06-12";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -970,15 +970,18 @@ setInterval(async ()=>{
 // instant it takes over, so every deploy reaches users on their next single
 // app-open — and mid-session, without relaunching.
 if ("serviceWorker" in navigator) {
-  const hadController = !!navigator.serviceWorker.controller;   // was a SW already in charge at load?
-  let refreshing = false;
+  let refreshing = false, canReload = false;
   navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (refreshing || !hadController) return;   // ignore the very first install's claim
+    if (refreshing || !canReload) return;       // don't reload on the very first install
     refreshing = true;
-    location.reload();                          // new SW took over → swap to the new app
+    location.reload();                          // a new SW took over → swap to the new app
   });
   addEventListener("load", async () => {
     try {
+      // a registration already existing = returning visit, so any later controller
+      // change is an UPDATE worth reloading for — true even when this navigation
+      // wasn't controlled (e.g. the first load after a browser/app restart).
+      canReload = !!(await navigator.serviceWorker.getRegistration());
       const reg = await navigator.serviceWorker.register("sw.js", { updateViaCache: "none" });
       const check = () => { if (!document.hidden) reg.update().catch(()=>{}); };
       document.addEventListener("visibilitychange", check);     // re-check whenever the app regains focus
