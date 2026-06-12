@@ -964,9 +964,27 @@ setInterval(async ()=>{
   else if (tab==="today") render();
 }, 60000);
 
-// PWA: register the service worker (offline shell + always-fresh data/API)
-if ("serviceWorker" in navigator)
-  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+// PWA service worker + FAST-UPDATE path. sw.js skips waiting and claims clients
+// on activate, so a new version becomes active immediately; here we reload the
+// instant it takes over, so every deploy reaches users on their next single
+// app-open — and mid-session, without relaunching.
+if ("serviceWorker" in navigator) {
+  const hadController = !!navigator.serviceWorker.controller;   // was a SW already in charge at load?
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (refreshing || !hadController) return;   // ignore the very first install's claim
+    refreshing = true;
+    location.reload();                          // new SW took over → swap to the new app
+  });
+  addEventListener("load", async () => {
+    try {
+      const reg = await navigator.serviceWorker.register("sw.js", { updateViaCache: "none" });
+      const check = () => { if (!document.hidden) reg.update().catch(()=>{}); };
+      document.addEventListener("visibilitychange", check);     // re-check whenever the app regains focus
+      setInterval(check, 30 * 60 * 1000);                       // periodic backstop
+    } catch {}
+  });
+}
 // reflect connectivity + pull fresh the moment we're back online
 addEventListener("offline", ()=>{ isOffline=true; render(); });
 addEventListener("online", async ()=>{ await loadData(); if(tab==="league"&&API){ await loadLeagues(); } render(); });
