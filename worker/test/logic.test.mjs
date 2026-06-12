@@ -7,6 +7,7 @@ import {
   streakLabel,
   computeTable,
   buildReveals,
+  pickValid,
   makeCode,
   makeRecovery,
   normRecovery,
@@ -56,6 +57,35 @@ test("streak labels mirror the demo UI", () => {
   assert.equal(streakLabel(["L", "W", "W"]), "W2");
 });
 
+test("pickValid — only a pre-KO timestamp counts (fails closed)", () => {
+  assert.equal(pickValid({ s1: 1, s2: 0, ts: 99 }, 100), true, "ts < KO");
+  assert.equal(pickValid({ s1: 1, s2: 0, ts: 100 }, 100), false, "ts == KO → invalid");
+  assert.equal(pickValid({ s1: 1, s2: 0, ts: 101 }, 100), false, "ts > KO → invalid");
+  assert.equal(pickValid({ s1: 1, s2: 0 }, 100), false, "no timestamp → invalid");
+  assert.equal(pickValid({ s1: 1, s2: 0, ts: 99 }, null), false, "unknown KO → invalid (fail closed)");
+  assert.equal(pickValid(null, 100), false);
+});
+
+test("computeTable + buildReveals IGNORE picks timestamped at/after KO", () => {
+  const members = [{ uid: "a", nick: "A" }, { uid: "b", nick: "B" }];
+  const KOms = Date.parse("2026-06-12T03:00:00+01:00");
+  const ft = [{ id: 2, s1: 2, s2: 1, koMs: KOms }];
+  const picks = {
+    2: {
+      a: { s1: 2, s2: 1, ts: KOms - 1000 }, // valid (pre-KO) exact → 3
+      b: { s1: 2, s2: 1, ts: KOms + 1000 }, // INVALID (post-KO) — must NOT score despite being exact
+    },
+  };
+  const rows = computeTable(members, ft, picks);
+  assert.equal(rows.find((r) => r.uid === "a").pts, 3, "valid pre-KO pick scores");
+  assert.equal(rows.find((r) => r.uid === "b").pts, 0, "post-KO pick ignored in scoring");
+  // reveals: the post-KO pick shows as no-pick, not as a scored pick
+  const matches = [{ id: 2, team1: "X", team2: "Y", ukKickoff: "2026-06-12T03:00:00+01:00", status: "FT", score1: 2, score2: 1 }];
+  const [rv] = buildReveals(members, matches, picks, KOms + 5 * 3600 * 1000);
+  assert.equal(rv.picks.find((p) => p.uid === "a").pts, 3);
+  assert.equal(rv.picks.find((p) => p.uid === "b").asleep, true, "post-KO pick revealed as no-pick");
+});
+
 test("computeTable — points sum across matches, sorted, multi-member", () => {
   const members = [
     { uid: "a", nick: "Smithy" },
@@ -92,9 +122,11 @@ test("buildReveals hides open windows, reveals shut ones, scores when FT", () =>
     // window still open (KO in the future) → must be hidden
     { id: 11, team1: "P", team2: "Q", ukKickoff: "2026-06-17T22:30:00+01:00", status: "UPCOMING", score1: null, score2: null },
   ];
+  const ko10 = Date.parse("2026-06-17T20:00:00+01:00");
+  const ko11 = Date.parse("2026-06-17T22:30:00+01:00");
   const picks = {
-    10: { a: { s1: 2, s2: 0 }, b: { s1: 0, s2: 1 } },
-    11: { a: { s1: 1, s2: 1 } },
+    10: { a: { s1: 2, s2: 0, ts: ko10 - 1000 }, b: { s1: 0, s2: 1, ts: ko10 - 1000 } },
+    11: { a: { s1: 1, s2: 1, ts: ko11 - 1000 } },
   };
   const reveals = buildReveals(members, matches, picks, now);
   assert.equal(reveals.length, 1, "only the shut match is revealed");

@@ -3,7 +3,7 @@
 // window enforcement (the part the client must never be trusted on).
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import worker from "../src/worker.js";
+import worker, { __resetCaches } from "../src/worker.js";
 
 const KO = "2026-06-17T21:00:00+01:00";
 const koMs = Date.parse(KO);
@@ -31,6 +31,8 @@ const MATCHES = {
   matches: [
     { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null },
     { id: 99, team1: "1A", team2: "2B", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null }, // placeholder teams
+    { id: 60, team1: "P", team2: "Q", ukKickoff: "2099-01-01T00:00:00+00:00", status: "FT", score1: null, score2: null }, // FT status, KO "in the future" → freshness trap (score1 null so it never pollutes scoring)
+    { id: 61, team1: "R", team2: "S", ukKickoff: "not-a-real-date", status: "UPCOMING", score1: null, score2: null }, // unverifiable KO
   ],
 };
 
@@ -44,13 +46,16 @@ function makeEnv() {
 }
 
 // drive the worker; `now` (ms) sets the simulated clock for window checks.
-async function call(env, method, path, { body, now } = {}) {
+// failFetch:true makes the matches feed unreachable (to test fail-closed).
+async function call(env, method, path, { body, now, failFetch } = {}) {
+  __resetCaches(); // fresh matches snapshot per call — no cross-test cache leakage
   const realNow = Date.now;
   if (now != null) Date.now = () => now;
   // reset module matches cache by stubbing fetch fresh each call
   const realFetch = globalThis.fetch;
-  globalThis.fetch = async () =>
-    new Response(JSON.stringify(MATCHES), { headers: { "content-type": "application/json" } });
+  globalThis.fetch = failFetch
+    ? async () => { throw new Error("feed unreachable"); }
+    : async () => new Response(JSON.stringify(MATCHES), { headers: { "content-type": "application/json" } });
   try {
     const req = new Request("https://w.test" + path, {
       method,
@@ -357,6 +362,37 @@ test("/export — secret-gated full KV backup", async () => {
   assert.ok(dump.json.count >= 2, "exports league + user keys");
   assert.equal(dump.json.data[`league:${code}`].name, "MATES", "values are included and parsed");
   assert.ok(dump.json.data["user:u1"], "user record present");
+});
+
+test("window slams at KO: picks rejected after kick-off, on FT matches, and when unverifiable (fails closed)", async () => {
+  const env = makeEnv();
+  await call(env, "POST", "/league", { body: { uid: "adam", nickname: "Adam", name: "X" } });
+
+  // KO+1 min and KO+12h — both shut
+  const plus1 = await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 50, s1: 1, s2: 0 }, now: koMs + 1 * MIN });
+  assert.equal(plus1.status, 403, "KO+1min rejected");
+  assert.equal(plus1.json.state, "shut");
+  const plus12h = await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 50, s1: 1, s2: 0 }, now: koMs + 12 * 60 * MIN });
+  assert.equal(plus12h.status, 403, "KO+12h rejected");
+
+  // FT-status match whose KO is "in the future" → rejected by status REGARDLESS of the clock/data
+  const ftMatch = await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 60, s1: 1, s2: 0 }, now: koMs });
+  assert.equal(ftMatch.status, 403, "finished match rejected even though its KO parses as future");
+  assert.equal(ftMatch.json.state, "shut");
+
+  // unverifiable kick-off → fail CLOSED (reject, never accept)
+  const bad = await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 61, s1: 1, s2: 0 }, now: koMs });
+  assert.equal(bad.status, 422, "unparseable KO rejected");
+  assert.equal(bad.json.state, "unverified");
+
+  // feed totally unreachable → fail CLOSED (503), never store a pick
+  const down = await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 50, s1: 1, s2: 0 }, now: koMs + 9 * 60 * MIN, failFetch: true });
+  assert.equal(down.status, 503, "can't verify kick-off → rejected");
+  assert.equal(await env.KV.get("picks:50", "json"), null, "nothing stored when verification fails");
+
+  // sanity: a clean pre-KO pick still works
+  const ok = await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 50, s1: 2, s2: 1 }, now: koMs - 60 * MIN });
+  assert.equal(ok.status, 200);
 });
 
 test("validation: bad scores and missing fields are rejected", async () => {

@@ -35,6 +35,7 @@ const MATCHES_TTL_MS = 5 * 60 * 1000; // in-memory matches.json cache
 // ---- module-scope matches cache (per warm isolate) ----
 let _matches = null;
 let _matchesAt = 0;
+export function __resetCaches() { _matches = null; _matchesAt = 0; } // test-only isolation hook
 async function getMatches(env, { fresh = false } = {}) {
   const now = Date.now();
   if (!fresh && _matches && now - _matchesAt < MATCHES_TTL_MS) return _matches;
@@ -139,7 +140,7 @@ async function recomputeLeague(env, code) {
   const ft = (await scoredMatches(env))
     .filter((m) => m.status === "FT" && m.score1 != null)
     .sort((a, b) => Date.parse(a.ukKickoff) - Date.parse(b.ukKickoff))
-    .map((m) => ({ id: m.id, s1: m.score1, s2: m.score2 }));
+    .map((m) => ({ id: m.id, s1: m.score1, s2: m.score2, koMs: Date.parse(m.ukKickoff) }));
   const picksByMatch = await loadPicksByMatch(env, ft.map((m) => m.id));
   const rows = computeTable(members, ft, picksByMatch);
   await kvPut(env, `table:${code}`, { rows, ts: Date.now() });
@@ -413,14 +414,26 @@ async function makePick(env, body) {
   if (![s1, s2].every((n) => Number.isInteger(n) && n >= 0 && n <= 20))
     return j({ error: "scores must be 0–20" }, 400, env);
 
-  // SERVER-SIDE WINDOW CHECK — the integrity core. Never trust the client.
-  const matches = await getMatches(env);
+  // SERVER-SIDE WINDOW CHECK — the integrity core. Fails CLOSED: if the match or
+  // its kick-off can't be verified for ANY reason, the pick is rejected.
+  let matches;
+  try {
+    matches = await scoredMatches(env); // Pages metadata + freshest FT scores/status
+  } catch {
+    return j({ error: "can't verify kick-off right now — pick not saved", state: "unverified" }, 503, env);
+  }
   const match = matches.find((m) => m.id === matchId);
   if (!match) return j({ error: "no such match" }, 404, env);
   if (!bothTeamsReal(match.team1, match.team2))
     return j({ error: "teams not confirmed yet", state: "na" }, 403, env);
-  // open until KO; at/after KO it's shut (no post-shut swap). Pre-KO overwrites freely.
-  if (windowState(Date.parse(match.ukKickoff), Date.now()) === "shut")
+  const koMs = Date.parse(match.ukKickoff);
+  if (!Number.isFinite(koMs)) // unverifiable kick-off → fail closed
+    return j({ error: "kick-off time unverifiable — pick not saved", state: "unverified" }, 422, env);
+  // A finished/in-play match is shut regardless of clock or data freshness.
+  if (match.status === "FT" || match.status === "LIVE" || match.score1 != null)
+    return j({ error: "match already started — window shut", state: "shut" }, 403, env);
+  // Otherwise open only strictly before kick-off (no post-shut swap).
+  if (windowState(koMs, Date.now()) === "shut")
     return j({ error: "window has shut", state: "shut" }, 403, env);
 
   // optionally keep nickname fresh + ensure membership exists

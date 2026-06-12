@@ -46,10 +46,21 @@ export function streakLabel(outcomes) {
   return sym + n;
 }
 
+// DEFENCE-IN-DEPTH: a pick only counts if it was made strictly BEFORE kick-off.
+// The /pick window check is the front door; this ensures that even if a bad pick
+// ever lands in KV (future bug, manual edit), scoring and reveals ignore it.
+// koMs == null means "kick-off unknown" → can't prove validity → treat as invalid.
+export function pickValid(pick, koMs) {
+  if (!pick) return false;
+  if (koMs == null) return false;
+  return typeof pick.ts === "number" && pick.ts < koMs;
+}
+
 // Compute a league standings table.
 //   members      : [{uid, nick}]
-//   ftMatches    : finished matches, CHRONOLOGICAL, [{id, s1, s2}]
-//   picksByMatch : { [matchId]: { [uid]: {s1, s2} } }   (global picks)
+//   ftMatches    : finished matches, CHRONOLOGICAL, [{id, s1, s2, koMs?}]
+//   picksByMatch : { [matchId]: { [uid]: {s1, s2, ts} } }   (global picks)
+// A pick timestamped at/after that match's koMs is ignored (counts as no pick).
 // Returns rows sorted by pts desc, then exact desc, then nick — shape the UI's
 // league table renders directly: {nick, pts, exact, streak, uid}.
 export function computeTable(members, ftMatches, picksByMatch) {
@@ -58,7 +69,8 @@ export function computeTable(members, ftMatches, picksByMatch) {
       exact = 0;
     const outcomes = [];
     for (const m of ftMatches) {
-      const pick = (picksByMatch[m.id] || {})[mem.uid];
+      let pick = (picksByMatch[m.id] || {})[mem.uid];
+      if (m.koMs != null && pick && !pickValid(pick, m.koMs)) pick = undefined; // ignore post-KO picks
       const res = scorePick(pick, { s1: m.s1, s2: m.s2 });
       if (!pick) {
         outcomes.push("S");
@@ -90,7 +102,8 @@ export function buildReveals(members, matches, picksByMatch, nowMs) {
     const settled = m.score1 != null && m.score2 != null;
     // reveal the WHOLE league: everyone's pick, plus who fell asleep (no pick).
     const memberPicks = members.map((mem) => {
-      const p = picks[mem.uid];
+      const raw = picks[mem.uid];
+      const p = pickValid(raw, koMs) ? raw : null; // a post-KO pick is treated as no pick
       if (!p)
         return { uid: mem.uid, nick: nickOf[mem.uid] || "?", asleep: true, s1: null, s2: null, hit: false, exact: false, pts: 0, settled };
       const res = scorePick(p, { s1: m.score1, s2: m.score2 });
