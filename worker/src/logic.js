@@ -112,6 +112,11 @@ export function buildReveals(members, matches, picksByMatch, nowMs) {
     out.push({
       matchId: m.id,
       match: `${m.team1} v ${m.team2}`,
+      team1: m.team1,
+      team2: m.team2,
+      settled,                                  // true once the match has a final score
+      score1: settled ? m.score1 : null,
+      score2: settled ? m.score2 : null,
       ko: m.ukKickoff,
       picks: memberPicks,
     });

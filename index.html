@@ -416,12 +416,18 @@ async function api(path, body){
   return { status:r.status, j: await r.json().catch(()=>({})) };
 }
 // map a Worker reveal block → the shape viewLeague()/revealCard() already render.
-const mapReveal = rv => ({ match: rv.match, ko: rv.ko, picks: rv.picks.map(p => ({
-  nick: p.nick,
-  s: p.asleep ? "😴 no pick" : `${p.s1}–${p.s2}`,
-  hit: !!p.hit, exact: !!p.exact, asleep: !!p.asleep,
-  pts: !p.settled ? "" : (p.exact ? "+3 🎯" : p.hit ? "+1" : "0"),
-})) });
+const mapReveal = rv => ({
+  match: rv.match, ko: rv.ko,
+  team1: rv.team1, team2: rv.team2, settled: !!rv.settled, score1: rv.score1, score2: rv.score2,
+  // header text: real result once settled, else just the fixture (picks only)
+  header: rv.settled ? `${rv.team1} ${rv.score1}–${rv.score2} ${rv.team2} · FT` : (rv.match || `${rv.team1} v ${rv.team2}`),
+  picks: rv.picks.map(p => ({
+    nick: p.nick,
+    s: p.asleep ? "😴 no pick" : `${p.s1}–${p.s2}`,
+    hit: !!p.hit, exact: !!p.exact, asleep: !!p.asleep,
+    pts: !p.settled ? "" : (p.exact ? "+3 🎯" : p.hit ? "+1" : "0"),
+  })),
+});
 let myCode = null;                 // this device's recovery code (3 words)
 async function loadLeagues(){
   if (DEMO) return;
@@ -554,7 +560,7 @@ function viewLeague(){
     <button class="sharecard" data-sharetable style="margin:12px 14px 0;width:calc(100% - 28px)">📤 Share table to the group chat</button>
     ${adminMerge}
     ${shownReveals.length?`<p class="note" style="margin:12px 14px 0">🪟 Recent reveals${revealsHidden>0?` · ${revealsHidden} older hidden`:""} — cards drop off 48h after kick-off</p>`:""}
-    ${shownReveals.map((rv,ri)=>`<div class="gtable"><h3>🪟 REVEAL — ${rv.match}</h3>
+    ${shownReveals.map((rv,ri)=>`<div class="gtable"><h3>🪟 REVEAL — ${rv.header || rv.match}</h3>
       <div class="reveal" style="padding:12px 14px">
         ${rv.picks.map(p=>`<span class="rpick ${p.hit?"hit":""} ${p.oracle?"oracle":""}">
           ${p.nick}: <b class="${p.asleep?"asleep":""}">${p.s}</b> ${p.exact?"🎯":""} <span style="color:var(--faint)">${p.pts}</span></span>`).join("")}
@@ -652,26 +658,37 @@ async function revealCard(rv){
   x.fillStyle=g; x.fillRect(0,0,W,H);
   x.fillStyle="#1A2032"; for(let i=0;i<W;i+=72){ x.fillRect(i,0,1,H); }   // faint pitch lines
   // header
-  x.fillStyle="#FFD230"; x.font="900 54px -apple-system,Archivo,sans-serif";
-  x.fillText("🪟 WINDOW SHUT",60,120);
-  x.fillStyle="#EEF1F7"; x.font="800 64px -apple-system,sans-serif";
-  wrapText(x, rv.match, 60, 210, W-120, 74);
-  x.fillStyle="#8A93A8"; x.font="600 34px -apple-system,sans-serif";
-  x.fillText("Everyone's picks, locked before kick-off:",60,300);
-  // pick rows
-  let y=370;
+  x.fillStyle="#FFD230"; x.font="900 48px -apple-system,Archivo,sans-serif";
+  x.fillText(rv.settled ? "🪟 FULL-TIME" : "🪟 WINDOW SHUT", 60, 110);
+  // teams
+  x.fillStyle="#EEF1F7"; x.font="800 56px -apple-system,sans-serif";
+  let y = wrapTextY(x, rv.match || ((rv.team1||"")+" v "+(rv.team2||"")), 60, 182, W-120, 64);
+  // the actual final score, prominent — tells the story at a glance
+  if (rv.settled){
+    x.textAlign="center"; x.fillStyle="#39D98A"; x.font="900 112px -apple-system,Archivo,sans-serif";
+    x.fillText(`${rv.score1} – ${rv.score2}`, W/2, y+120);
+    x.textAlign="left"; y += 134;
+  }
+  x.fillStyle="#8A93A8"; x.font="600 32px -apple-system,sans-serif";
+  x.fillText(rv.settled ? "Everyone's picks, scored against the result:" : "Everyone's picks, locked before kick-off:", 60, y+54);
+  // pick rows — scaled so they always fit under the score
+  const top = y + 96, n = rv.picks.length || 1;
+  const rowH = Math.max(72, Math.min(124, (H - top - 170) / n));
+  let py = top;
   rv.picks.forEach(p=>{
+    const bh = rowH - 16;
     x.fillStyle = p.exact ? "#16321F" : (p.hit ? "#15271B" : "#161B2A");
-    rRect(x,60,y-58,W-120,96,18); x.fill();
+    rRect(x,60,py,W-120,bh,18); x.fill();
     x.strokeStyle = p.exact ? "#39D98A" : (p.hit ? "#2BD9CE" : "#242C42"); x.lineWidth=3;
-    rRect(x,60,y-58,W-120,96,18); x.stroke();
+    rRect(x,60,py,W-120,bh,18); x.stroke();
+    const mid = py + bh/2 + 14;
     x.fillStyle = p.asleep ? "#5A6378" : "#EEF1F7";
-    x.font="700 42px -apple-system,sans-serif"; x.fillText(p.nick,92,y);
-    x.font="900 46px -apple-system,sans-serif"; x.textAlign="center";
-    x.fillText(p.s + (p.exact?" 🎯":""), W/2+120, y);
-    x.textAlign="right"; x.fillStyle="#8A93A8"; x.font="700 38px -apple-system,sans-serif";
-    x.fillText(p.pts, W-92, y); x.textAlign="left";
-    y+=124;
+    x.font="700 40px -apple-system,sans-serif"; x.fillText(p.nick,92,mid);
+    x.font="900 44px -apple-system,sans-serif"; x.textAlign="center";
+    x.fillText(p.s + (p.exact?" 🎯":p.hit?" ✓":""), W/2+120, mid);
+    x.textAlign="right"; x.fillStyle="#8A93A8"; x.font="700 36px -apple-system,sans-serif";
+    x.fillText(p.pts, W-92, mid); x.textAlign="left";
+    py += rowH;
   });
   // footer
   x.fillStyle="#242C42"; x.fillRect(60,H-150,W-120,2);

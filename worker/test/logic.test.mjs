@@ -131,6 +131,11 @@ test("buildReveals hides open windows, reveals shut ones, scores when FT", () =>
   const reveals = buildReveals(members, matches, picks, now);
   assert.equal(reveals.length, 1, "only the shut match is revealed");
   assert.equal(reveals[0].matchId, 10);
+  // the reveal carries the final score + teams once settled (for the header/card)
+  assert.deepEqual(
+    { team1: reveals[0].team1, team2: reveals[0].team2, settled: reveals[0].settled, score1: reveals[0].score1, score2: reveals[0].score2 },
+    { team1: "X", team2: "Y", settled: true, score1: 2, score2: 0 }
+  );
   assert.equal(reveals[0].picks.length, 3, "whole league shown, incl. non-pickers");
   const smithy = reveals[0].picks.find((p) => p.nick === "Smithy");
   assert.equal(smithy.pts, 3);
@@ -138,6 +143,18 @@ test("buildReveals hides open windows, reveals shut ones, scores when FT", () =>
   const wrighty = reveals[0].picks.find((p) => p.nick === "Wrighty");
   assert.equal(wrighty.asleep, true, "no pick → asleep");
   assert.equal(wrighty.pts, 0);
+});
+
+test("buildReveals before settlement: shut window, no score yet → settled:false, no result", () => {
+  const members = [{ uid: "a", nick: "A" }];
+  const koMs = Date.parse("2026-06-17T20:00:00+01:00");
+  const matches = [{ id: 5, team1: "X", team2: "Y", ukKickoff: "2026-06-17T20:00:00+01:00", status: "LIVE", score1: null, score2: null }];
+  const picks = { 5: { a: { s1: 1, s2: 0, ts: koMs - 1000 } } };
+  const [rv] = buildReveals(members, matches, picks, koMs + 30 * 60 * 1000); // after KO, before FT
+  assert.equal(rv.settled, false);
+  assert.equal(rv.score1, null);
+  assert.equal(rv.score2, null);
+  assert.equal(rv.match, "X v Y");
 });
 
 test("makeCode — 6 chars, unambiguous alphabet, deterministic given bytes", () => {
