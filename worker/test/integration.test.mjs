@@ -395,6 +395,22 @@ test("window slams at KO: picks rejected after kick-off, on FT matches, and when
   assert.equal(ok.status, 200);
 });
 
+test("new member appears in standings with 0 pts the moment they join (cache busted)", async () => {
+  const env = makeEnv();
+  const code = (await call(env, "POST", "/league", { body: { uid: "adam", nickname: "Adam", name: "X" } })).json.code;
+  // warm the standings cache with just the creator
+  const before = (await call(env, "GET", `/table?code=${code}`)).json.table;
+  assert.equal(before.length, 1);
+  // a brand-new member joins and has never picked
+  await call(env, "POST", "/join", { body: { uid: "marcela", nickname: "Marcela", code } });
+  const after = (await call(env, "GET", `/table?code=${code}`)).json.table;
+  assert.equal(after.length, 2, "new member shows up immediately, not after the next settle");
+  const row = after.find((r) => r.uid === "marcela");
+  assert.deepEqual({ pts: row.pts, exact: row.exact, streak: row.streak }, { pts: 0, exact: 0, streak: "—" });
+  // a zero-pick member sorts below anyone with points (here both 0 → alphabetical)
+  assert.deepEqual(after.map((r) => r.nick), ["Adam", "Marcela"]);
+});
+
 test("validation: bad scores and missing fields are rejected", async () => {
   const env = makeEnv();
   await call(env, "POST", "/league", { body: { uid: "adam", nickname: "Adam" } });

@@ -187,6 +187,7 @@ async function joinLeague(env, body) {
   if (body.nickname) league.names[uid] = normNick(body.nickname); // your name in THIS league
   await kvPut(env, `league:${code}`, league);
   await kvPut(env, `user:${uid}`, user);
+  await bustTables(env, [code]); // recompute so the new member shows immediately (0 pts)
   return j({ code, name: league.name, recovery: user.code }, 200, env);
 }
 
