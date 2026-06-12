@@ -207,6 +207,42 @@ groups, bracket, England view — and in v2, value bets and availability.
 11. Nice-to-haves: kits/badges from TheSportsDB (free), stadium info sheet,
    third-place permutation explainer for Matchday 3.
 
+## Service Worker / PWA update path (RESOLVED 13 Jun 2026)
+
+The one-launch update is solved and verified live. Every deploy now reaches
+users on their next single app-open (and mid-session if the app is left open).
+
+How it works (`sw.js` + the registration block in `index.html`):
+- `sw.js` bumps `VERSION` per deploy → new shell/runtime caches.
+- **install precaches with `cache:"reload"`** — this was the missing piece.
+  Without it, `cache.add()` pulled `index.html` from the browser HTTP cache, so
+  a new SW version cached the STALE page and "updates" silently carried old
+  content even though the SW version bumped. `cache:"reload"` forces a network
+  fetch so the new shell holds the FRESH page.
+- install does NOT call `skipWaiting()`. Instead the page postMessages
+  `{type:"SKIP_WAITING"}` once its `controllerchange` listener is wired
+  (gated by an `updateTriggered` flag) — this makes the takeover race-free
+  rather than letting the browser's eager on-navigation activation beat the
+  page's listener.
+- `activate` deletes old-version caches then `clients.claim()`.
+- page registers with `updateViaCache:"none"`, applies the update on
+  `updatefound→statechange==="installed"` (and on an existing `reg.waiting`),
+  re-checks via `reg.update()` on visibilitychange + a 30-min interval, and
+  reloads once on `controllerchange`. That single reload is BOTH the one-launch
+  update and the "new SW took over mid-session → quietly re-render" behaviour.
+
+Verified with headless Chrome (persistent profile): install on vN, deploy vN+1,
+a single page relaunch lands on vN+1 within ~3s (precache → activate → reload).
+The `window.__BUILD` string in index.html is a deliberate build marker (lets you
+confirm a deploy actually reached a device); keep bumping it with `VERSION`.
+
+Earlier dead-ends (don't repeat): `hadController` guard (controller null on
+uncontrolled first nav), async `getRegistration()` guard (resolved after
+controllerchange fired), `localStorage` sync guard (doesn't flush on abrupt
+kill), and unconditional `skipWaiting` (browser activated before the page
+listener attached). Root cause of all the "SW bumped but content stale" symptoms
+was the stale precache, not the reload timing.
+
 ## Constraints — do not break these
 
 - £0 hard costs. No paid APIs, no servers. Static hosting + GitHub Actions only.
@@ -224,3 +260,9 @@ groups, bracket, England view — and in v2, value bets and availability.
   final group matchday). Replace with odds-tightness once Odds API is wired in.
 - Standings tiebreakers implement pts/GD/GF only; FIFA's full rules add
   head-to-head, fair play and drawing of lots — fine for v1, note in v2.
+- BALLDONTLIE FIFA results are wired but UNVERIFIED: Adam hasn't created the
+  key yet. `build.py:fetch_balldontlie_results` is key-gated (env
+  `BALLDONTLIE_KEY`, base overridable via `BALLDONTLIE_BASE`); the exact
+  endpoint path and score field mapping need confirming against a live key
+  before trusting it as primary. Until then Wikipedia fallback + openfootball
+  cover results.
