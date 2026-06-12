@@ -478,9 +478,9 @@ async function joinByCode(code){
 // Picks are open any time before KO (no more KO−60 gate), once both teams are real.
 const realTeams = m => !/[\d/]/.test(m.team1) && !/[\d/]/.test(m.team2);
 const windowState = m => {
-  if (m.status !== "UPCOMING") return "done";
+  if (m.status !== "UPCOMING" || m.score1 != null) return "done";   // finished or already has a result
   if (!realTeams(m)) return "na";                          // knockout placeholders — no picker yet
-  return new Date(m.ukKickoff) > new Date() ? "open" : "done";
+  return new Date(m.ukKickoff) > new Date() ? "open" : "done";       // server re-checks & fails closed on lock-in
 };
 
 function windowWidget(m){
@@ -538,6 +538,7 @@ function viewLeague(){
         <span class="pc">${r.pts}</span></div>`;
       }).join("")}
     </div>
+    <button class="sharecard" data-sharetable style="margin:12px 14px 0;width:calc(100% - 28px)">📤 Share table to the group chat</button>
     ${adminMerge}
     ${L.reveals.map((rv,ri)=>`<div class="gtable"><h3>🪟 REVEAL — ${rv.match}</h3>
       <div class="reveal" style="padding:12px 14px">
@@ -680,6 +681,55 @@ async function shareCard(ri){
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download="reveal.png"; a.click();
 }
+function wrapTextY(x,t,a,b,maxW,lh){const words=t.split(" ");let line="",yy=b;
+  for(const w of words){const test=line?line+" "+w:w;
+    if(x.measureText(test).width>maxW && line){x.fillText(line,a,yy);line=w;yy+=lh;}else line=test;}
+  x.fillText(line,a,yy); return yy;}
+// Shareable STANDINGS card — same look as the reveal cards. Shows only the
+// table (rank/name/points/exacts/streak) — never anyone's picks (privacy).
+async function tableCard(L){
+  const W=1080,H=1350, c=document.createElement("canvas"); c.width=W; c.height=H;
+  const x=c.getContext("2d");
+  const g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,"#10141F"); g.addColorStop(1,"#0B0D14");
+  x.fillStyle=g; x.fillRect(0,0,W,H);
+  x.fillStyle="#1A2032"; for(let i=0;i<W;i+=72){ x.fillRect(i,0,1,H); }   // faint pitch lines
+  x.fillStyle="#FFD230"; x.font="900 50px -apple-system,Archivo,sans-serif"; x.fillText("🏆 LEAGUE TABLE",60,116);
+  x.fillStyle="#EEF1F7"; x.font="800 60px -apple-system,sans-serif";
+  const ny=wrapTextY(x, L.name, 60, 196, W-120, 70);
+  const stamp=new Date(DATA.updated||Date.now()).toLocaleDateString("en-GB",{day:"numeric",month:"long"});
+  x.fillStyle="#8A93A8"; x.font="600 32px -apple-system,sans-serif"; x.fillText("Standings · "+stamp, 60, ny+44);
+  const rows=L.table||[], top=ny+90, rowH=Math.max(70,Math.min(116,(H-top-170)/Math.max(rows.length,1)));
+  let y=top;
+  rows.forEach((r,i)=>{
+    const t3=i<3, medal=i===0?"🥇":i===1?"🥈":i===2?"🥉":null, bh=rowH-12;
+    x.fillStyle=t3?"#16321F":"#161B2A"; rRect(x,60,y,W-120,bh,16); x.fill();
+    x.strokeStyle=t3?"#39D98A":"#242C42"; x.lineWidth=t3?3:2; rRect(x,60,y,W-120,bh,16); x.stroke();
+    const mid=y+bh/2;
+    x.textAlign="center"; x.fillStyle=t3?"#FFD230":"#8A93A8"; x.font="900 40px -apple-system,Archivo,sans-serif";
+    x.fillText(medal||String(i+1), 122, mid+14);
+    x.textAlign="left"; x.fillStyle="#EEF1F7"; x.font="800 40px -apple-system,sans-serif"; x.fillText(r.nick, 200, mid-2);
+    x.fillStyle="#8A93A8"; x.font="600 26px -apple-system,sans-serif"; x.fillText(`${r.exact} exact · ${r.streak}`, 200, mid+32);
+    x.textAlign="right"; x.fillStyle=t3?"#39D98A":"#EEF1F7"; x.font="900 52px -apple-system,Archivo,sans-serif"; x.fillText(String(r.pts), W-100, mid+8);
+    x.fillStyle="#8A93A8"; x.font="600 24px -apple-system,sans-serif"; x.fillText("pts", W-100, mid+36);
+    x.textAlign="left"; y+=rowH;
+  });
+  x.fillStyle="#242C42"; x.fillRect(60,H-150,W-120,2);
+  x.textAlign="left"; x.fillStyle="#8A93A8"; x.font="700 30px -apple-system,sans-serif"; x.fillText("🎯 exact = 3 · result = 1 · join with code "+L.code, 60, H-92);
+  x.textAlign="right"; x.fillStyle="#FFD230"; x.font="900 36px -apple-system,Archivo,sans-serif"; x.fillText("KICKOFF ORACLE", W-60, H-92); x.textAlign="left";
+  return new Promise(res=>c.toBlob(res,"image/png"));
+}
+async function shareTable(){
+  const L=LEAGUE; if(!L) return;
+  const blob=await tableCard(L);
+  const file=new File([blob],"league-table.png",{type:"image/png"});
+  const link=location.origin+location.pathname+"?league="+L.code;
+  const text=`🏆 ${L.name} — World Cup predictor league table. Tap to join and get your picks in: ${link}`;
+  if (navigator.canShare && navigator.canShare({files:[file]})){
+    try{ await navigator.share({files:[file], text, title:L.name}); return; }catch(e){}
+  }
+  if (navigator.share){ try{ await navigator.share({text, title:L.name}); }catch(e){} }
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="league-table.png"; a.click();
+}
 
 /* ---------- render & wire-up ---------- */
 function render(){
@@ -710,7 +760,8 @@ document.querySelector("nav").addEventListener("click",async e=>{
 });
 document.addEventListener("click",async e=>{
   const p = e.target.closest(".pill[data-team]"); if(p){ teamFilter=p.dataset.team; render(); return; }
-  const sc = e.target.closest(".sharecard"); if(sc){ shareCard(+sc.dataset.card); return; }
+  if (e.target.closest("[data-sharetable]")){ shareTable(); return; }
+  const sc = e.target.closest(".sharecard[data-card]"); if(sc){ shareCard(+sc.dataset.card); return; }
   const lg = e.target.closest("[data-lg]");
   if (lg){
     if (lg.dataset.lg==="join"){
