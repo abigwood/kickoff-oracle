@@ -1,16 +1,16 @@
 name: Refresh match data
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"    # every 5 min — tables update fast after full-time
-                             # (GitHub may delay/coalesce scheduled runs under load)
-  workflow_dispatch:          # manual run button
+  # Driven every 5 min by the Cloudflare cron (reliable) via the API, plus the
+  # manual run button. The flaky GitHub `schedule:` trigger was removed — it
+  # added a second, racing run each tick for no benefit.
+  workflow_dispatch:
 
 permissions:
   contents: write
 
-# Cloudflare cron drives this every 5 min — never let two runs overlap and race
-# on the data push (queue the next instead).
+# Belt-and-braces: never let two runs overlap (the commit step is also race-proof
+# on its own, below).
 concurrency:
   group: refresh-data
   cancel-in-progress: false
@@ -23,19 +23,43 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      # Genuine build problems must fail loudly here → exactly one email.
       - name: Build data
         env:
           WINDOW_API: https://kickoff-oracle-window.abigwood.workers.dev
           SETTLE_SECRET: ${{ secrets.SETTLE_SECRET }}
         run: |
-          python3 find_highlights.py || true
-          python3 build.py
-      - name: Commit if changed
+          python3 find_highlights.py || true   # highlights are non-critical
+          python3 build.py                      # a real build error fails the run
+
+      # Race-proof commit: the freshly-generated data ALWAYS wins. Instead of
+      # merging/rebasing the generated files (which conflict every time — they
+      # carry per-run sims + timestamps), we hard-reset to the latest origin and
+      # re-lay our fresh files on top, then push. If another run pushed in the
+      # meantime the push is retried from a fresh sync. A push that keeps racing
+      # is a WARNING, not a failure — the next 5-min run carries the data — so a
+      # transient race never emails. (Build failures above still fail loudly.)
+      - name: Commit data (fresh data always wins)
         run: |
           git config user.name "wc26-bot"
           git config user.email "actions@github.com"
-          git add data/
-          if git diff --cached --quiet; then echo "no data change"; exit 0; fi
-          git commit -m "data refresh $(date -u +'%Y-%m-%d %H:%M')"
-          git pull --rebase origin main || true   # tolerate concurrent refresh pushes
-          git push
+          tmp=$(mktemp -d)
+          for f in matches.json matches.js highlights.json; do
+            [ -f "data/$f" ] && cp "data/$f" "$tmp/$f"
+          done
+          for attempt in 1 2 3 4 5; do
+            git fetch -q origin main
+            git reset -q --hard origin/main          # clean slate at latest remote — no merge, no conflict
+            for f in matches.json matches.js highlights.json; do
+              [ -f "$tmp/$f" ] && cp "$tmp/$f" "data/$f"
+            done
+            git add data/
+            if git diff --cached --quiet; then echo "no data change — nothing to push"; exit 0; fi
+            git commit -q -m "data refresh $(date -u +'%Y-%m-%d %H:%M')"
+            if git push -q origin HEAD:main; then echo "pushed on attempt $attempt"; exit 0; fi
+            echo "push raced with another run; re-syncing and retrying ($attempt)…"
+            sleep $((attempt * 3))
+          done
+          echo "::warning::data push kept racing after 5 attempts; the next run will carry it"
+          exit 0
