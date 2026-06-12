@@ -246,7 +246,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script>
 "use strict";
 let DATA = window.WC_DATA || {matches:[],groups:{}};
-let tab = "today", teamFilter = "All", tickTimer = null;
+let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
 const MARQUEE = new Set(["England","Scotland","Brazil","Argentina","France","Spain","Germany","Portugal","Netherlands","Mexico","USA"]);
 
@@ -752,7 +752,7 @@ function render(){
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
   if (DATA.updated) $("#updated").textContent = "Updated " +
     new Date(DATA.updated).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
-  if (!navigator.onLine && $("#updated")){ $("#updated").textContent = "⚠️ Offline · last saved data"; $("#updated").style.color = "var(--live)"; }
+  if ((isOffline || !navigator.onLine) && $("#updated")){ $("#updated").textContent = "⚠️ Offline · last saved data"; $("#updated").style.color = "var(--live)"; }
   else if ($("#updated")) $("#updated").style.color = "";
   clearInterval(tickTimer);
   const cd = $("#cd");
@@ -909,9 +909,18 @@ document.addEventListener("change",e=>{
   if(e.target.id==="teamsel" && e.target.value){ teamFilter=e.target.value; render(); }
 });
 
-/* try to refresh from JSON when hosted (falls back silently on file://) */
-fetch("data/matches.json",{cache:"no-store"}).then(r=>r.json())
-  .then(d=>{ DATA=d; render(); }).catch(()=>{});
+/* refresh data when hosted. Detects offline two ways: a thrown fetch, or the
+   service worker serving its cached fallback (tagged X-From-Cache). */
+async function loadData(){
+  try {
+    const r = await fetch("data/matches.json",{cache:"no-store"});
+    isOffline = r.headers.get("X-From-Cache")==="1";   // SW gave us last saved data
+    const d = await r.json();
+    if (d && d.matches) DATA = d;
+  } catch { isOffline = true; }   // total network failure → keep last data
+  return DATA;
+}
+loadData().then(render);
 render();
 
 /* THE WINDOW: load the player's leagues, and honour ?league=CODE invite links */
@@ -933,7 +942,7 @@ if (API){
 // league table + reveals on League (so tables update right after full-time).
 setInterval(async ()=>{
   if (document.hidden) return;                       // don't poll in the background
-  try { DATA = await (await fetch("data/matches.json",{cache:"no-store"})).json(); } catch {}
+  await loadData();
   if (tab==="league" && API){ try { await loadLeagues(); } catch {} render(); }
   else if (tab==="today") render();
 }, 60000);
@@ -942,9 +951,8 @@ setInterval(async ()=>{
 if ("serviceWorker" in navigator)
   addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
 // reflect connectivity + pull fresh the moment we're back online
-addEventListener("offline", render);
-addEventListener("online", () => { fetch("data/matches.json",{cache:"no-store"}).then(r=>r.json())
-  .then(d=>{ DATA=d; if(tab==="league"&&API){ loadLeagues().then(render); } else render(); }).catch(render); });
+addEventListener("offline", ()=>{ isOffline=true; render(); });
+addEventListener("online", async ()=>{ await loadData(); if(tab==="league"&&API){ await loadLeagues(); } render(); });
 </script>
 </body>
 </html>
