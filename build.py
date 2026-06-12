@@ -14,6 +14,7 @@ import json
 import os
 import re
 import sys
+import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -403,6 +404,153 @@ RESULTS_OVERRIDE = {
     "Mexico|South Africa|2026-06-11": [2, 0],
 }
 
+# ---------------------------------------------------------------------------
+# MULTI-SOURCE RESULTS — so we never wait on openfootball.
+# Precedence per match: openfootball (authoritative) → BALLDONTLIE (primary live,
+# key-gated) → Wikipedia (free fallback) → RESULTS_OVERRIDE (manual). The last
+# three only fill once a match is over (KO+2h) and openfootball still has no score.
+# ---------------------------------------------------------------------------
+SRC_UA = "KickOffOracle-Build/1.0 (https://abigwood.github.io/kickoff-oracle/; contact adambigwood@me.com)"
+
+# FIFA 3-letter codes used in Wikipedia match templates → openfootball team names.
+FIFA_CODE = {
+    "MEX": "Mexico", "RSA": "South Africa", "KOR": "South Korea", "CZE": "Czech Republic",
+    "CAN": "Canada", "BIH": "Bosnia & Herzegovina", "QAT": "Qatar", "SUI": "Switzerland",
+    "BRA": "Brazil", "MAR": "Morocco", "HAI": "Haiti", "SCO": "Scotland",
+    "USA": "USA", "PAR": "Paraguay", "AUS": "Australia", "TUR": "Turkey",
+    "GER": "Germany", "CUW": "Curaçao", "CIV": "Ivory Coast", "ECU": "Ecuador",
+    "NED": "Netherlands", "JPN": "Japan", "SWE": "Sweden", "TUN": "Tunisia",
+    "BEL": "Belgium", "EGY": "Egypt", "IRN": "Iran", "NZL": "New Zealand",
+    "ESP": "Spain", "CPV": "Cape Verde", "KSA": "Saudi Arabia", "URU": "Uruguay",
+    "FRA": "France", "SEN": "Senegal", "IRQ": "Iraq", "NOR": "Norway",
+    "ARG": "Argentina", "ALG": "Algeria", "AUT": "Austria", "JOR": "Jordan",
+    "POR": "Portugal", "COD": "DR Congo", "UZB": "Uzbekistan", "COL": "Colombia",
+    "ENG": "England", "CRO": "Croatia", "GHA": "Ghana", "PAN": "Panama",
+}
+# normalise team names so sources with different spellings still match
+NAME_ALIAS = {
+    "czechia": "czech republic", "korea republic": "south korea", "ir iran": "iran",
+    "united states": "usa", "côte d'ivoire": "ivory coast", "cote d'ivoire": "ivory coast",
+    "cabo verde": "cape verde", "bosnia and herzegovina": "bosnia & herzegovina",
+    "türkiye": "turkey", "turkiye": "turkey", "congo dr": "dr congo", "curacao": "curaçao",
+}
+
+
+def _canon(name):
+    n = re.sub(r"\{\{[^{}]*\}\}", "", str(name))
+    n = re.sub(r"\[\[(?:[^\]|]*\|)?([^\]]*)\]\]", r"\1", n)
+    n = n.strip().lower()
+    return NAME_ALIAS.get(n, n)
+
+
+def _wiki_page(page):
+    url = ("https://en.wikipedia.org/w/api.php?action=parse&page="
+           + urllib.parse.quote(page) + "&prop=wikitext&format=json&formatversion=2")
+    req = urllib.request.Request(url, headers={"User-Agent": SRC_UA})
+    with urllib.request.urlopen(req, timeout=25) as r:
+        return json.loads(r.read())["parse"]["wikitext"]
+
+
+def _balanced(wt, start):
+    depth, k = 0, start
+    while k < len(wt):
+        if wt[k:k + 2] == "{{":
+            depth += 1; k += 2
+        elif wt[k:k + 2] == "}}":
+            depth -= 1; k += 2
+            if depth == 0:
+                return wt[start:k]
+        else:
+            k += 1
+    return wt[start:k]
+
+
+def _parse_football_boxes(wt):
+    """Pull finished match scores from a 2026 WC Wikipedia page. Results use
+    {{#invoke:football box|main ... |team1={{#invoke:flag|fb-rt|MEX}} |score=
+    {{score link|...|2–0}} |team2={{#invoke:flag|fb|RSA}} ...}}."""
+    out = {}
+    for mm in re.finditer(r"\{\{\s*#invoke:football box\s*\|\s*main", wt):
+        box = _balanced(wt, mm.start())
+        t1 = re.search(r"\|\s*team1\s*=([^\n]*)", box)
+        t2 = re.search(r"\|\s*team2\s*=([^\n]*)", box)
+        sc = re.search(r"\|\s*score\s*=([^\n]*)", box)
+        if not (t1 and t2 and sc):
+            continue
+        c1 = re.search(r"[A-Z]{3}", t1.group(1))
+        c2 = re.search(r"[A-Z]{3}", t2.group(1))
+        nums = re.findall(r"(\d+)\s*[–\-−]\s*(\d+)", sc.group(1))  # last pair = the score
+        if not (c1 and c2 and nums):
+            continue
+        n1, n2 = FIFA_CODE.get(c1.group(0)), FIFA_CODE.get(c2.group(0))
+        if not (n1 and n2):
+            continue
+        out[(_canon(n1), _canon(n2))] = (int(nums[-1][0]), int(nums[-1][1]))
+    return out
+
+
+def fetch_wikipedia_results(groups, knockout):
+    """Free fallback — parse scores from the per-group / knockout Wikipedia pages.
+    Only the pages we actually need are fetched (Wikipedia etiquette)."""
+    pages = [f"2026 FIFA World Cup Group {g}" for g in sorted(groups)]
+    if knockout:
+        pages.append("2026 FIFA World Cup knockout stage")
+    out = {}
+    for p in pages:
+        try:
+            out.update(_parse_football_boxes(_wiki_page(p)))
+        except Exception as e:
+            print(f"wikipedia source skipped ({p}): {e}")
+    if out:
+        print(f"wikipedia: {len(out)} results from {len(pages)} page(s)")
+    return out
+
+
+def fetch_balldontlie_results():
+    """PRIMARY live source. No-op until BALLDONTLIE_KEY is set, then activates
+    automatically. Fully defensive — any error returns {} so the build never
+    breaks. The endpoint/field names may need a tweak once the real key reveals
+    the live response shape (override BALLDONTLIE_BASE if so)."""
+    key = os.environ.get("BALLDONTLIE_KEY")
+    if not key:
+        return {}
+    base = os.environ.get("BALLDONTLIE_BASE") or "https://api.balldontlie.io/fifa/v1"
+    out = {}
+    try:
+        url = base.rstrip("/") + "/games?" + urllib.parse.urlencode({"seasons[]": 2026, "per_page": 100})
+        req = urllib.request.Request(url, headers={"Authorization": key, "User-Agent": SRC_UA})
+        data = json.loads(urllib.request.urlopen(req, timeout=20).read())
+        for g in data.get("data", []):
+            status = str(g.get("status", "")).lower()
+            if not ("final" in status or "ft" in status or "finished" in status):
+                continue  # only completed games count
+            ht, at = g.get("home_team") or {}, g.get("away_team") or {}
+            hn = ht.get("name") or ht.get("full_name") or g.get("home_team_name")
+            an = at.get("name") or at.get("full_name") or g.get("away_team_name")
+            hs = g.get("home_team_score", g.get("home_score"))
+            as_ = g.get("away_team_score", g.get("away_score"))
+            if hn and an and hs is not None and as_ is not None:
+                out[(_canon(hn), _canon(an))] = (int(hs), int(as_))
+        if out:
+            print(f"balldontlie: {len(out)} finished games (primary source live)")
+    except Exception as e:
+        print(f"balldontlie skipped: {e}")
+    return out
+
+
+def fallback_score(m, ko, now, bdl, wiki):
+    """openfootball had no score for this match. Fill from other sources once the
+    match is over (KO+2h): BALLDONTLIE first, then Wikipedia, then manual override."""
+    if now >= ko + timedelta(hours=2):
+        k = (_canon(m["team1"]), _canon(m["team2"]))
+        kr = (k[1], k[0])
+        for src in (bdl, wiki):
+            if k in src:
+                return list(src[k])
+            if kr in src:
+                return [src[kr][1], src[kr][0]]  # teams listed the other way round
+    return RESULTS_OVERRIDE.get(f'{m["team1"]}|{m["team2"]}|{ko.strftime("%Y-%m-%d")}')
+
 
 def main():
     try:
@@ -414,6 +562,33 @@ def main():
 
     matches, standings = [], {}
     now = datetime.now(UK)
+
+    # Pre-scan: which matches are over (KO+2h) but still have no openfootball
+    # score? Fetch fallback sources only for the groups/stages that need them.
+    need_groups, need_knockout = set(), False
+    for m in feed["matches"]:
+        fs1, fs2 = m.get("score1"), m.get("score2")
+        if fs1 is None and isinstance(m.get("score"), dict):
+            ft = m["score"].get("ft") or []
+            if len(ft) == 2:
+                fs1, fs2 = ft
+        if fs1 is not None and fs2 is not None:
+            continue
+        try:
+            ko0 = uk_datetime(m["date"], m["time"])
+        except Exception:
+            continue
+        if now < ko0 + timedelta(hours=2):
+            continue
+        g = (m.get("group", "") or "").replace("Group ", "").strip()
+        if len(g) == 1 and g.isalpha():
+            need_groups.add(g.upper())
+        else:
+            need_knockout = True
+    bdl_results, wiki_results = {}, {}
+    if need_groups or need_knockout:
+        bdl_results = fetch_balldontlie_results()                 # primary (key-gated)
+        wiki_results = fetch_wikipedia_results(need_groups, need_knockout)  # fallback
 
     for i, m in enumerate(feed["matches"]):
         ko = uk_datetime(m["date"], m["time"])
@@ -429,11 +604,12 @@ def main():
             ft = m["score"].get("ft") or []
             if len(ft) == 2:
                 s1, s2 = ft
-        # manual override while the feed is slow (feed wins once it has the score)
+        # openfootball is authoritative; if it has no score, fill from other
+        # sources (BALLDONTLIE → Wikipedia → manual override) once the match is over.
         if s1 is None or s2 is None:
-            ovr = RESULTS_OVERRIDE.get(f'{m["team1"]}|{m["team2"]}|{ko.strftime("%Y-%m-%d")}')
-            if ovr:
-                s1, s2 = ovr
+            fb = fallback_score(m, ko, now, bdl_results, wiki_results)
+            if fb:
+                s1, s2 = fb
         played = s1 is not None and s2 is not None
         live = (not played) and ko <= now <= ko + timedelta(hours=2, minutes=15)
 

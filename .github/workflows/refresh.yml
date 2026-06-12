@@ -29,6 +29,12 @@ jobs:
         env:
           WINDOW_API: https://kickoff-oracle-window.abigwood.workers.dev
           SETTLE_SECRET: ${{ secrets.SETTLE_SECRET }}
+          # Primary live-results source — activates automatically once this
+          # Actions secret exists; empty/unset → build.py just uses openfootball +
+          # the Wikipedia fallback. BALLDONTLIE_BASE is optional (override the
+          # endpoint if the live API path differs).
+          BALLDONTLIE_KEY: ${{ secrets.BALLDONTLIE_KEY }}
+          BALLDONTLIE_BASE: ${{ secrets.BALLDONTLIE_BASE }}
         run: |
           python3 find_highlights.py || true   # highlights are non-critical
           python3 build.py                      # a real build error fails the run
