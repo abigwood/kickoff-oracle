@@ -120,3 +120,56 @@ export function makeCode(randBytes) {
 export function normNick(nick) {
   return String(nick || "").trim().slice(0, 24) || "Anon";
 }
+
+// Memorable recovery code: three words from a curated list, e.g. "otter-mango-comet".
+// ~110^3 ≈ 1.3M combos — plenty for a mates' app, and easy to read out / save.
+const RECOVERY_WORDS = (
+  "amber apple arrow atlas bacon badge banjo beach bench berry bison blaze bloom brave bread brick brook " +
+  "cabin candy cedar chess cider cloud clover comet coral crane cumin daisy delta diver dough eagle ember " +
+  "fable falcon fern flint forge frost glade globe grape grove hazel honey ivory jelly jolly koala lemon " +
+  "lilac llama lotus lunar mango maple marble meadow melon mint moss mocha noble ocean olive onion otter " +
+  "panda peach pearl pecan piano pilot pixel plum poppy quartz quill quokka raven reef rhino river robin " +
+  "rumba sable salsa sigma sloth solar spark spice stork sugar sunny swift tango tiger toast topaz tulip " +
+  "umbra unity vapor vigor viola vivid walnut wheat willow zebra zesty"
+).split(/\s+/).filter(Boolean);
+
+export function makeRecovery(randBytes) {
+  const b = randBytes(3);
+  return [0, 1, 2].map((i) => RECOVERY_WORDS[b[i] % RECOVERY_WORDS.length]).join("-");
+}
+
+// Normalise a recovery code for comparison/storage: lowercase, words joined by single dashes.
+export function normRecovery(code) {
+  return String(code || "").toLowerCase().trim().replace(/[^a-z]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+// Plan an identity merge: which of dropUid's picks should move to keepUid.
+// Only fills GAPS — never overwrites a pick keepUid already made.
+// picksByMatch: { matchId: { uid: pick } }. Returns [{matchId, pick}].
+export function planMerge(picksByMatch, keepUid, dropUid) {
+  const moves = [];
+  for (const [matchId, byUid] of Object.entries(picksByMatch || {})) {
+    if (byUid && byUid[dropUid] && !byUid[keepUid]) moves.push({ matchId, pick: byUid[dropUid] });
+  }
+  return moves;
+}
+
+// Find picks held by uids that belong to NO league (orphans). Flags likely
+// duplicates by matching the orphan's nickname to a real member's name.
+//   picksByMatch : { matchId: { uid: pick } }
+//   memberUids   : Set of all uids that are members of some league
+//   nickOf       : (uid) => nickname
+//   memberNames  : lowercased Set of all member display names
+export function findOrphans(picksByMatch, memberUids, nickOf, memberNames) {
+  const byUid = {}; // uid -> {nick, matches:[]}
+  for (const [matchId, picks] of Object.entries(picksByMatch || {})) {
+    for (const uid of Object.keys(picks || {})) {
+      if (memberUids.has(uid)) continue;
+      (byUid[uid] = byUid[uid] || { uid, nick: nickOf(uid), matches: [] }).matches.push(matchId);
+    }
+  }
+  return Object.values(byUid).map((o) => ({
+    ...o,
+    looksLikeMember: memberNames.has((o.nick || "").toLowerCase()),
+  }));
+}

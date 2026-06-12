@@ -207,6 +207,10 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
   border:1px solid var(--bbc);border-radius:5px;padding:1px 5px;vertical-align:middle}
 .youtag{font-size:.56rem;font-weight:800;color:var(--faint);border:1px solid var(--line);
   border-radius:5px;padding:1px 5px;margin-left:4px;vertical-align:middle}
+.rcard{background:var(--raise);border:1px solid var(--bbc);border-radius:10px;padding:11px 13px;
+  margin-top:12px;font-size:.74rem;line-height:1.5}
+.rcode{font-family:"Archivo";font-weight:800;color:var(--bbc);letter-spacing:.02em;
+  font-size:.92rem;-webkit-user-select:all;user-select:all}
 .demo-ribbon{background:var(--raise);border:1px dashed var(--itv);border-radius:10px;color:var(--itv);
   font-size:.7rem;font-weight:700;padding:9px 12px;margin-bottom:14px;line-height:1.5}
 .sharecard{background:var(--itv);color:#06281F;border:0;border-radius:9px;
@@ -413,21 +417,57 @@ const mapReveal = rv => ({ match: rv.match, picks: rv.picks.map(p => ({
   hit: !!p.hit, exact: !!p.exact, asleep: !!p.asleep,
   pts: !p.settled ? "" : (p.exact ? "+3 🎯" : p.hit ? "+1" : "0"),
 })) });
+let myCode = null;                 // this device's recovery code (3 words)
 async function loadLeagues(){
   if (DEMO) return;
+  // /me gives this device's recovery code + the server's authoritative league list
+  const me = await api("/me?uid="+encodeURIComponent(uid())).catch(()=>({status:0}));
+  if (me.status===200){
+    myCode = me.j.recovery;
+    if (me.j.nickname && !myNick()) setNick(me.j.nickname);
+    if (Array.isArray(me.j.leagues)) setLeagueCodes(me.j.leagues);
+  }
   const codes = myLeagueCodes();
   const states = await Promise.all(codes.map(c => api("/state?code="+encodeURIComponent(c)).catch(()=>({status:0}))));
   LEAGUES = states.filter(s => s.status===200).map(s => ({
-    code: s.j.code, name: s.j.name, owner: s.j.owner, table: s.j.table || [], reveals: (s.j.reveals||[]).map(mapReveal),
+    code: s.j.code, name: s.j.name, owner: s.j.owner, table: s.j.table || [], reveals: (s.j.reveals||[]).map(mapReveal), orphans: [],
   }));
-  // drop any codes the server no longer recognises
   setLeagueCodes(LEAGUES.map(l => l.code));
   if (activeLeague >= LEAGUES.length) activeLeague = 0;
+  // admin: pull the orphan-watchdog list (likely split-device duplicates) for leagues I own
+  await Promise.all(LEAGUES.filter(l => l.owner===uid()).map(async l => {
+    const o = await api(`/orphans?code=${l.code}&uid=${encodeURIComponent(uid())}`).catch(()=>({status:0}));
+    if (o.status===200) l.orphans = o.j.orphans || [];
+  }));
+}
+
+// Adopt an existing identity (RESTORE) from a recovery code — same picks/leagues on this device.
+async function restoreIdentity(){
+  const code = (prompt("Enter your recovery code (e.g. otter-mango-comet) to restore your identity on this device:")||"").trim();
+  if (!code) return;
+  const { status, j } = await api("/restore", { code });
+  if (status!==200){ alert(j.error || "That code didn't match an identity."); return; }
+  localStorage.setItem("wc_uid", j.uid);
+  if (j.nickname) setNick(j.nickname);
+  setLeagueCodes(j.leagues || []);
+  myPicks = {}; saveMyPicks();          // picks come from the server now
+  activeLeague = 0;
+  await loadLeagues(); render();
+  alert("Restored! You're back as "+(j.nickname||"your saved identity")+" with your leagues and picks.");
 }
 async function joinByCode(code){
+  code = code.trim().toUpperCase();
   let n = myNick();
   if (!n){ n = (prompt("Pick a nickname your mates will see:")||"").trim(); if(!n) return false; setNick(n); }
-  const { status, j } = await api("/join", { uid:uid(), nickname:n, code:code.trim().toUpperCase() });
+  // SMART JOIN: if someone with this name is already in the league, you're probably
+  // already a member on another device — offer restore instead of duplicating.
+  const who = await api(`/whois?code=${code}&nickname=${encodeURIComponent(n)}&uid=${encodeURIComponent(uid())}`).catch(()=>({status:0}));
+  if (who.status===200 && who.j.taken){
+    if (confirm(`Someone called "${who.j.name}" is already in this league. If that's you on another device, tap OK to RESTORE with your recovery code (keeps your picks) instead of creating a duplicate.`)){
+      await restoreIdentity(); return true;
+    }
+  }
+  const { status, j } = await api("/join", { uid:uid(), nickname:n, code });
   if (status!==200){ alert(j.error || "Couldn't join that league."); return false; }
   setLeagueCodes([...myLeagueCodes(), j.code]);
   await loadLeagues();
@@ -471,9 +511,18 @@ function viewLeague(){
     ${LEAGUES.map((lg,i)=>`<button class="pill ${i===activeLeague?"on":""}" data-lg="${i}">🏅 ${lg.name}</button>`).join("")}
     <button class="pill" data-lg="join">＋ Join / create</button>
   </div>`;
-  if (!DEMO && !L) return switcher + `<div class="demo-ribbon">You're not in a league yet. Tap <b>＋ Join / create</b> to start one (you'll get a 6-char code to share in the group chat) or enter a mate's code. You predict each match once — the pick counts in every league you're in.<br><br>🪟 Pick the score anytime before kick-off — you can change it until KO, when picks lock and reveal.</div>`;
+  if (!DEMO && !L) return switcher + `<div class="demo-ribbon">📱 <b>First time?</b> Add this to your Home Screen and always open it from that icon — then your identity stays put.<br><br>You're not in a league yet. Tap <b>＋ Join / create</b> to start one (you'll get a code to share) or enter a mate's code. You predict each match once — the pick counts in every league you're in.<br><br>🪟 Pick the score anytime before kick-off — change it until KO, when picks lock and reveal.</div>
+    <p class="note" style="margin-top:4px">Been here before on another device? <button class="lact" data-restore>🔑 Restore my identity</button></p>`;
   const me = DEMO ? null : uid();
   const iAmAdmin = !DEMO && L && L.owner === me;
+  // ADMIN: orphan-watchdog → one-tap merge of split-device duplicates
+  const adminMerge = (iAmAdmin && L.orphans && L.orphans.length) ? `<div class="gtable"><h3>⚠️ Unlinked picks</h3>
+      <div style="padding:9px 14px 0;font-size:.7rem;color:var(--dim)">Picks from a device that isn't linked to a member — usually someone who joined and picked in different places (Safari vs the home-screen app). Merge each into the matching member to claim their picks; the spare identity is then removed.</div>
+      ${L.orphans.map(o=>{
+        const m = L.table.find(r=>r.nick.toLowerCase()===(o.nick||"").toLowerCase());
+        return `<div class="scrow"><span class="nm">"${o.nick}" · ${o.matches.length} pick${o.matches.length>1?"s":""} on an unlinked device</span>
+          ${m?`<button class="lact" data-merge="${o.uid}|${m.uid}|${L.code}">Merge into ${m.nick}</button>`:`<span style="color:var(--faint);font-size:.64rem">no matching member</span>`}</div>`;
+      }).join("")}</div>` : "";
   return switcher
    + (DEMO?`<div class="demo-ribbon">DEMO MODE — sample leagues + working picker. Pick the score anytime before kick-off — you can change it until KO, when picks lock and reveal. You predict each match once; the pick counts in every league you're in.</div>`:"")
    + `<div class="gtable ltable"><h3>🏅 ${L.name}${iAmAdmin?` <button class="lact" data-rename="${L.code}" title="Rename league">✏️</button> <span class="adminbadge">ADMIN</span>`:""} · code ${L.code}</h3>
@@ -489,6 +538,7 @@ function viewLeague(){
         <span class="pc">${r.pts}</span></div>`;
       }).join("")}
     </div>
+    ${adminMerge}
     ${L.reveals.map((rv,ri)=>`<div class="gtable"><h3>🪟 REVEAL — ${rv.match}</h3>
       <div class="reveal" style="padding:12px 14px">
         ${rv.picks.map(p=>`<span class="rpick ${p.hit?"hit":""} ${p.oracle?"oracle":""}">
@@ -498,7 +548,10 @@ function viewLeague(){
       </div>`).join("")}
     <button class="invite" onclick="navigator.share?navigator.share({title:'${LEAGUE.name}',text:'Join my World Cup predictor league — pick the score anytime before kick-off. Code: ${LEAGUE.code}',url:location.origin+location.pathname+'?league=${LEAGUE.code}'}):alert('League code: ${LEAGUE.code}')">📲 Invite mates · code ${LEAGUE.code}</button>
     <p class="note" style="margin-top:12px">The rules: pick the score anytime before kick-off — you can change it until KO, when picks lock and reveal. 🎯 Exact score = 3 points. Correct result = 1 point. No pick = nothing. Highest total when the cup's lifted wins.</p>`
-   + (DEMO?"":`<p class="note" style="margin-top:10px">✏️ tap the pencil by your name to set the name you go by <i>in this league</i> (you can be someone else in another), 🚪 to leave.${iAmAdmin?" As admin you can ✏️ rename this league and ✖ remove members.":""} <button class="lact danger" data-startagain>↺ Start again</button> wipes your identity on this device and leaves every league.</p>`);
+   + (DEMO?"":`<div class="rcard">🔑 <b>Your recovery code:</b> <span class="rcode">${myCode||"…"}</span><br>
+       <span style="color:var(--dim)">Save this. Enter it on any other device (or after clearing Safari) to restore your identity, picks and leagues.</span>
+       <button class="lact" data-restore style="margin-top:6px">Restore on this device</button></div>`)
+   + (DEMO?"":`<p class="note" style="margin-top:10px">✏️ tap the pencil by your name to set the name you go by <i>in this league</i> (you can be someone else in another), 🚪 to leave.${iAmAdmin?" As admin you can ✏️ rename this league, ✖ remove members and merge unlinked picks.":""} <button class="lact danger" data-startagain>↺ Start again</button> wipes your identity on this device and leaves every league.</p>`);
 }
 
 /* ---------- views ---------- */
@@ -691,6 +744,19 @@ document.addEventListener("click",async e=>{
   // ---- THE WINDOW: self-service + admin controls (live mode) ----
   if (API && e.target.closest(".lact")){
     const L = LEAGUE;
+    if (e.target.closest("[data-restore]")){ await restoreIdentity(); return; }
+    const mg = e.target.closest("[data-merge]");
+    if (mg){
+      const [dropUid, keepUid, code] = mg.dataset.merge.split("|");
+      const lg = LEAGUES.find(l=>l.code===code) || L;
+      const keepNick = ((lg.table||[]).find(r=>r.uid===keepUid)||{}).nick || "the member";
+      if (!confirm("Merge these unlinked picks into "+keepNick+"? Their picks move onto "+keepNick+" and the spare device identity is removed. Can't be undone.")) return;
+      const { status, j } = await api("/merge", { uid:uid(), code, keepUid, dropUid });
+      if (status!==200){ alert(j.error||"Couldn't merge."); return; }
+      await loadLeagues(); render();
+      alert("Merged — moved "+(j.movedPicks||0)+" pick"+(((j.movedPicks||0)===1)?"":"s")+" onto "+keepNick+".");
+      return;
+    }
     const editnick = e.target.closest("[data-editnick]");
     if (editnick){
       const myRow = L.table.find(r=>r.uid===uid());

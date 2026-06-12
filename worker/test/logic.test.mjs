@@ -8,6 +8,10 @@ import {
   computeTable,
   buildReveals,
   makeCode,
+  makeRecovery,
+  normRecovery,
+  planMerge,
+  findOrphans,
 } from "../src/logic.js";
 
 const KO = Date.parse("2026-06-17T21:00:00+01:00"); // England v Croatia
@@ -109,4 +113,37 @@ test("makeCode — 6 chars, unambiguous alphabet, deterministic given bytes", ()
   assert.equal(code.length, 6);
   assert.match(code, /^[A-HJ-NP-Z2-9]{6}$/, "no 0/O/1/I");
   assert.equal(makeCode(() => Uint8Array.from([0, 1, 2, 3, 4, 5])), "ABCDEF");
+});
+
+test("recovery code — three readable words; normRecovery canonicalises input", () => {
+  const c = makeRecovery((n) => new Uint8Array(n).fill(0));
+  assert.match(c, /^[a-z]+-[a-z]+-[a-z]+$/, "word-word-word");
+  // user might type spaces/caps/extra dashes — all normalise to the same key
+  assert.equal(normRecovery("Otter Mango Comet"), "otter-mango-comet");
+  assert.equal(normRecovery("  OTTER--mango_comet "), "otter-mango-comet");
+});
+
+test("planMerge — moves only gaps, never overwrites the kept identity's pick", () => {
+  const picks = {
+    "picks:1": { keep: { s1: 2, s2: 0 }, drop: { s1: 1, s2: 1 } }, // keep already has one → not moved
+    "picks:2": { drop: { s1: 3, s2: 0 } },                          // only drop → moved
+    "picks:3": { other: { s1: 0, s2: 0 } },                         // neither → ignored
+  };
+  const moves = planMerge(picks, "keep", "drop");
+  assert.deepEqual(moves, [{ matchId: "picks:2", pick: { s1: 3, s2: 0 } }]);
+});
+
+test("findOrphans — flags league-less uids and marks nickname matches", () => {
+  const picks = {
+    "1": { memberA: { s1: 1, s2: 0 }, ghost: { s1: 2, s2: 2 } },
+    "2": { ghost: { s1: 0, s2: 1 }, rando: { s1: 1, s2: 1 } },
+  };
+  const memberUids = new Set(["memberA"]);
+  const nickOf = (u) => ({ ghost: "Boat", rando: "Nobody" }[u] || "?");
+  const memberNames = new Set(["boat", "woody"]); // "Boat" is a real member elsewhere
+  const orphans = findOrphans(picks, memberUids, nickOf, memberNames);
+  const ghost = orphans.find((o) => o.uid === "ghost");
+  assert.deepEqual(ghost.matches.sort(), ["1", "2"]);
+  assert.equal(ghost.looksLikeMember, true, "nickname matches a member → likely duplicate");
+  assert.equal(orphans.find((o) => o.uid === "rando").looksLikeMember, false);
 });

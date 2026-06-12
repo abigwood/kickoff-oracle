@@ -23,6 +23,10 @@ import {
   computeTable,
   buildReveals,
   makeCode,
+  makeRecovery,
+  normRecovery,
+  planMerge,
+  findOrphans,
   normNick,
 } from "./logic.js";
 
@@ -75,11 +79,27 @@ async function loadPicksByMatch(env, matchIds) {
   return Object.fromEntries(entries);
 }
 
+// A unique, unused recovery code (3 memorable words).
+async function freshRecoveryCode(env) {
+  let c;
+  for (let i = 0; i < 8; i++) {
+    c = makeRecovery(randBytes);
+    if (!(await kvGet(env, `recovery:${c}`))) return c;
+  }
+  return c;
+}
+
 // The global nickname is just a default: set it once (first time), and let
 // explicit /nick (no code) or per-league overrides change what's displayed.
+// Also mints a recovery code on first sight so any device can re-adopt this uid.
 async function ensureUser(env, uid, nickname) {
   const u = (await kvGet(env, `user:${uid}`)) || { nickname: "", leagues: [] };
   if (nickname && !u.nickname) u.nickname = normNick(nickname);
+  if (!u.code) {
+    u.code = await freshRecoveryCode(env);
+    await kvPut(env, `recovery:${u.code}`, uid); // reverse lookup for /restore
+    await kvPut(env, `user:${uid}`, u); // persist now so we don't mint duplicates
+  }
   return u;
 }
 
@@ -150,7 +170,7 @@ async function createLeague(env, body) {
   if (body.nickname) names[uid] = normNick(body.nickname); // creator's name in THIS league
   await kvPut(env, `league:${code}`, { name, created: Date.now(), owner: uid, members: [uid], names });
   await kvPut(env, `user:${uid}`, user);
-  return j({ code, name }, 200, env);
+  return j({ code, name, recovery: user.code }, 200, env);
 }
 
 async function joinLeague(env, body) {
@@ -166,7 +186,7 @@ async function joinLeague(env, body) {
   if (body.nickname) league.names[uid] = normNick(body.nickname); // your name in THIS league
   await kvPut(env, `league:${code}`, league);
   await kvPut(env, `user:${uid}`, user);
-  return j({ code, name: league.name }, 200, env);
+  return j({ code, name: league.name, recovery: user.code }, 200, env);
 }
 
 // Edit your OWN display name. With a league `code`, sets it only in that league
@@ -261,6 +281,126 @@ async function renameLeague(env, body) {
   league.name = name;
   await kvPut(env, `league:${code}`, league);
   return j({ ok: true, name }, 200, env);
+}
+
+// This device's identity: nickname, recovery code (to save), and its leagues.
+// Mints a recovery code on first call. The client shows the code in the League tab.
+async function getMe(env, url) {
+  const uid = (url.searchParams.get("uid") || "").trim();
+  if (!uid) return j({ error: "uid required" }, 400, env);
+  const u = await ensureUser(env, uid);
+  return j({ uid, nickname: u.nickname || "", recovery: u.code, leagues: u.leagues || [] }, 200, env);
+}
+
+// Adopt an existing identity from its recovery code (RESTORE). The code is the
+// secret; we return the uid so the new device becomes that same player.
+async function restore(env, body) {
+  const code = normRecovery(body.code);
+  if (!code) return j({ error: "code required" }, 400, env);
+  const uid = await kvGet(env, `recovery:${code}`);
+  if (!uid) return j({ error: "no identity for that code" }, 404, env);
+  const u = (await kvGet(env, `user:${uid}`)) || {};
+  return j({ uid, nickname: u.nickname || "", recovery: code, leagues: u.leagues || [] }, 200, env);
+}
+
+// SMART JOIN helper: is `nickname` already taken by a member of league `code`?
+// Lets the client offer "Are you [name]? Restore instead" rather than duplicating.
+async function whois(env, url) {
+  const code = (url.searchParams.get("code") || "").trim().toUpperCase();
+  const nm = normNick(url.searchParams.get("nickname")).toLowerCase();
+  const uid = (url.searchParams.get("uid") || "").trim();
+  if (!code) return j({ taken: false }, 200, env);
+  const league = await kvGet(env, `league:${code}`);
+  if (!league) return j({ taken: false }, 200, env);
+  const members = await resolveMembers(env, league);
+  const hit = members.find((m) => m.nick.toLowerCase() === nm && m.uid !== uid);
+  return j({ taken: !!hit, name: hit ? hit.nick : null }, 200, env);
+}
+
+// ADMIN MERGE: fold a duplicate/orphan identity (dropUid) into a kept member
+// (keepUid). Moves dropUid's picks onto keepUid (gaps only — never overwrites),
+// removes dropUid from this league, and cleans up its records if it's now
+// league-less. Admin-only; refuses if dropUid still belongs to other leagues.
+async function mergeMember(env, body) {
+  const uid = String(body.uid || "").trim();
+  const code = String(body.code || "").trim().toUpperCase();
+  const keepUid = String(body.keepUid || "").trim();
+  const dropUid = String(body.dropUid || "").trim();
+  if (!uid || !code || !keepUid || !dropUid) return j({ error: "uid, code, keepUid, dropUid required" }, 400, env);
+  if (keepUid === dropUid) return j({ error: "keep and drop must differ" }, 400, env);
+  const league = await kvGet(env, `league:${code}`);
+  if (!league) return j({ error: "no such league" }, 404, env);
+  if (leagueOwner(league) !== uid) return j({ error: "only the league admin can merge" }, 403, env);
+  if (!(league.members || []).includes(keepUid)) return j({ error: "keepUid must be a member of this league" }, 400, env);
+  const dropUser = await kvGet(env, `user:${dropUid}`);
+  if (dropUser && (dropUser.leagues || []).some((c) => c !== code))
+    return j({ error: "that identity is in other leagues — merge can't run from here" }, 400, env);
+
+  // load all picks, plan the moves (gaps only), then apply
+  const list = await env.KV.list({ prefix: "picks:" });
+  const picksByMatch = {};
+  for (const k of list.keys) picksByMatch[k.name] = (await kvGet(env, k.name)) || {};
+  const moves = planMerge(picksByMatch, keepUid, dropUid);
+  let touched = 0;
+  for (const key of Object.keys(picksByMatch)) {
+    const p = picksByMatch[key];
+    if (!p[dropUid]) continue;
+    if (!p[keepUid]) p[keepUid] = p[dropUid]; // gap fill
+    delete p[dropUid];
+    await kvPut(env, key, p);
+    touched++;
+  }
+  // remove drop from this league
+  league.members = (league.members || []).filter((m) => m !== dropUid);
+  if (league.names) delete league.names[dropUid];
+  await kvPut(env, `league:${code}`, league);
+  // clean up the now league-less identity
+  if (dropUser) {
+    if (dropUser.code) await env.KV.delete(`recovery:${dropUser.code}`);
+    await env.KV.delete(`user:${dropUid}`);
+  }
+  await bustTables(env, [code]);
+  return j({ ok: true, movedPicks: moves.length, matchesTouched: touched }, 200, env);
+}
+
+// ORPHAN WATCHDOG report (admin view): orphans whose nickname matches a member
+// of this league are the likely duplicates to merge.
+async function getOrphans(env, url) {
+  const code = (url.searchParams.get("code") || "").trim().toUpperCase();
+  const uid = (url.searchParams.get("uid") || "").trim();
+  if (!code) return j({ error: "code required" }, 400, env);
+  const league = await kvGet(env, `league:${code}`);
+  if (!league) return j({ error: "no such league" }, 404, env);
+  if (leagueOwner(league) !== uid) return j({ error: "admin only" }, 403, env);
+  const flagged = (await kvGet(env, "orphans:flagged")) || { items: [] };
+  const memberNames = new Set((await resolveMembers(env, league)).map((m) => m.nick.toLowerCase()));
+  const items = (flagged.items || []).filter((o) => memberNames.has((o.nick || "").toLowerCase()));
+  return j({ code, generatedAt: flagged.generatedAt || null, orphans: items }, 200, env);
+}
+
+// Recompute the orphan watchdog list and store it (called inside settle).
+async function refreshOrphans(env) {
+  const lleagues = await env.KV.list({ prefix: "league:" });
+  const memberUids = new Set();
+  const memberNames = new Set();
+  for (const k of lleagues.keys) {
+    const lg = (await kvGet(env, k.name)) || {};
+    const members = await resolveMembers(env, lg);
+    for (const m of members) {
+      memberUids.add(m.uid);
+      memberNames.add(m.nick.toLowerCase());
+    }
+  }
+  const lpicks = await env.KV.list({ prefix: "picks:" });
+  const picksByMatch = {};
+  for (const k of lpicks.keys) picksByMatch[k.name.slice("picks:".length)] = (await kvGet(env, k.name)) || {};
+  const userCache = {};
+  for (const o of Object.values(picksByMatch)) for (const uid of Object.keys(o)) {
+    if (!memberUids.has(uid) && !(uid in userCache)) userCache[uid] = ((await kvGet(env, `user:${uid}`)) || {}).nickname || "?";
+  }
+  const items = findOrphans(picksByMatch, memberUids, (uid) => userCache[uid] || "?", memberNames);
+  await kvPut(env, "orphans:flagged", { generatedAt: Date.now(), items });
+  return items.length;
 }
 
 async function makePick(env, body) {
@@ -367,7 +507,26 @@ async function settle(env, body) {
     await recomputeLeague(env, k.name.slice("league:".length));
     n++;
   }
-  return j({ ok: true, leagues: n, changed: true }, 200, env);
+  const orphans = await refreshOrphans(env); // watchdog: flag picks under league-less uids
+  return j({ ok: true, leagues: n, orphans, changed: true }, 200, env);
+}
+
+// One-time migration: mint a recovery code for every existing user that lacks
+// one, without touching nicknames, leagues or picks. Secret-gated, idempotent.
+async function migrateCodes(env, body) {
+  if (!env.SETTLE_SECRET || body.secret !== env.SETTLE_SECRET)
+    return j({ error: "forbidden" }, 403, env);
+  const list = await env.KV.list({ prefix: "user:" });
+  let assigned = 0;
+  for (const k of list.keys) {
+    const u = await kvGet(env, k.name);
+    if (!u || u.code) continue;
+    u.code = await freshRecoveryCode(env);
+    await kvPut(env, `recovery:${u.code}`, k.name.slice("user:".length));
+    await kvPut(env, k.name, u);
+    assigned++;
+  }
+  return j({ ok: true, assigned }, 200, env);
 }
 
 // Full KV export for backups (secret-gated, same secret as /settle). Paginates
@@ -426,11 +585,16 @@ export default {
         if (path === "/picks") return await getPicks(env, url);
         if (path === "/table") return await getTable(env, url);
         if (path === "/state") return await getState(env, url);
+        if (path === "/me") return await getMe(env, url);
+        if (path === "/whois") return await whois(env, url);
+        if (path === "/orphans") return await getOrphans(env, url);
       }
       if (request.method === "POST") {
         const body = await request.json().catch(() => ({}));
         if (path === "/league") return await createLeague(env, body);
         if (path === "/join") return await joinLeague(env, body);
+        if (path === "/restore") return await restore(env, body);
+        if (path === "/merge") return await mergeMember(env, body);
         if (path === "/nick") return await setNickname(env, body);
         if (path === "/leave") return await leaveLeague(env, body);
         if (path === "/kick") return await kickMember(env, body);
@@ -438,6 +602,7 @@ export default {
         if (path === "/pick") return await makePick(env, body);
         if (path === "/settle") return await settle(env, body);
         if (path === "/export") return await exportAll(env, body);
+        if (path === "/migrate-codes") return await migrateCodes(env, body);
       }
       return j({ error: "not found" }, 404, env);
     } catch (err) {

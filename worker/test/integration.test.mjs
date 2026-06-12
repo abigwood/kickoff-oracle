@@ -257,6 +257,96 @@ test("fast settle: scores from pushed results (no Pages wait) and is frugal on n
   assert.equal(t2.find((r) => r.uid === "adam").pts, 0, "2–1 pick vs 1–1 result → 0; table updated");
 });
 
+test("recovery code: minted on join, /me returns it, /restore adopts the identity on a 2nd device", async () => {
+  const env = makeEnv();
+  const created = await call(env, "POST", "/league", { body: { uid: "dev1", nickname: "Adam", name: "MATES" } });
+  const recovery = created.json.recovery;
+  assert.match(recovery, /^[a-z]+-[a-z]+-[a-z]+$/, "memorable code returned on create");
+
+  // device 1 sees its own code + leagues
+  const me = await call(env, "GET", "/me?uid=dev1");
+  assert.equal(me.json.recovery, recovery);
+  assert.deepEqual(me.json.leagues, [created.json.code]);
+
+  // device 2 (fresh) restores using the code → becomes the SAME uid, same leagues
+  const r = await call(env, "POST", "/restore", { body: { code: recovery.toUpperCase().replace(/-/g, " ") } });
+  assert.equal(r.status, 200);
+  assert.equal(r.json.uid, "dev1", "restore returns the original uid (normalised input)");
+  assert.equal(r.json.nickname, "Adam");
+  assert.deepEqual(r.json.leagues, [created.json.code]);
+
+  const bad = await call(env, "POST", "/restore", { body: { code: "no-such-code" } });
+  assert.equal(bad.status, 404);
+});
+
+test("smart join: /whois flags a nickname already used by a league member", async () => {
+  const env = makeEnv();
+  const code = (await call(env, "POST", "/league", { body: { uid: "u1", nickname: "Boat", name: "X" } })).json.code;
+  const taken = await call(env, "GET", `/whois?code=${code}&nickname=boat`);
+  assert.equal(taken.json.taken, true, "case-insensitive match");
+  assert.equal(taken.json.name, "Boat");
+  const free = await call(env, "GET", `/whois?code=${code}&nickname=Woody`);
+  assert.equal(free.json.taken, false);
+  // your own uid never flags you as a duplicate of yourself
+  const self = await call(env, "GET", `/whois?code=${code}&nickname=Boat&uid=u1`);
+  assert.equal(self.json.taken, false);
+});
+
+test("admin merge: moves orphan picks onto the kept member, admin-only, refuses cross-league", async () => {
+  const env = makeEnv();
+  const code = (await call(env, "POST", "/league", { body: { uid: "adm", nickname: "Adm", name: "L" } })).json.code;
+  await call(env, "POST", "/join", { body: { uid: "keepm", nickname: "Boat", code } });
+  // an orphan (split device) makes a pick for match 50 while in-window; not a member
+  await call(env, "POST", "/pick", { body: { uid: "ghost", matchId: 50, s1: 2, s2: 1 }, now: koMs - 30 * MIN });
+
+  // non-admin can't merge
+  const denied = await call(env, "POST", "/merge", { body: { uid: "keepm", code, keepUid: "keepm", dropUid: "ghost" } });
+  assert.equal(denied.status, 403);
+
+  // admin merges ghost → keepm (keepm had no pick, so it's filled)
+  const m = await call(env, "POST", "/merge", { body: { uid: "adm", code, keepUid: "keepm", dropUid: "ghost" } });
+  assert.equal(m.status, 200);
+  assert.equal(m.json.movedPicks, 1, "the orphan's pick moved");
+  const picks = await env.KV.get("picks:50", "json");
+  assert.deepEqual({ s1: picks.keepm.s1, s2: picks.keepm.s2 }, { s1: 2, s2: 1 }, "pick now under the kept member");
+  assert.equal(picks.ghost, undefined, "orphan pick removed");
+  assert.equal(await env.KV.get("user:ghost", "json"), null, "league-less orphan identity cleaned up");
+
+  // refuse merging a uid that belongs to another league
+  const codeB = (await call(env, "POST", "/league", { body: { uid: "elsewhere", nickname: "El", name: "B" } })).json.code;
+  await call(env, "POST", "/join", { body: { uid: "dual", nickname: "Dual", code: codeB } });
+  await call(env, "POST", "/join", { body: { uid: "dual", nickname: "Dual", code } });
+  const cross = await call(env, "POST", "/merge", { body: { uid: "adm", code, keepUid: "keepm", dropUid: "dual" } });
+  assert.equal(cross.status, 400, "won't merge an identity that's in other leagues");
+});
+
+test("merge preserves the kept member's existing pick (gap-fill only)", async () => {
+  const env = makeEnv();
+  const code = (await call(env, "POST", "/league", { body: { uid: "adm", nickname: "Adm", name: "L" } })).json.code;
+  await call(env, "POST", "/join", { body: { uid: "keepm", nickname: "Keep", code } });
+  await call(env, "POST", "/pick", { body: { uid: "keepm", matchId: 50, s1: 3, s2: 3 }, now: koMs - 30 * MIN });
+  await call(env, "POST", "/pick", { body: { uid: "ghost", matchId: 50, s1: 0, s2: 0 }, now: koMs - 30 * MIN });
+  await call(env, "POST", "/merge", { body: { uid: "adm", code, keepUid: "keepm", dropUid: "ghost" } });
+  const picks = await env.KV.get("picks:50", "json");
+  assert.deepEqual({ s1: picks.keepm.s1, s2: picks.keepm.s2 }, { s1: 3, s2: 3 }, "kept member's own pick is NOT overwritten");
+  assert.equal(picks.ghost, undefined);
+});
+
+test("migrate-codes: assigns recovery codes to legacy users, idempotently", async () => {
+  const env = makeEnv();
+  // a legacy user with no code (pre-migration shape)
+  await env.KV.put("user:legacy", JSON.stringify({ nickname: "Old", leagues: [] }));
+  const bad = await call(env, "POST", "/migrate-codes", { body: {} });
+  assert.equal(bad.status, 403, "secret required");
+  const r1 = await call(env, "POST", "/migrate-codes", { body: { secret: "s3cr3t" } });
+  assert.equal(r1.json.assigned >= 1, true);
+  const u = await env.KV.get("user:legacy", "json");
+  assert.match(u.code, /^[a-z]+-[a-z]+-[a-z]+$/, "legacy user now has a code");
+  assert.equal(await env.KV.get(`recovery:${u.code}`, "json"), "legacy", "reverse lookup created");
+  const r2 = await call(env, "POST", "/migrate-codes", { body: { secret: "s3cr3t" } });
+  assert.equal(r2.json.assigned, 0, "idempotent — nothing left to assign");
+});
+
 test("/export — secret-gated full KV backup", async () => {
   const env = makeEnv();
   const code = (await call(env, "POST", "/league", { body: { uid: "u1", nickname: "Adam", name: "MATES" } })).json.code;
