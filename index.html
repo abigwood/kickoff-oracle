@@ -245,7 +245,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v9-2026-06-12";   // build marker (bumped each shell deploy)
+window.__BUILD = "v10-2026-06-12";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -965,26 +965,29 @@ setInterval(async ()=>{
   else if (tab==="today") render();
 }, 60000);
 
-// PWA service worker + FAST-UPDATE path. sw.js skips waiting and claims clients
-// on activate, so a new version becomes active immediately; here we reload the
-// instant it takes over, so every deploy reaches users on their next single
-// app-open — and mid-session, without relaunching.
+// PWA service worker + FAST-UPDATE path. A new SW waits until WE tell it to take
+// over (so the takeover never races this page); the moment it does, we reload —
+// so every deploy reaches users on their next single app-open, and mid-session
+// without relaunching. We only trigger the takeover for an UPDATE (a current
+// controller already exists), so the genuine first install never reloads.
 if ("serviceWorker" in navigator) {
-  let refreshing = false;
-  // SYNCHRONOUS guard: did we install the SW on a previous open? Read before any
-  // controllerchange can fire (the browser's on-navigation update can activate a
-  // new SW almost instantly), so we never miss the reload — and never reload on
-  // the genuine first install.
-  const seenSW = localStorage.getItem("wc_sw") === "1";
+  let refreshing = false, updateTriggered = false;
   navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (refreshing || !seenSW) return;
+    if (refreshing || !updateTriggered) return;   // only reload for an update we asked for
     refreshing = true;
-    location.reload();                          // a new SW took over → swap to the new app
+    location.reload();                            // the new SW took over → swap to the new app
   });
   addEventListener("load", async () => {
     try {
       const reg = await navigator.serviceWorker.register("sw.js", { updateViaCache: "none" });
-      localStorage.setItem("wc_sw", "1");        // mark installed for next open
+      const apply = (w) => { if (w) { updateTriggered = true; w.postMessage({ type: "SKIP_WAITING" }); } };
+      if (reg.waiting && navigator.serviceWorker.controller) apply(reg.waiting); // update already ready
+      reg.addEventListener("updatefound", () => {
+        const nw = reg.installing;
+        nw && nw.addEventListener("statechange", () => {
+          if (nw.state === "installed" && navigator.serviceWorker.controller) apply(nw); // a fresh update
+        });
+      });
       const check = () => { if (!document.hidden) reg.update().catch(()=>{}); };
       document.addEventListener("visibilitychange", check);     // re-check whenever the app regains focus
       setInterval(check, 30 * 60 * 1000);                       // periodic backstop

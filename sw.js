@@ -4,7 +4,7 @@
      and league tables are never stale; offline falls back to the last response
      tagged so the app can show an "offline" note.
    Bump VERSION on each deploy to roll the caches. */
-const VERSION = "v9-2026-06-12";
+const VERSION = "v10-2026-06-12";
 const SHELL = VERSION + "-shell";
 const RUNTIME = VERSION + "-runtime";
 const API_HOST = "kickoff-oracle-window.abigwood.workers.dev";
@@ -17,11 +17,15 @@ const SHELL_ASSETS = [
 ];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(
-    caches.open(SHELL)
-      .then((c) => Promise.allSettled(SHELL_ASSETS.map((a) => c.add(a)))) // tolerate any single miss
-      .then(() => self.skipWaiting())
-  );
+  // Precache the shell, but DON'T skipWaiting here — the page triggers it (via the
+  // message below) once its controllerchange listener is wired, so the takeover
+  // never races the page and the one-launch reload is reliable.
+  e.waitUntil(caches.open(SHELL).then((c) => Promise.allSettled(SHELL_ASSETS.map((a) => c.add(a)))));
+});
+
+// the page asks us to take over the instant it's ready for the update
+self.addEventListener("message", (e) => {
+  if (e.data && e.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", (e) => {
