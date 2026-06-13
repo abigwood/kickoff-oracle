@@ -242,7 +242,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v18-2026-06-13";   // build marker (bumped each shell deploy)
+window.__BUILD = "v20-2026-06-13";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -253,6 +253,7 @@ const fmtDay = iso => new Date(iso+"T12:00:00").toLocaleDateString("en-GB",{week
 const todayUK = () => new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/London"}).format(new Date());
 const chipClass = ch => ch==="TBC" ? "tbc" : (ch.startsWith("BBC") ? "bbc" : "itv");
 const isLate = m => { const h = +m.ukTime.slice(0,2); return h >= 23 || h < 6; };
+const isRemainingMatch = m => m.status==="UPCOMING" && new Date(m.ukKickoff)>new Date();
 const stars = m => {                                  // "worth staying up" v1 heuristic
   let s = 1;
   if (m.stage !== "Group") s = 3;
@@ -597,10 +598,16 @@ function viewFixtures(){
   const teams = [...new Set(DATA.matches.flatMap(m=>[m.team1,m.team2]))]
                 .filter(t=>!/^\d|^W\d|\//.test(t)).sort();
   let list = DATA.matches;
-  if (teamFilter!=="All") list = list.filter(m=>m.team1===teamFilter||m.team2===teamFilter);
-  const quick = ["All","England","Scotland"];
+  if (teamFilter==="Remaining") list = list.filter(isRemainingMatch);
+  else if (teamFilter!=="All") list = list.filter(m=>m.team1===teamFilter||m.team2===teamFilter);
+  const quick = [
+    {value:"All", label:"All"},
+    {value:"Remaining", label:"Remaining"},
+    {value:"England", label:"Eng"},
+    {value:"Scotland", label:"Sco"},
+  ];
   return `<div class="pills">
-      ${quick.map(q=>`<button class="pill ${teamFilter===q?"on":""}" data-team="${q}">${q}</button>`).join("")}
+      ${quick.map(q=>`<button class="pill ${teamFilter===q.value?"on":""}" data-team="${q.value}">${q.label}</button>`).join("")}
       <select class="pill" id="teamsel">
         <option value="">More teams…</option>
         ${teams.map(t=>`<option ${teamFilter===t?"selected":""}>${t}</option>`).join("")}
