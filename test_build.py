@@ -71,5 +71,12 @@ class TestParseFinished(unittest.TestCase):
         self.assertFalse(res[KEY]["finished"], "no attendance yet → not full-time")
 
 
+class TestGoalMinuteSort(unittest.TestCase):
+    def test_stoppage_time_sorts_after_base_minute(self):
+        minutes = ["31", "45+5", "7", "73", "90+8", None]
+        ordered = sorted(minutes, key=build.goal_minute_sort_key)
+        self.assertEqual(ordered, ["7", "31", "45+5", "73", "90+8", None])
+
+
 if __name__ == "__main__":
     unittest.main()

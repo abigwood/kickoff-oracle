@@ -24,6 +24,18 @@ FEED = "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026
 OUT = Path(__file__).parent / "data" / "matches.json"
 UK = ZoneInfo("Europe/London")
 
+
+def goal_minute_sort_key(minute):
+    if minute is None:
+        return (1, 0, 0, "")
+    text = str(minute).strip()
+    match = re.match(r"^(\d+)(?:\+(\d+))?", text)
+    if not match:
+        return (0, 999, 999, text)
+    base = int(match.group(1))
+    added = int(match.group(2) or 0)
+    return (0, base, added, text)
+
 # ---------------------------------------------------------------------------
 # UK TV channels — group stage confirmed by BBC/ITV. Knockout channels are
 # announced by the broadcasters after each draw; update KNOCKOUT_CHANNELS as
@@ -666,7 +678,7 @@ def main():
                     events.append({"name": nm, "minute": g.get("minute"),
                                    "team": team, "og": bool(g.get("owngoal")),
                                    "pen": bool(g.get("penalty"))})
-        events.sort(key=lambda e: (e["minute"] is None, e["minute"]))
+        events.sort(key=lambda e: goal_minute_sort_key(e["minute"]))
 
         rec = {
             "id": i + 1,

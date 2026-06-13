@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-13T23:50:12.755179+01:00",
+ "updated": "2026-06-13T23:55:09.790093+01:00",
  "matches": [
   {
    "id": 1,
@@ -20,15 +20,15 @@
    "score2": 0,
    "goals": [
     {
-     "name": "Raúl Jiménez",
-     "minute": "67",
+     "name": "Julián Quiñones",
+     "minute": "9",
      "team": "Mexico",
      "og": false,
      "pen": false
     },
     {
-     "name": "Julián Quiñones",
-     "minute": "9",
+     "name": "Raúl Jiménez",
+     "minute": "67",
      "team": "Mexico",
      "og": false,
      "pen": false
@@ -507,7 +507,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 19,
@@ -528,6 +534,13 @@
    "score2": 1,
    "goals": [
     {
+     "name": "Damian Bobadilla",
+     "minute": "7",
+     "team": "USA",
+     "og": true,
+     "pen": false
+    },
+    {
      "name": "Folarin Balogun",
      "minute": "31",
      "team": "USA",
@@ -539,13 +552,6 @@
      "minute": "45+5",
      "team": "USA",
      "og": false,
-     "pen": false
-    },
-    {
-     "name": "Damian Bobadilla",
-     "minute": "7",
-     "team": "USA",
-     "og": true,
      "pen": false
     },
     {
@@ -844,7 +850,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 22,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 31,
@@ -1124,7 +1136,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 16,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 42,
@@ -1430,7 +1448,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 17,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 54,
@@ -1736,7 +1760,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 31,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 66,
