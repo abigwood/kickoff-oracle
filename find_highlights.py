@@ -11,10 +11,9 @@ RIGHTS: embed only — never download, re-host or proxy the video. If a
 channel disables embedding, YouTube's player automatically shows a
 "Watch on YouTube" link instead, which is an acceptable fallback.
 
-SETUP (one-time, Claude Code): fill in the real channel IDs below.
-Find them via each channel's page source ("channelId") or any channel-ID
-lookup. Verify you have the OFFICIAL BBC Sport / ITV Sport / FIFA
-channels — do not add unofficial re-upload channels.
+SETUP (one-time): fill in verified official channel IDs below. Verify
+you have the official broadcaster channels — do not add unofficial
+re-upload channels.
 
 Run by the GitHub Action after build.py.
 """
@@ -27,9 +26,7 @@ from xml.etree import ElementTree
 
 ROOT = Path(__file__).parent
 CHANNELS = {
-    # "BBC Sport": "UCxxxxxxxxxxxxxxxxxxxxxx",   # TODO: real channel IDs
-    # "ITV Sport": "UCxxxxxxxxxxxxxxxxxxxxxx",
-    # "FIFA":      "UCxxxxxxxxxxxxxxxxxxxxxx",
+    "NBC Sports": "UCqZQlzSHbVJrwrn5XvzrzcA",
 }
 RSS = "https://www.youtube.com/feeds/videos.xml?channel_id={}"
 NS = {"a": "http://www.w3.org/2005/Atom", "yt": "http://www.youtube.com/xml/schemas/2015"}
@@ -73,7 +70,7 @@ def main():
     for m in done:
         if str(m["id"]) in found:
             continue
-        hl = re.compile(r"highlight", re.I)
+        hl = re.compile(r"\b(highlights?|hls?)\b", re.I)
         for v in videos:
             if (any(n in v["title"] for n in names(m["team1"]))
                     and any(n in v["title"] for n in names(m["team2"]))
@@ -82,7 +79,7 @@ def main():
                 print(f'Matched {m["team1"]} v {m["team2"]} -> {v["channel"]} {v["id"]}')
                 break
 
-    out_file.write_text(json.dumps(found, indent=1))
+    out_file.write_text(json.dumps(found, indent=1) + "\n")
     print(f"{len(found)} highlight(s) stored.")
 
 
