@@ -551,7 +551,8 @@ window.WC_DATA = {
      "pen": false
     }
    ],
-   "status": "FT"
+   "status": "FT",
+   "youtube": "mB-H7V6tp_o"
   },
   {
    "id": 20,
