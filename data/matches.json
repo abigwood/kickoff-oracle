@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-13T22:55:17.981902+01:00",
+ "updated": "2026-06-13T23:00:11.954578+01:00",
  "matches": [
   {
    "id": 1,
@@ -237,7 +237,22 @@
    "channel": "ITV1",
    "score1": 1,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Breel Embolo",
+     "minute": "17",
+     "team": "Switzerland",
+     "og": false,
+     "pen": true
+    },
+    {
+     "name": "Boualem Khoukhi",
+     "minute": "90+4",
+     "team": "Qatar",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -336,13 +351,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 13,
@@ -362,7 +371,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
+   "status": "LIVE",
    "weather": {
     "temp": 31,
     "code": 0,
@@ -679,7 +688,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 24,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 25,
@@ -777,13 +792,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 25,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 29,
@@ -1063,7 +1072,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 22,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 40,
@@ -1187,13 +1202,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 32,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 45,
@@ -1447,7 +1456,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 21,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 55,
@@ -1675,13 +1690,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 64,
@@ -3174,6 +3183,18 @@
    "goals": 2
   },
   {
+   "name": "Boualem Khoukhi",
+   "team": "Qatar",
+   "flag": "🇶🇦",
+   "goals": 1
+  },
+  {
+   "name": "Breel Embolo",
+   "team": "Switzerland",
+   "flag": "🇨🇭",
+   "goals": 1
+  },
+  {
    "name": "Cyle Larin",
    "team": "Canada",
    "flag": "🇨🇦",
@@ -3753,11 +3774,6 @@
    0.416,
    0.256,
    0.328
-  ],
-  "13": [
-   0.561,
-   0.23,
-   0.209
   ],
   "14": [
    0.138,
