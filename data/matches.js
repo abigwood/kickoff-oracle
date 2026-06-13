@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-14T00:16:53.965801+01:00",
+ "updated": "2026-06-14T00:15:12.024913+01:00",
  "matches": [
   {
    "id": 1,
@@ -254,7 +254,7 @@ window.WC_DATA = {
     }
    ],
    "status": "FT",
-   "youtube": "hcefv-X6Z7I"
+   "youtube": "CUo5J7CUnCo"
   },
   {
    "id": 9,
@@ -591,13 +591,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 21,
@@ -981,13 +975,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 35,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 36,
@@ -1371,13 +1359,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 24,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 51,
@@ -1787,13 +1769,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 30,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 67,
