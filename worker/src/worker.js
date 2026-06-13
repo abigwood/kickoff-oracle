@@ -7,7 +7,7 @@
 //
 // KV data model (multi-league — a pick is global, scores in every league):
 //   user:{uid}        → {nickname, leagues:[code...]}
-//   league:{code}     → {name, created, members:[uid...]}
+//   league:{code}     → {name, created, members:[uid...], joinedAt:{uid:ts}}
 //   picks:{matchId}   → {uid: {s1, s2, ts}}          (ONE pick per user/match)
 //   table:{code}      → {rows, ts}                    (standings cache)
 //
@@ -66,11 +66,20 @@ const randBytes = (n) => crypto.getRandomValues(new Uint8Array(n));
 
 // A member's display name is per-league: league.names[uid] overrides the user's
 // global nickname (which stays the default/fallback for leagues with no override).
+// league.joinedAt[uid] is the scoring baseline for that uid in that league:
+// matches that kicked off before this timestamp do not count in this league.
+// Legacy leagues lack joinedAt, so those members deliberately keep historical
+// scoring rather than having live tables unexpectedly reset.
 async function resolveMembers(env, league) {
   const uids = (league && league.members) || [];
   const names = (league && league.names) || {};
+  const joinedAt = (league && league.joinedAt) || {};
   const users = await Promise.all(uids.map((uid) => kvGet(env, `user:${uid}`)));
-  return uids.map((uid, i) => ({ uid, nick: names[uid] || (users[i] && users[i].nickname) || "Anon" }));
+  return uids.map((uid, i) => ({
+    uid,
+    nick: names[uid] || (users[i] && users[i].nickname) || "Anon",
+    since: Number.isFinite(joinedAt[uid]) ? joinedAt[uid] : 0,
+  }));
 }
 
 async function loadPicksByMatch(env, matchIds) {
@@ -159,6 +168,7 @@ async function createLeague(env, body) {
   const uid = String(body.uid || "").trim();
   if (!uid) return j({ error: "uid required" }, 400, env);
   const name = String(body.name || "").trim().slice(0, 40) || "New League";
+  const now = Date.now();
   // generate a code that isn't already taken
   let code;
   for (let i = 0; i < 6; i++) {
@@ -169,7 +179,7 @@ async function createLeague(env, body) {
   if (!user.leagues.includes(code)) user.leagues.push(code);
   const names = {};
   if (body.nickname) names[uid] = normNick(body.nickname); // creator's name in THIS league
-  await kvPut(env, `league:${code}`, { name, created: Date.now(), owner: uid, members: [uid], names });
+  await kvPut(env, `league:${code}`, { name, created: now, owner: uid, members: [uid], names, joinedAt: { [uid]: now } });
   await kvPut(env, `user:${uid}`, user);
   return j({ code, name, recovery: user.code }, 200, env);
 }
@@ -185,6 +195,8 @@ async function joinLeague(env, body) {
   if (!user.leagues.includes(code)) user.leagues.push(code);
   league.names = league.names || {};
   if (body.nickname) league.names[uid] = normNick(body.nickname); // your name in THIS league
+  league.joinedAt = league.joinedAt || {};
+  if (!Number.isFinite(league.joinedAt[uid])) league.joinedAt[uid] = Date.now();
   await kvPut(env, `league:${code}`, league);
   await kvPut(env, `user:${uid}`, user);
   await bustTables(env, [code]); // recompute so the new member shows immediately (0 pts)
@@ -228,6 +240,8 @@ async function leaveLeague(env, body) {
   if (!league) return j({ error: "no such league" }, 404, env);
   const wasOwner = leagueOwner(league) === uid;
   league.members = (league.members || []).filter((m) => m !== uid);
+  if (league.names) delete league.names[uid];
+  if (league.joinedAt) delete league.joinedAt[uid];
   let deleted = false;
   if (wasOwner) {
     if (league.members.length) league.owner = league.members[0]; // hand admin to the next member
@@ -260,6 +274,8 @@ async function kickMember(env, body) {
   if (target === leagueOwner(league))
     return j({ error: "the admin can't be removed — leave the league instead" }, 400, env);
   league.members = (league.members || []).filter((m) => m !== target);
+  if (league.names) delete league.names[target];
+  if (league.joinedAt) delete league.joinedAt[target];
   await kvPut(env, `league:${code}`, league);
   const tu = await kvGet(env, `user:${target}`);
   if (tu) {
@@ -355,6 +371,7 @@ async function mergeMember(env, body) {
   // remove drop from this league
   league.members = (league.members || []).filter((m) => m !== dropUid);
   if (league.names) delete league.names[dropUid];
+  if (league.joinedAt) delete league.joinedAt[dropUid];
   await kvPut(env, `league:${code}`, league);
   // clean up the now league-less identity
   if (dropUser) {

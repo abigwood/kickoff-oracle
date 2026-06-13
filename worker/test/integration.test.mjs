@@ -243,6 +243,43 @@ test("per-league names: one uid, different name per league; picks shared; reveal
   MATCHES.matches[0] = { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null };
 });
 
+test("new league created mid-tournament starts from zero without resetting existing league points", async () => {
+  const env = makeEnv();
+  const at = (off) => ({ now: koMs + off * MIN });
+
+  const oldLeague = (await call(env, "POST", "/league", {
+    body: { uid: "adam", nickname: "Adam", name: "OLD MATES" },
+    ...at(-120),
+  })).json.code;
+
+  await call(env, "POST", "/pick", {
+    body: { uid: "adam", matchId: 50, s1: 2, s2: 1 },
+    ...at(-30),
+  });
+  MATCHES.matches[0] = { ...MATCHES.matches[0], status: "FT", score1: 2, score2: 1 };
+
+  const before = (await call(env, "GET", `/state?code=${oldLeague}`, at(180))).json;
+  assert.equal(before.table.find((r) => r.uid === "adam").pts, 3, "old league has accumulated points");
+
+  const newLeague = (await call(env, "POST", "/league", {
+    body: { uid: "adam", nickname: "Adam", name: "DUBAI MATES" },
+    ...at(181),
+  })).json.code;
+  await call(env, "POST", "/join", {
+    body: { uid: "smithy", nickname: "Smithy", code: newLeague },
+    ...at(182),
+  });
+
+  const oldAfter = (await call(env, "GET", `/state?code=${oldLeague}`, at(183))).json;
+  const fresh = (await call(env, "GET", `/state?code=${newLeague}`, at(183))).json;
+  assert.equal(oldAfter.table.find((r) => r.uid === "adam").pts, 3, "existing league still keeps its points");
+  assert.equal(fresh.table.find((r) => r.uid === "adam").pts, 0, "same old pick does not back-score in new league");
+  assert.equal(fresh.table.find((r) => r.uid === "smithy").pts, 0, "new mate also starts on zero");
+  assert.equal(fresh.reveals.length, 0, "new league does not show old reveals from before joining");
+
+  MATCHES.matches[0] = { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null };
+});
+
 test("fast settle: scores from pushed results (no Pages wait) and is frugal on no change", async () => {
   const env = makeEnv();
   const code = (await call(env, "POST", "/league", { body: { uid: "adam", nickname: "Adam", name: "X" } })).json.code;

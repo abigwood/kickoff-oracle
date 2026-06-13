@@ -57,7 +57,9 @@ export function pickValid(pick, koMs) {
 }
 
 // Compute a league standings table.
-//   members      : [{uid, nick}]
+//   members      : [{uid, nick, since?}] where since is the time this uid
+//                  joined this league. Legacy members without since keep all
+//                  historical scoring for backwards compatibility.
 //   ftMatches    : finished matches, CHRONOLOGICAL, [{id, s1, s2, koMs?}]
 //   picksByMatch : { [matchId]: { [uid]: {s1, s2, ts} } }   (global picks)
 // A pick timestamped at/after that match's koMs is ignored (counts as no pick).
@@ -69,6 +71,7 @@ export function computeTable(members, ftMatches, picksByMatch) {
       exact = 0;
     const outcomes = [];
     for (const m of ftMatches) {
+      if (mem.since && m.koMs != null && m.koMs < mem.since) continue;
       let pick = (picksByMatch[m.id] || {})[mem.uid];
       if (m.koMs != null && pick && !pickValid(pick, m.koMs)) pick = undefined; // ignore post-KO picks
       const res = scorePick(pick, { s1: m.s1, s2: m.s2 });
@@ -87,7 +90,7 @@ export function computeTable(members, ftMatches, picksByMatch) {
 }
 
 // Build the reveal feed for a league: one block per shut-window match that has
-// at least one pick, newest first. Picks are scored once the match is FT.
+// at least one eligible pick, newest first. Picks are scored once the match is FT.
 //   matches      : full match list (each {id, team1, team2, ukKickoff, status, s1, s2})
 //   nowMs        : epoch ms
 // Returns [{matchId, match, ko, picks:[{uid, nick, s1, s2, hit, exact, pts, settled}]}].
@@ -97,11 +100,13 @@ export function buildReveals(members, matches, picksByMatch, nowMs) {
   for (const m of matches) {
     const koMs = Date.parse(m.ukKickoff);
     if (windowState(koMs, nowMs) !== "shut") continue; // hide until window shuts
+    const eligibleMembers = members.filter((mem) => !mem.since || !Number.isFinite(koMs) || koMs >= mem.since);
+    if (!eligibleMembers.length) continue;
     const picks = picksByMatch[m.id] || {};
-    if (!members.some((mem) => picks[mem.uid])) continue; // nobody engaged → no reveal
+    if (!eligibleMembers.some((mem) => picks[mem.uid])) continue; // nobody engaged → no reveal
     const settled = m.score1 != null && m.score2 != null;
     // reveal the WHOLE league: everyone's pick, plus who fell asleep (no pick).
-    const memberPicks = members.map((mem) => {
+    const memberPicks = eligibleMembers.map((mem) => {
       const raw = picks[mem.uid];
       const p = pickValid(raw, koMs) ? raw : null; // a post-KO pick is treated as no pick
       if (!p)

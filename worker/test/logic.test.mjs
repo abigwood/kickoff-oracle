@@ -109,6 +109,32 @@ test("computeTable — points sum across matches, sorted, multi-member", () => {
   assert.equal(rows[2].streak, "😴1", "Dave's last outcome was no-pick");
 });
 
+test("computeTable — league join baseline ignores matches before member joined", () => {
+  const ko1 = Date.parse("2026-06-12T20:00:00+01:00");
+  const ko2 = Date.parse("2026-06-13T20:00:00+01:00");
+  const members = [
+    { uid: "legacy", nick: "Legacy" },
+    { uid: "new", nick: "New Mate", since: ko2 - 60 * MIN },
+  ];
+  const ft = [
+    { id: 1, s1: 2, s2: 0, koMs: ko1 },
+    { id: 2, s1: 1, s2: 1, koMs: ko2 },
+  ];
+  const picks = {
+    1: {
+      legacy: { s1: 2, s2: 0, ts: ko1 - 1000 },
+      new: { s1: 2, s2: 0, ts: ko1 - 1000 },
+    },
+    2: {
+      legacy: { s1: 1, s2: 1, ts: ko2 - 1000 },
+      new: { s1: 1, s2: 1, ts: ko2 - 1000 },
+    },
+  };
+  const rows = computeTable(members, ft, picks);
+  assert.equal(rows.find((r) => r.uid === "legacy").pts, 6, "legacy/no-baseline member keeps historical scoring");
+  assert.equal(rows.find((r) => r.uid === "new").pts, 3, "new member starts from matches after joining");
+});
+
 test("buildReveals hides open windows, reveals shut ones, scores when FT", () => {
   const members = [
     { uid: "a", nick: "Smithy" },
@@ -143,6 +169,22 @@ test("buildReveals hides open windows, reveals shut ones, scores when FT", () =>
   const wrighty = reveals[0].picks.find((p) => p.nick === "Wrighty");
   assert.equal(wrighty.asleep, true, "no pick → asleep");
   assert.equal(wrighty.pts, 0);
+});
+
+test("buildReveals — skips matches before every member's league join baseline", () => {
+  const ko1 = Date.parse("2026-06-12T20:00:00+01:00");
+  const ko2 = Date.parse("2026-06-13T20:00:00+01:00");
+  const members = [{ uid: "a", nick: "Adam", since: ko2 - 60 * MIN }];
+  const matches = [
+    { id: 1, team1: "A", team2: "B", ukKickoff: "2026-06-12T20:00:00+01:00", status: "FT", score1: 2, score2: 0 },
+    { id: 2, team1: "C", team2: "D", ukKickoff: "2026-06-13T20:00:00+01:00", status: "FT", score1: 1, score2: 1 },
+  ];
+  const picks = {
+    1: { a: { s1: 2, s2: 0, ts: ko1 - 1000 } },
+    2: { a: { s1: 1, s2: 1, ts: ko2 - 1000 } },
+  };
+  const reveals = buildReveals(members, matches, picks, ko2 + 60 * MIN);
+  assert.deepEqual(reveals.map((r) => r.matchId), [2], "old pre-join match is not revealed in the new league");
 });
 
 test("buildReveals before settlement: shut window, no score yet → settled:false, no result", () => {
