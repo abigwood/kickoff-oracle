@@ -28,6 +28,11 @@ ROOT = Path(__file__).parent
 CHANNELS = {
     "NBC Sports": "UCqZQlzSHbVJrwrn5XvzrzcA",
 }
+MANUAL_OVERRIDES = {
+    # BBC Football upload is UK-playable; the FOX upload auto-matched for this
+    # match is region-blocked in the UK YouTube embed.
+    "8": "hcefv-X6Z7I",
+}
 RSS = "https://www.youtube.com/feeds/videos.xml?channel_id={}"
 NS = {"a": "http://www.w3.org/2005/Atom", "yt": "http://www.youtube.com/xml/schemas/2015"}
 
@@ -52,6 +57,7 @@ def main():
 
     out_file = ROOT / "data" / "highlights.json"
     found = json.loads(out_file.read_text()) if out_file.exists() else {}
+    found.update(MANUAL_OVERRIDES)
 
     videos = []
     for label, cid in CHANNELS.items():
