@@ -266,7 +266,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v40-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v41-2026-06-14";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -563,14 +563,11 @@ async function shareIntel(matchId){
   const m = DATA.matches.find(x=>x.id===matchId);
   const items = m && intelFor(m);
   if (!m || !items) return;
-  const text = `Intel: ${m.team1} v ${m.team2}\n\n${items.map(x=>x.t).join("\n\n")}\n\nKickOff Oracle`;
   const blob = await intelCard(m,items);
   const file = new File([blob],`${m.team1}-v-${m.team2}-intel.png`.replace(/[^a-z0-9.-]+/gi,"-"),{type:"image/png"});
   if (navigator.canShare && navigator.canShare({files:[file]})){
-    try{ await navigator.share({files:[file], text, title:`${m.team1} v ${m.team2} Intel`}); return; }catch(e){}
+    try{ await navigator.share({files:[file], title:`${m.team1} v ${m.team2} Intel`}); return; }catch(e){ if (e?.name === "AbortError") return; }
   }
-  if (navigator.share){ try{ await navigator.share({text, title:`${m.team1} v ${m.team2} Intel`}); }catch(e){} }
-  try { await navigator.clipboard.writeText(text); } catch {}
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=file.name; a.click();
 }
 
