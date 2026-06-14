@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-14T23:00:14.091366+01:00",
+ "updated": "2026-06-14T23:05:18.100277+01:00",
  "matches": [
   {
    "id": 1,
@@ -640,7 +640,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 27,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 22,
@@ -816,13 +822,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 31,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 27,
@@ -943,16 +943,39 @@ window.WC_DATA = {
    "ukDate": "2026-06-14",
    "ukTime": "21:00",
    "channel": "ITV1",
-   "score1": null,
-   "score2": null,
-   "goals": [],
-   "status": "LIVE",
-   "weather": {
-    "temp": 29,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "score1": 2,
+   "score2": 2,
+   "goals": [
+    {
+     "name": "Virgil van Dijk",
+     "minute": "51",
+     "team": "Netherlands",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Keito Nakamura",
+     "minute": "57",
+     "team": "Japan",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Crysencio Summerville",
+     "minute": "64",
+     "team": "Netherlands",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Daichi Kamada",
+     "minute": "88",
+     "team": "Japan",
+     "og": false,
+     "pen": false
+    }
+   ],
+   "status": "FT"
   },
   {
    "id": 32,
@@ -1024,7 +1047,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 29,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 35,
@@ -1278,13 +1307,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 26,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 45,
@@ -1356,7 +1379,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 27,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 48,
@@ -1714,7 +1743,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 24,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 62,
@@ -1786,13 +1821,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 17,
-    "code": 53,
-    "icon": "🌦️",
-    "desc": "Drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 65,
@@ -2046,7 +2075,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 75,
@@ -2910,26 +2945,26 @@ window.WC_DATA = {
    {
     "team": "Japan",
     "flag": "🇯🇵",
-    "p": 0,
+    "p": 1,
     "w": 0,
-    "d": 0,
+    "d": 1,
     "l": 0,
-    "gf": 0,
-    "ga": 0,
+    "gf": 2,
+    "ga": 2,
     "gd": 0,
-    "pts": 0
+    "pts": 1
    },
    {
     "team": "Netherlands",
     "flag": "🇳🇱",
-    "p": 0,
+    "p": 1,
     "w": 0,
-    "d": 0,
+    "d": 1,
     "l": 0,
-    "gf": 0,
-    "ga": 0,
+    "gf": 2,
+    "ga": 2,
     "gd": 0,
-    "pts": 0
+    "pts": 1
    },
    {
     "team": "Sweden",
@@ -3289,9 +3324,21 @@ window.WC_DATA = {
    "goals": 1
   },
   {
+   "name": "Crysencio Summerville",
+   "team": "Netherlands",
+   "flag": "🇳🇱",
+   "goals": 1
+  },
+  {
    "name": "Cyle Larin",
    "team": "Canada",
    "flag": "🇨🇦",
+   "goals": 1
+  },
+  {
+   "name": "Daichi Kamada",
+   "team": "Japan",
+   "flag": "🇯🇵",
    "goals": 1
   },
   {
@@ -3349,6 +3396,12 @@ window.WC_DATA = {
    "goals": 1
   },
   {
+   "name": "Keito Nakamura",
+   "team": "Japan",
+   "flag": "🇯🇵",
+   "goals": 1
+  },
+  {
    "name": "Ladislav Krejcí",
    "team": "Czech Republic",
    "flag": "🇨🇿",
@@ -3389,18 +3442,6 @@ window.WC_DATA = {
    "team": "South Korea",
    "flag": "🇰🇷",
    "goals": 1
-  },
-  {
-   "name": "Raúl Jiménez",
-   "team": "Mexico",
-   "flag": "🇲🇽",
-   "goals": 1
-  },
-  {
-   "name": "Vinícius Júnior",
-   "team": "Brazil",
-   "flag": "🇧🇷",
-   "goals": 1
   }
  ],
  "predictions": {
@@ -3410,171 +3451,171 @@ window.WC_DATA = {
     "team": "Spain",
     "flag": "🇪🇸",
     "elo": 2171,
-    "win": 35.7,
-    "final": 48.9,
-    "sf": 61.6,
-    "qf": 70.3,
-    "r16": 86.8
+    "win": 35.9,
+    "final": 50.4,
+    "sf": 62.8,
+    "qf": 71.2,
+    "r16": 88.0
    },
    {
     "team": "Argentina",
     "flag": "🇦🇷",
     "elo": 2113,
-    "win": 19.1,
-    "final": 35.3,
-    "sf": 49.5,
-    "qf": 65.5,
-    "r16": 75.0
+    "win": 20.2,
+    "final": 36.5,
+    "sf": 50.5,
+    "qf": 67.2,
+    "r16": 76.2
    },
    {
     "team": "France",
     "flag": "🇫🇷",
     "elo": 2063,
-    "win": 10.9,
-    "final": 21.4,
-    "sf": 43.1,
-    "qf": 60.3,
-    "r16": 80.4
+    "win": 12.1,
+    "final": 23.1,
+    "sf": 45.9,
+    "qf": 61.7,
+    "r16": 80.3
    },
    {
     "team": "England",
     "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     "elo": 2042,
-    "win": 9.0,
-    "final": 18.3,
-    "sf": 34.9,
-    "qf": 51.2,
-    "r16": 77.0
+    "win": 8.6,
+    "final": 18.1,
+    "sf": 34.6,
+    "qf": 51.4,
+    "r16": 75.6
    },
    {
     "team": "Colombia",
     "flag": "🇨🇴",
     "elo": 1998,
-    "win": 4.8,
-    "final": 12.2,
-    "sf": 22.3,
-    "qf": 45.4,
-    "r16": 72.8
+    "win": 5.3,
+    "final": 12.5,
+    "sf": 21.9,
+    "qf": 45.1,
+    "r16": 73.5
    },
    {
     "team": "Portugal",
     "flag": "🇵🇹",
     "elo": 1976,
-    "win": 3.4,
+    "win": 3.8,
     "final": 9.1,
-    "sf": 16.9,
-    "qf": 37.3,
-    "r16": 66.7
-   },
-   {
-    "team": "Netherlands",
-    "flag": "🇳🇱",
-    "elo": 1959,
-    "win": 3.1,
-    "final": 8.3,
-    "sf": 20.9,
-    "qf": 43.0,
-    "r16": 60.6
+    "sf": 17.6,
+    "qf": 38.8,
+    "r16": 68.0
    },
    {
     "team": "Brazil",
     "flag": "🇧🇷",
     "elo": 1968,
-    "win": 3.0,
-    "final": 7.9,
-    "sf": 20.5,
-    "qf": 39.9,
-    "r16": 62.4
+    "win": 2.5,
+    "final": 6.8,
+    "sf": 20.0,
+    "qf": 38.8,
+    "r16": 60.7
    },
    {
-    "team": "Ecuador",
-    "flag": "🇪🇨",
-    "elo": 1933,
-    "win": 1.8,
-    "final": 5.4,
-    "sf": 15.7,
-    "qf": 29.9,
-    "r16": 64.2
+    "team": "Netherlands",
+    "flag": "🇳🇱",
+    "elo": 1952,
+    "win": 2.3,
+    "final": 6.7,
+    "sf": 18.4,
+    "qf": 38.6,
+    "r16": 57.7
    },
    {
     "team": "Germany",
     "flag": "🇩🇪",
     "elo": 1918,
-    "win": 1.6,
-    "final": 4.3,
-    "sf": 14.1,
-    "qf": 27.4,
-    "r16": 66.2
+    "win": 1.5,
+    "final": 4.5,
+    "sf": 15.1,
+    "qf": 28.0,
+    "r16": 66.4
    },
    {
     "team": "Norway",
     "flag": "🇳🇴",
     "elo": 1922,
-    "win": 1.4,
-    "final": 4.5,
-    "sf": 13.1,
-    "qf": 27.9,
+    "win": 1.3,
+    "final": 4.2,
+    "sf": 13.2,
+    "qf": 28.2,
     "r16": 51.1
+   },
+   {
+    "team": "Ecuador",
+    "flag": "🇪🇨",
+    "elo": 1933,
+    "win": 1.2,
+    "final": 4.7,
+    "sf": 15.2,
+    "qf": 29.8,
+    "r16": 62.4
    },
    {
     "team": "USA",
     "flag": "🇺🇸",
     "elo": 1821,
-    "win": 1.3,
-    "final": 3.8,
-    "sf": 10.3,
-    "qf": 38.2,
-    "r16": 68.8
+    "win": 1.2,
+    "final": 4.4,
+    "sf": 9.8,
+    "qf": 36.5,
+    "r16": 67.4
    },
    {
     "team": "Croatia",
     "flag": "🇭🇷",
     "elo": 1933,
     "win": 1.2,
-    "final": 4.5,
-    "sf": 11.9,
+    "final": 4.3,
+    "sf": 11.8,
     "qf": 23.0,
-    "r16": 52.6
-   },
-   {
-    "team": "Switzerland",
-    "flag": "🇨🇭",
-    "elo": 1877,
-    "win": 0.8,
-    "final": 2.3,
-    "sf": 7.5,
-    "qf": 23.9,
-    "r16": 57.9
+    "r16": 53.4
    },
    {
     "team": "Japan",
     "flag": "🇯🇵",
-    "elo": 1879,
-    "win": 0.7,
-    "final": 2.6,
-    "sf": 8.6,
-    "qf": 22.2,
-    "r16": 41.2
+    "elo": 1886,
+    "win": 0.5,
+    "final": 2.1,
+    "sf": 8.8,
+    "qf": 23.0,
+    "r16": 44.6
    },
    {
     "team": "Uruguay",
     "flag": "🇺🇾",
     "elo": 1890,
-    "win": 0.6,
-    "final": 2.5,
-    "sf": 7.5,
-    "qf": 16.2,
-    "r16": 29.2
+    "win": 0.4,
+    "final": 2.2,
+    "sf": 6.3,
+    "qf": 14.6,
+    "r16": 27.9
+   },
+   {
+    "team": "Switzerland",
+    "flag": "🇨🇭",
+    "elo": 1877,
+    "win": 0.4,
+    "final": 2.0,
+    "sf": 6.4,
+    "qf": 23.2,
+    "r16": 57.1
    },
    {
     "team": "Senegal",
     "flag": "🇸🇳",
     "elo": 1869,
-    "win": 0.5,
-    "final": 2.0,
-    "sf": 6.8,
-    "qf": 19.2,
-    "r16": 37.0
+    "win": 0.4,
+    "final": 1.7,
+    "sf": 6.5,
+    "qf": 18.1,
+    "r16": 37.1
    },
    {
     "team": "Belgium",
@@ -3582,29 +3623,29 @@ window.WC_DATA = {
     "elo": 1849,
     "win": 0.3,
     "final": 1.3,
-    "sf": 4.7,
-    "qf": 21.3,
-    "r16": 55.8
+    "sf": 4.5,
+    "qf": 21.9,
+    "r16": 55.9
    },
    {
     "team": "Mexico",
     "flag": "🇲🇽",
     "elo": 1823,
     "win": 0.2,
-    "final": 1.4,
-    "sf": 6.9,
+    "final": 1.6,
+    "sf": 7.2,
     "qf": 24.1,
-    "r16": 63.9
+    "r16": 65.0
    },
    {
     "team": "Morocco",
     "flag": "🇲🇦",
     "elo": 1851,
-    "win": 0.1,
-    "final": 1.4,
-    "sf": 6.7,
-    "qf": 19.5,
-    "r16": 38.8
+    "win": 0.2,
+    "final": 1.2,
+    "sf": 7.1,
+    "qf": 20.1,
+    "r16": 39.1
    },
    {
     "team": "Australia",
@@ -3613,28 +3654,28 @@ window.WC_DATA = {
     "win": 0.1,
     "final": 0.6,
     "sf": 2.5,
-    "qf": 13.8,
-    "r16": 49.8
-   },
-   {
-    "team": "Turkey",
-    "flag": "🇹🇷",
-    "elo": 1817,
-    "win": 0.1,
-    "final": 0.4,
-    "sf": 2.0,
-    "qf": 7.4,
-    "r16": 21.4
+    "qf": 13.3,
+    "r16": 49.4
    },
    {
     "team": "Austria",
     "flag": "🇦🇹",
     "elo": 1800,
     "win": 0.1,
-    "final": 0.4,
-    "sf": 1.9,
+    "final": 0.5,
+    "sf": 1.8,
     "qf": 7.1,
-    "r16": 18.3
+    "r16": 17.8
+   },
+   {
+    "team": "Turkey",
+    "flag": "🇹🇷",
+    "elo": 1817,
+    "win": 0.1,
+    "final": 0.3,
+    "sf": 1.7,
+    "qf": 6.5,
+    "r16": 21.6
    },
    {
     "team": "South Korea",
@@ -3642,39 +3683,19 @@ window.WC_DATA = {
     "elo": 1768,
     "win": 0.1,
     "final": 0.3,
-    "sf": 2.7,
-    "qf": 12.0,
-    "r16": 47.7
+    "sf": 2.6,
+    "qf": 13.4,
+    "r16": 49.5
    },
    {
     "team": "Iran",
     "flag": "🇮🇷",
     "elo": 1760,
-    "win": 0.1,
-    "final": 0.3,
-    "sf": 1.2,
-    "qf": 9.4,
-    "r16": 37.0
-   },
-   {
-    "team": "Scotland",
-    "flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-    "elo": 1713,
-    "win": 0.1,
-    "final": 0.1,
-    "sf": 0.8,
-    "qf": 4.4,
-    "r16": 15.7
-   },
-   {
-    "team": "Canada",
-    "flag": "🇨🇦",
-    "elo": 1716,
     "win": 0.0,
     "final": 0.2,
-    "sf": 1.2,
-    "qf": 8.7,
-    "r16": 36.1
+    "sf": 1.1,
+    "qf": 9.0,
+    "r16": 37.3
    },
    {
     "team": "Sweden",
@@ -3682,19 +3703,9 @@ window.WC_DATA = {
     "elo": 1750,
     "win": 0.0,
     "final": 0.1,
-    "sf": 0.9,
-    "qf": 5.2,
-    "r16": 16.7
-   },
-   {
-    "team": "Algeria",
-    "flag": "🇩🇿",
-    "elo": 1740,
-    "win": 0.0,
-    "final": 0.1,
-    "sf": 0.5,
-    "qf": 3.4,
-    "r16": 12.1
+    "sf": 1.1,
+    "qf": 6.4,
+    "r16": 18.6
    },
    {
     "team": "Egypt",
@@ -3703,8 +3714,8 @@ window.WC_DATA = {
     "win": 0.0,
     "final": 0.1,
     "sf": 0.7,
-    "qf": 5.6,
-    "r16": 28.8
+    "qf": 6.4,
+    "r16": 30.3
    },
    {
     "team": "Ivory Coast",
@@ -3712,29 +3723,39 @@ window.WC_DATA = {
     "elo": 1720,
     "win": 0.0,
     "final": 0.1,
+    "sf": 0.7,
+    "qf": 3.1,
+    "r16": 20.5
+   },
+   {
+    "team": "Canada",
+    "flag": "🇨🇦",
+    "elo": 1716,
+    "win": 0.0,
+    "final": 0.1,
+    "sf": 1.3,
+    "qf": 9.3,
+    "r16": 34.6
+   },
+   {
+    "team": "Scotland",
+    "flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+    "elo": 1713,
+    "win": 0.0,
+    "final": 0.1,
     "sf": 0.8,
-    "qf": 3.6,
-    "r16": 20.8
+    "qf": 4.3,
+    "r16": 14.7
    },
    {
-    "team": "Czech Republic",
-    "flag": "🇨🇿",
-    "elo": 1692,
+    "team": "Algeria",
+    "flag": "🇩🇿",
+    "elo": 1740,
     "win": 0.0,
-    "final": 0.1,
+    "final": 0.0,
     "sf": 0.5,
-    "qf": 2.3,
-    "r16": 12.9
-   },
-   {
-    "team": "Ghana",
-    "flag": "🇬🇭",
-    "elo": 1650,
-    "win": 0.0,
-    "final": 0.1,
-    "sf": 0.3,
-    "qf": 1.0,
-    "r16": 5.6
+    "qf": 3.8,
+    "r16": 12.4
    },
    {
     "team": "Paraguay",
@@ -3742,9 +3763,9 @@ window.WC_DATA = {
     "elo": 1709,
     "win": 0.0,
     "final": 0.0,
-    "sf": 0.1,
-    "qf": 1.6,
-    "r16": 7.7
+    "sf": 0.2,
+    "qf": 1.4,
+    "r16": 7.1
    },
    {
     "team": "Tunisia",
@@ -3753,8 +3774,18 @@ window.WC_DATA = {
     "win": 0.0,
     "final": 0.0,
     "sf": 0.2,
-    "qf": 1.9,
-    "r16": 9.0
+    "qf": 2.1,
+    "r16": 9.2
+   },
+   {
+    "team": "Czech Republic",
+    "flag": "🇨🇿",
+    "elo": 1692,
+    "win": 0.0,
+    "final": 0.0,
+    "sf": 0.4,
+    "qf": 2.2,
+    "r16": 11.9
    },
    {
     "team": "Bosnia & Herzegovina",
@@ -3763,8 +3794,18 @@ window.WC_DATA = {
     "win": 0.0,
     "final": 0.0,
     "sf": 0.2,
-    "qf": 3.0,
-    "r16": 17.4
+    "qf": 3.2,
+    "r16": 16.1
+   },
+   {
+    "team": "Ghana",
+    "flag": "🇬🇭",
+    "elo": 1650,
+    "win": 0.0,
+    "final": 0.0,
+    "sf": 0.1,
+    "qf": 0.8,
+    "r16": 5.2
    },
    {
     "team": "Qatar",
@@ -3772,9 +3813,9 @@ window.WC_DATA = {
     "elo": 1640,
     "win": 0.0,
     "final": 0.0,
-    "sf": 0.2,
-    "qf": 1.6,
-    "r16": 12.8
+    "sf": 0.1,
+    "qf": 2.0,
+    "r16": 14.3
    },
    {
     "team": "Saudi Arabia",
@@ -3782,9 +3823,9 @@ window.WC_DATA = {
     "elo": 1620,
     "win": 0.0,
     "final": 0.0,
-    "sf": 0.0,
+    "sf": 0.1,
     "qf": 0.4,
-    "r16": 2.5
+    "r16": 2.6
    },
    {
     "team": "Panama",
@@ -3793,8 +3834,8 @@ window.WC_DATA = {
     "win": 0.0,
     "final": 0.0,
     "sf": 0.0,
-    "qf": 0.3,
-    "r16": 2.8
+    "qf": 0.2,
+    "r16": 2.4
    },
    {
     "team": "DR Congo",
@@ -3802,9 +3843,9 @@ window.WC_DATA = {
     "elo": 1610,
     "win": 0.0,
     "final": 0.0,
-    "sf": 0.0,
-    "qf": 0.3,
-    "r16": 3.3
+    "sf": 0.1,
+    "qf": 0.5,
+    "r16": 3.6
    },
    {
     "team": "Iraq",
@@ -3813,7 +3854,7 @@ window.WC_DATA = {
     "win": 0.0,
     "final": 0.0,
     "sf": 0.0,
-    "qf": 0.3,
+    "qf": 0.1,
     "r16": 1.2
    },
    {
@@ -3824,7 +3865,7 @@ window.WC_DATA = {
     "final": 0.0,
     "sf": 0.0,
     "qf": 0.3,
-    "r16": 2.8
+    "r16": 2.5
    },
    {
     "team": "South Africa",
@@ -3834,7 +3875,7 @@ window.WC_DATA = {
     "final": 0.0,
     "sf": 0.0,
     "qf": 0.3,
-    "r16": 4.0
+    "r16": 4.2
    },
    {
     "team": "Jordan",
@@ -3843,8 +3884,8 @@ window.WC_DATA = {
     "win": 0.0,
     "final": 0.0,
     "sf": 0.0,
-    "qf": 0.3,
-    "r16": 1.9
+    "qf": 0.2,
+    "r16": 2.3
    },
    {
     "team": "Cape Verde",
@@ -3854,7 +3895,7 @@ window.WC_DATA = {
     "final": 0.0,
     "sf": 0.0,
     "qf": 0.1,
-    "r16": 0.9
+    "r16": 1.1
    },
    {
     "team": "New Zealand",
@@ -3864,7 +3905,7 @@ window.WC_DATA = {
     "final": 0.0,
     "sf": 0.0,
     "qf": 0.1,
-    "r16": 2.3
+    "r16": 1.9
    },
    {
     "team": "Haiti",
@@ -4000,24 +4041,24 @@ window.WC_DATA = {
    0.308
   ],
   "33": [
-   0.655,
-   0.199,
-   0.146
+   0.646,
+   0.202,
+   0.152
   ],
   "34": [
-   0.172,
-   0.213,
-   0.615
+   0.166,
+   0.21,
+   0.624
   ],
   "35": [
-   0.547,
-   0.234,
-   0.219
+   0.556,
+   0.231,
+   0.212
   ],
   "36": [
-   0.11,
-   0.172,
-   0.719
+   0.114,
+   0.176,
+   0.71
   ],
   "37": [
    0.547,
