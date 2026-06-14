@@ -262,7 +262,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v36-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v37-2026-06-14";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -339,6 +339,12 @@ const stars = m => {                                  // "worth staying up" v1 h
 };
 const clashes = m => DATA.matches.filter(x => x.id!==m.id && x.ukKickoff===m.ukKickoff);
 const intelFor = m => MATCH_INTEL[`${m.team1}|${m.team2}`] || MATCH_INTEL[`${m.team2}|${m.team1}`] || null;
+const nextMatchId = () => {
+  const upcoming = DATA.matches
+    .filter(m => m.status === "UPCOMING" || m.status === "LIVE")
+    .sort((a,b) => a.ukKickoff.localeCompare(b.ukKickoff));
+  return upcoming.length ? upcoming[0].id : null;
+};
 const youtubeSrc = id => {
   const params = new URLSearchParams({
     playsinline: "1",
@@ -393,6 +399,9 @@ function card(m){
 function matchIntel(m){
   const items = intelFor(m);
   if (!items) return "";
+  // Only show Intel on finished matches or the single next upcoming fixture
+  const showIntel = m.status === "FT" || m.status === "LIVE" || m.id === nextMatchId();
+  if (!showIntel) return "";
   const mapH = COUNTRY_MAPS[m.team1] || COUNTRY_MAPS[m.team2]
     ? `<div class="intel-maps">
         <figure>
