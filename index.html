@@ -86,6 +86,18 @@ h2.day b{color:var(--text)}
 .timeline .gl .min{color:var(--faint);width:34px;flex:none;text-align:right}
 .hl-frame{margin-top:10px;border-radius:10px;overflow:hidden;aspect-ratio:16/9;background:#000}
 .hl-frame iframe{width:100%;height:100%;border:0;display:block}
+.hl-link{display:block;position:relative;text-decoration:none;color:inherit}
+.hl-link img{width:100%;height:100%;display:block;object-fit:cover}
+.hl-link:after{
+  content:"";position:absolute;left:50%;top:50%;transform:translate(-42%,-50%);
+  border-left:30px solid #fff;border-top:19px solid transparent;border-bottom:19px solid transparent;
+  filter:drop-shadow(0 2px 8px rgba(0,0,0,.55))
+}
+.hl-link:before{
+  content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:74px;height:52px;border-radius:14px;background:rgba(0,0,0,.62);
+  border:1px solid rgba(255,255,255,.22)
+}
 .ics{position:absolute;top:12px;right:12px;font-size:1.05rem;text-decoration:none;
      color:var(--faint);padding:6px;line-height:1}
 .match .toprow{padding-right:30px}
@@ -243,7 +255,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v28-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v29-2026-06-14";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -265,16 +277,8 @@ const stars = m => {                                  // "worth staying up" v1 h
   return "●".repeat(s) + "○".repeat(3-s);
 };
 const clashes = m => DATA.matches.filter(x => x.id!==m.id && x.ukKickoff===m.ukKickoff);
-const youtubeSrc = id => {
-  const params = new URLSearchParams({
-    feature: "oembed",
-    playsinline: "1",
-    rel: "0",
-    origin: location.origin,
-    widget_referrer: location.href
-  });
-  return `https://www.youtube.com/embed/${id}?${params}`;
-};
+const youtubeWatch = id => `https://www.youtube.com/watch?v=${encodeURIComponent(id)}`;
+const youtubeThumb = id => `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`;
 const ics = m => {
   const dt = new Date(m.ukKickoff), end = new Date(dt.getTime()+115*60000);
   const z = d => d.toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
@@ -323,11 +327,9 @@ function goalTimeline(m){
       <span>⚽ ${g.name}${g.pen?" (pen)":""}${g.og?" (OG)":""} <span style="color:var(--faint)">· ${g.team}</span></span>
     </div>`).join("");
   const hl = m.youtube
-    ? `<div class="hl-frame"><iframe
-      src="${youtubeSrc(m.youtube)}"
-      title="Official match highlights" loading="lazy" allowfullscreen
-      referrerpolicy="origin"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe></div>`
+    ? `<div class="hl-frame"><a class="hl-link" href="${youtubeWatch(m.youtube)}" target="_blank" rel="noopener" aria-label="Open official match highlights">
+      <img src="${youtubeThumb(m.youtube)}" alt="" loading="lazy">
+    </a></div>`
     : "";
   return `<div class="timeline">${rows}${hl}</div>`;
 }
