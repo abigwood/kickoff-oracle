@@ -243,7 +243,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v27-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v28-2026-06-14";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -267,11 +267,13 @@ const stars = m => {                                  // "worth staying up" v1 h
 const clashes = m => DATA.matches.filter(x => x.id!==m.id && x.ukKickoff===m.ukKickoff);
 const youtubeSrc = id => {
   const params = new URLSearchParams({
+    feature: "oembed",
     playsinline: "1",
     rel: "0",
-    origin: location.origin
+    origin: location.origin,
+    widget_referrer: location.href
   });
-  return `https://www.youtube-nocookie.com/embed/${id}?${params}`;
+  return `https://www.youtube.com/embed/${id}?${params}`;
 };
 const ics = m => {
   const dt = new Date(m.ukKickoff), end = new Date(dt.getTime()+115*60000);
@@ -324,7 +326,7 @@ function goalTimeline(m){
     ? `<div class="hl-frame"><iframe
       src="${youtubeSrc(m.youtube)}"
       title="Official match highlights" loading="lazy" allowfullscreen
-      referrerpolicy="strict-origin-when-cross-origin"
+      referrerpolicy="origin"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe></div>`
     : "";
   return `<div class="timeline">${rows}${hl}</div>`;
