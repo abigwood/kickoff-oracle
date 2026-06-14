@@ -87,10 +87,14 @@ h2.day b{color:var(--text)}
   letter-spacing:.08em;padding:6px 12px;cursor:pointer}
 .intel-pill[aria-expanded="true"]{background:rgba(255,210,48,.12)}
 .intel-pop{margin-top:8px;background:var(--raise);border:1px solid var(--line);border-radius:10px;
-  padding:10px 11px;box-shadow:0 12px 26px rgba(0,0,0,.22);animation:intelpop .14s ease-out}
+  padding:10px 40px 10px 11px;box-shadow:0 12px 26px rgba(0,0,0,.22);animation:intelpop .14s ease-out;
+  position:relative}
 .intel-pop[hidden]{display:none}
 .intel-pop p{font-size:.76rem;line-height:1.35;color:var(--dim)}
 .intel-pop p+p{margin-top:8px}
+.intel-share{position:absolute;right:8px;bottom:8px;width:26px;height:26px;border-radius:999px;
+  border:1px solid rgba(255,210,48,.65);background:rgba(255,210,48,.1);color:var(--bbc);
+  display:grid;place-items:center;font-size:.84rem;font-weight:900;line-height:1;cursor:pointer}
 @keyframes intelpop{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
 .timeline{margin-top:10px;border-top:1px dashed var(--line);padding-top:9px;font-size:.74rem;color:var(--dim)}
 .timeline .gl{display:flex;gap:8px;padding:2px 0;font-variant-numeric:tabular-nums}
@@ -254,7 +258,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v33-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v34-2026-06-14";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -347,8 +351,20 @@ function matchIntel(m){
   if (!items) return "";
   return `<div class="intel">
     <button type="button" class="intel-pill" data-intel aria-expanded="false">Intel</button>
-    <div class="intel-pop" hidden>${items.map(x=>`<p>${x.t}</p>`).join("")}</div>
+    <div class="intel-pop" hidden>${items.map(x=>`<p>${x.t}</p>`).join("")}
+      <button type="button" class="intel-share" data-intel-share="${m.id}" aria-label="Share Intel to WhatsApp">↗</button>
+    </div>
   </div>`;
+}
+
+function shareIntel(matchId){
+  const m = DATA.matches.find(x=>x.id===matchId);
+  const items = m && intelFor(m);
+  if (!m || !items) return;
+  const text = `Intel: ${m.team1} v ${m.team2}\n\n${items.map(x=>x.t).join("\n\n")}\n\nKickOff Oracle`;
+  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  const opened = window.open(url, "_blank", "noopener,noreferrer");
+  if (!opened) location.href = url;
 }
 
 function goalTimeline(m){
@@ -849,6 +865,8 @@ document.querySelector("nav").addEventListener("click",async e=>{
   if (tab==="league" && API){ await loadLeagues(); render(); }   // pull fresh table/reveals
 });
 document.addEventListener("click",async e=>{
+  const intelShare = e.target.closest("[data-intel-share]");
+  if (intelShare){ shareIntel(+intelShare.dataset.intelShare); return; }
   const intel = e.target.closest("[data-intel]");
   if (intel){
     const pop = intel.closest(".intel")?.querySelector(".intel-pop");
