@@ -80,7 +80,13 @@ h2.day b{color:var(--text)}
 .live-clock{display:inline-flex;align-items:center;gap:5px;background:var(--live);color:#fff;border-radius:999px;font-size:.7rem;font-weight:900;padding:4px 10px;letter-spacing:.04em;animation:pulse 1.4s infinite}
 .live-clock .min{font-variant-numeric:tabular-nums}
 .live-score{font-size:1.5rem;font-weight:900;text-align:center;letter-spacing:.06em;margin:6px 0 2px;color:#fff}
-.live-goals{margin-top:4px;font-size:.72rem;color:var(--dim);line-height:1.4}
+.lg-teams{display:flex;gap:12px;margin-top:5px;font-size:.7rem;font-weight:700;color:var(--faint)}
+.lg-teams span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lg-teams span:last-child{text-align:right}
+.live-goals{display:flex;gap:12px;margin-top:2px;font-size:.72rem;color:var(--dim);line-height:1.45}
+.live-goals .lg-col{flex:1;min-width:0;display:flex;flex-direction:column}
+.live-goals .lg-r{text-align:right}
+.live-goals .g{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .badge.late{background:var(--raise);color:var(--bbc);border:1px solid var(--line)}
 .badge.clash{background:var(--raise);color:var(--itv);border:1px solid var(--line)}
 .badge.stars{background:var(--raise);color:var(--dim);border:1px solid var(--line)}
@@ -266,7 +272,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v43-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v44-2026-06-14";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -364,17 +370,25 @@ async function fetchESPN(){
       const away = competitors.find(c=>c.homeAway==="away");
       if (!home||!away) continue;
       const minute = comp.status?.displayClock || "?";
-      const goals = (comp.details||[]).filter(x=>x.type?.text==="Goal").map(g=>({
+      // scoringPlay catches every goal — plain, header, penalty, own goal — where
+      // a strict type==="Goal" match used to silently drop headers/penalties.
+      // ESPN gives no team NAME on a goal, only team.id; carry the id so the
+      // renderer can split scorers onto the right side. og/pen drive the tags.
+      const goals = (comp.details||[]).filter(x=>x.scoringPlay).map(g=>({
         minute: g.clock?.displayValue || "?",
         name: g.athletesInvolved?.[0]?.displayName || "",
-        team: g.team?.displayName || ""
+        teamId: g.team?.id || "",
+        og: !!g.ownGoal,
+        pen: !!g.penaltyKick
       }));
-      // Build a key that will match our match data regardless of home/away order
+      // Build a key that will match our match data regardless of home/away order.
+      // team1Id/team2Id orient the goals to team1 (left) / team2 (right) per key —
+      // ESPN credits a goal's team.id to the side that benefits (own goals included),
+      // so the per-side counts sum to the scoreline.
       const key1 = `${home.team.displayName}|${away.team.displayName}`;
       const key2 = `${away.team.displayName}|${home.team.displayName}`;
-      const payload = {score1:+home.score||0, score2:+away.score||0, minute, state:"in", goals};
-      fresh[key1] = payload;
-      fresh[key2] = {score1:+away.score||0, score2:+home.score||0, minute, state:"in", goals};
+      fresh[key1] = {score1:+home.score||0, score2:+away.score||0, minute, state:"in", goals, team1Id:home.team.id, team2Id:away.team.id};
+      fresh[key2] = {score1:+away.score||0, score2:+home.score||0, minute, state:"in", goals, team1Id:away.team.id, team2Id:home.team.id};
     }
     ESPN_LIVE = fresh;
   } catch(e){ /* silent fail */ }
@@ -428,10 +442,14 @@ function card(m){
       <span class="chip ${chipClass(m.channel)}">${m.channel}</span>
     </div>
     <div class="teams">
-      ${(()=>{ const live=espnData(m); if(live){ return `
+      ${(()=>{ const live=espnData(m); if(live){
+        const surn=s=>{ const p=(s||"").trim().split(/\s+/); return p[p.length-1]||""; };
+        const col=tid=>live.goals.filter(g=>g.teamId===tid).map(g=>
+          `<span class="g">⚽ ${g.minute} ${surn(g.name)}${g.pen?" (pen)":""}${g.og?" (OG)":""}</span>`).join("");
+        return `
         <div class="live-score">${m.flag1} ${live.score1} – ${live.score2} ${m.flag2}</div>
-        <div class="live-goals">${live.goals.map(g=>`⚽ ${g.minute} ${g.name} <span style='color:var(--faint)'>· ${g.team}</span>`).join(" &nbsp;·&nbsp; ")||""}</div>
-        <div style="font-size:.72rem;color:var(--faint);text-align:center;margin-top:2px">${m.team1} v ${m.team2}</div>`; }
+        <div class="lg-teams"><span>${m.team1}</span><span>${m.team2}</span></div>
+        <div class="live-goals"><div class="lg-col lg-l">${col(live.team1Id)}</div><div class="lg-col lg-r">${col(live.team2Id)}</div></div>`; }
         return `
         <div class="team ${w1?"winner":""}"><span class="flag">${m.flag1}</span>${m.team1}
           ${m.score1!=null?`<span class="score">${m.score1}</span>`:""}</div>
