@@ -92,6 +92,10 @@ h2.day b{color:var(--text)}
 .intel-pop[hidden]{display:none}
 .intel-pop p{font-size:.76rem;line-height:1.35;color:var(--dim)}
 .intel-pop p+p{margin-top:8px}
+.intel-maps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;margin-bottom:28px}
+.intel-maps figure{margin:0;text-align:center}
+.intel-maps img{width:100%;height:90px;object-fit:contain;border-radius:6px;background:rgba(255,255,255,.05)}
+.intel-maps figcaption{font-size:.65rem;color:var(--faint);margin-top:3px;letter-spacing:.04em;text-transform:uppercase}
 .intel-share{position:absolute;right:8px;bottom:8px;width:26px;height:26px;border-radius:999px;
   border:1px solid rgba(255,210,48,.65);background:rgba(255,210,48,.1);color:var(--bbc);
   display:grid;place-items:center;font-size:.84rem;font-weight:900;line-height:1;cursor:pointer}
@@ -258,11 +262,33 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v34-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v35-2026-06-14";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
 const MARQUEE = new Set(["England","Scotland","Brazil","Argentina","France","Spain","Germany","Portugal","Netherlands","Mexico","USA"]);
+const COUNTRY_MAPS = {
+  "Haiti":       "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Haiti_on_the_globe_%28Americas_centered%29.svg/330px-Haiti_on_the_globe_%28Americas_centered%29.svg.png",
+  "Scotland":    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Scotland_location_map.svg/330px-Scotland_location_map.svg.png",
+  "Qatar":       "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Qatar_on_the_globe_%28Afro-Eurasia_centered%29.svg/330px-Qatar_on_the_globe_%28Afro-Eurasia_centered%29.svg.png",
+  "Switzerland": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Switzerland_on_the_globe_%28Europe_centered%29.svg/330px-Switzerland_on_the_globe_%28Europe_centered%29.svg.png",
+  "Australia":   "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Australia_on_the_globe_%28Australia_centered%29.svg/330px-Australia_on_the_globe_%28Australia_centered%29.svg.png",
+  "Turkey":      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Turkey_on_the_globe_%28Europe_centered%29.svg/330px-Turkey_on_the_globe_%28Europe_centered%29.svg.png",
+  "Brazil":      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Brazil_on_the_globe_%28South_America_centered%29.svg/330px-Brazil_on_the_globe_%28South_America_centered%29.svg.png",
+  "Morocco":     "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Morocco_on_the_globe_%28claimed%29_%28Africa_centered%29.svg/330px-Morocco_on_the_globe_%28claimed%29_%28Africa_centered%29.svg.png",
+  "Germany":     "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Germany_on_the_globe_%28Europe_centered%29.svg/330px-Germany_on_the_globe_%28Europe_centered%29.svg.png",
+  "Spain":       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Spain_on_the_globe_%28Europe_centered%29.svg/330px-Spain_on_the_globe_%28Europe_centered%29.svg.png",
+  "Argentina":   "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Argentina_on_the_globe_%28South_America_centered%29.svg/330px-Argentina_on_the_globe_%28South_America_centered%29.svg.png",
+  "USA":         "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/United_States_on_the_globe_%28North_America_centered%29.svg/330px-United_States_on_the_globe_%28North_America_centered%29.svg.png",
+  "Canada":      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Canada_on_the_globe_%28North_America_centered%29.svg/330px-Canada_on_the_globe_%28North_America_centered%29.svg.png",
+  "England":     "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/England_in_United_Kingdom.svg/330px-England_in_United_Kingdom.svg.png",
+  "Japan":       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Japan_on_the_globe_%28Japan_centered%29.svg/330px-Japan_on_the_globe_%28Japan_centered%29.svg.png",
+  "France":      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/France_on_the_globe_%28Europe_centered%29.svg/330px-France_on_the_globe_%28Europe_centered%29.svg.png",
+  "Portugal":    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Portugal_on_the_globe_%28Europe_centered%29.svg/330px-Portugal_on_the_globe_%28Europe_centered%29.svg.png",
+  "Netherlands": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Netherlands_on_the_globe_%28Europe_centered%29.svg/330px-Netherlands_on_the_globe_%28Europe_centered%29.svg.png",
+  "Curaçao":     "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Curacao_on_the_globe_%28Americas_centered%29.svg/330px-Curacao_on_the_globe_%28Americas_centered%29.svg.png",
+};
+
 const MATCH_INTEL = {
   "Haiti|Scotland": [
     {k:"Map", t:"Both occupy the rugged western/northern portion of a larger island, making this arguably a fixture between two mountainous edge-territories with strong coastal identities."}
@@ -349,9 +375,22 @@ function card(m){
 function matchIntel(m){
   const items = intelFor(m);
   if (!items) return "";
+  const mapH = COUNTRY_MAPS[m.team1] || COUNTRY_MAPS[m.team2]
+    ? `<div class="intel-maps">
+        <figure>
+          ${COUNTRY_MAPS[m.team1] ? `<img src="${COUNTRY_MAPS[m.team1]}" alt="${m.team1} map" loading="lazy">` : "<div style='height:90px'></div>"}
+          <figcaption>${m.team1}</figcaption>
+        </figure>
+        <figure>
+          ${COUNTRY_MAPS[m.team2] ? `<img src="${COUNTRY_MAPS[m.team2]}" alt="${m.team2} map" loading="lazy">` : "<div style='height:90px'></div>"}
+          <figcaption>${m.team2}</figcaption>
+        </figure>
+      </div>`
+    : "";
   return `<div class="intel">
     <button type="button" class="intel-pill" data-intel aria-expanded="false">Intel</button>
     <div class="intel-pop" hidden>${items.map(x=>`<p>${x.t}</p>`).join("")}
+      ${mapH}
       <button type="button" class="intel-share" data-intel-share="${m.id}" aria-label="Share Intel to WhatsApp">↗</button>
     </div>
   </div>`;
