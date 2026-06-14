@@ -81,15 +81,17 @@ h2.day b{color:var(--text)}
 .badge.clash{background:var(--raise);color:var(--itv);border:1px solid var(--line)}
 .badge.stars{background:var(--raise);color:var(--dim);border:1px solid var(--line)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
-.intel{margin-top:10px;border-top:1px solid var(--line);padding-top:9px}
-.intel .ih{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
-.intel .ih b{font-family:"Archivo";font-size:.68rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--text)}
-.intel .ih span{font-size:.66rem;color:var(--faint)}
-.intel .rail{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
-.intel .rail::-webkit-scrollbar{display:none}
-.intel .item{flex:0 0 88%;scroll-snap-align:start;background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:9px 10px}
-.intel .k{font-family:"Archivo";font-size:.62rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--bbc);margin-bottom:5px}
-.intel p{font-size:.76rem;line-height:1.35;color:var(--dim)}
+.intel{margin-top:10px;border-top:1px solid var(--line);padding-top:9px;position:relative}
+.intel-pill{appearance:none;-webkit-appearance:none;background:var(--raise);border:1px solid var(--bbc);
+  border-radius:999px;color:var(--bbc);font-family:"Archivo";font-size:.7rem;font-weight:900;
+  letter-spacing:.08em;padding:6px 12px;cursor:pointer}
+.intel-pill[aria-expanded="true"]{background:rgba(255,210,48,.12)}
+.intel-pop{margin-top:8px;background:var(--raise);border:1px solid var(--line);border-radius:10px;
+  padding:10px 11px;box-shadow:0 12px 26px rgba(0,0,0,.22);animation:intelpop .14s ease-out}
+.intel-pop[hidden]{display:none}
+.intel-pop p{font-size:.76rem;line-height:1.35;color:var(--dim)}
+.intel-pop p+p{margin-top:8px}
+@keyframes intelpop{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
 .timeline{margin-top:10px;border-top:1px dashed var(--line);padding-top:9px;font-size:.74rem;color:var(--dim)}
 .timeline .gl{display:flex;gap:8px;padding:2px 0;font-variant-numeric:tabular-nums}
 .timeline .gl .min{color:var(--faint);width:34px;flex:none;text-align:right}
@@ -252,7 +254,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v32-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v33-2026-06-14";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -344,8 +346,8 @@ function matchIntel(m){
   const items = intelFor(m);
   if (!items) return "";
   return `<div class="intel">
-    <div class="ih"><b>intel</b><span>${items.length} ${items.length===1?"read":"reads"}</span></div>
-    <div class="rail">${items.map(x=>`<div class="item"><div class="k">${x.k}</div><p>${x.t}</p></div>`).join("")}</div>
+    <button type="button" class="intel-pill" data-intel aria-expanded="false">Intel</button>
+    <div class="intel-pop" hidden>${items.map(x=>`<p>${x.t}</p>`).join("")}</div>
   </div>`;
 }
 
@@ -847,6 +849,14 @@ document.querySelector("nav").addEventListener("click",async e=>{
   if (tab==="league" && API){ await loadLeagues(); render(); }   // pull fresh table/reveals
 });
 document.addEventListener("click",async e=>{
+  const intel = e.target.closest("[data-intel]");
+  if (intel){
+    const pop = intel.closest(".intel")?.querySelector(".intel-pop");
+    const open = intel.getAttribute("aria-expanded") === "true";
+    intel.setAttribute("aria-expanded", String(!open));
+    if (pop) pop.hidden = open;
+    return;
+  }
   const p = e.target.closest(".pill[data-team]"); if(p){ teamFilter=p.dataset.team; render(); return; }
   if (e.target.closest("[data-sharetable]")){ shareTable(); return; }
   const sc = e.target.closest(".sharecard[data-card]"); if(sc){ shareCard(+sc.dataset.card); return; }
