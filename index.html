@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="KickOff Oracle">
 <meta name="theme-color" content="#0B0D14">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>KickOff Oracle — World Cup 2026 UK TV Guide</title>
 <meta name="description" content="Every World Cup 2026 match: UK kick-off time and BBC/ITV channel, groups, bracket and England's route to the final.">
 <link rel="manifest" href="manifest.webmanifest">
@@ -242,7 +243,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v26-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v27-2026-06-14";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -264,6 +265,14 @@ const stars = m => {                                  // "worth staying up" v1 h
   return "●".repeat(s) + "○".repeat(3-s);
 };
 const clashes = m => DATA.matches.filter(x => x.id!==m.id && x.ukKickoff===m.ukKickoff);
+const youtubeSrc = id => {
+  const params = new URLSearchParams({
+    playsinline: "1",
+    rel: "0",
+    origin: location.origin
+  });
+  return `https://www.youtube-nocookie.com/embed/${id}?${params}`;
+};
 const ics = m => {
   const dt = new Date(m.ukKickoff), end = new Date(dt.getTime()+115*60000);
   const z = d => d.toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
@@ -313,9 +322,10 @@ function goalTimeline(m){
     </div>`).join("");
   const hl = m.youtube
     ? `<div class="hl-frame"><iframe
-      src="https://www.youtube-nocookie.com/embed/${m.youtube}"
+      src="${youtubeSrc(m.youtube)}"
       title="Official match highlights" loading="lazy" allowfullscreen
-      allow="encrypted-media; picture-in-picture"></iframe></div>`
+      referrerpolicy="strict-origin-when-cross-origin"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe></div>`
     : "";
   return `<div class="timeline">${rows}${hl}</div>`;
 }
