@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-14T20:10:11.578505+01:00",
+ "updated": "2026-06-14T20:15:12.800615+01:00",
  "matches": [
   {
    "id": 1,
@@ -521,13 +521,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 23,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 19,
@@ -692,7 +686,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 22,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 24,
@@ -737,7 +737,64 @@
    "channel": "ITV1",
    "score1": 7,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Felix Nmecha",
+     "minute": "6",
+     "team": "Germany",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Livano Comenencia",
+     "minute": "21",
+     "team": "Curaçao",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Nico Schlotterbeck",
+     "minute": "38",
+     "team": "Germany",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Kai Havertz",
+     "minute": "45+5",
+     "team": "Germany",
+     "og": false,
+     "pen": true
+    },
+    {
+     "name": "Jamal Musiala",
+     "minute": "47",
+     "team": "Germany",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Nathaniel Brown",
+     "minute": "68",
+     "team": "Germany",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Deniz Undav",
+     "minute": "78",
+     "team": "Germany",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Kai Havertz",
+     "minute": "88",
+     "team": "Germany",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -940,13 +997,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 32,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 34,
@@ -1122,7 +1173,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 18,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 41,
@@ -1272,13 +1329,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 31,
-    "code": 53,
-    "icon": "🌦️",
-    "desc": "Drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 47,
@@ -1584,7 +1635,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 26,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 59,
@@ -1604,13 +1661,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 26,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 60,
@@ -1916,13 +1967,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 32,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 72,
@@ -3219,6 +3264,12 @@
    "goals": 2
   },
   {
+   "name": "Kai Havertz",
+   "team": "Germany",
+   "flag": "🇩🇪",
+   "goals": 2
+  },
+  {
    "name": "Boualem Khoukhi",
    "team": "Qatar",
    "flag": "🇶🇦",
@@ -3243,6 +3294,18 @@
    "goals": 1
   },
   {
+   "name": "Deniz Undav",
+   "team": "Germany",
+   "flag": "🇩🇪",
+   "goals": 1
+  },
+  {
+   "name": "Felix Nmecha",
+   "team": "Germany",
+   "flag": "🇩🇪",
+   "goals": 1
+  },
+  {
    "name": "Giovanni Reyna",
    "team": "USA",
    "flag": "🇺🇸",
@@ -3258,6 +3321,12 @@
    "name": "Ismael Saibari",
    "team": "Morocco",
    "flag": "🇲🇦",
+   "goals": 1
+  },
+  {
+   "name": "Jamal Musiala",
+   "team": "Germany",
+   "flag": "🇩🇪",
    "goals": 1
   },
   {
@@ -3285,15 +3354,33 @@
    "goals": 1
   },
   {
+   "name": "Livano Comenencia",
+   "team": "Curaçao",
+   "flag": "🇨🇼",
+   "goals": 1
+  },
+  {
    "name": "Mauricio",
    "team": "Paraguay",
    "flag": "🇵🇾",
    "goals": 1
   },
   {
+   "name": "Nathaniel Brown",
+   "team": "Germany",
+   "flag": "🇩🇪",
+   "goals": 1
+  },
+  {
    "name": "Nestory Irankunda",
    "team": "Australia",
    "flag": "🇦🇺",
+   "goals": 1
+  },
+  {
+   "name": "Nico Schlotterbeck",
+   "team": "Germany",
+   "flag": "🇩🇪",
    "goals": 1
   },
   {
