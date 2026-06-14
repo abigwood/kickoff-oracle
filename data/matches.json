@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-14T20:55:19.304003+01:00",
+ "updated": "2026-06-14T21:00:12.279564+01:00",
  "matches": [
   {
    "id": 1,
@@ -640,13 +640,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 27,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 22,
@@ -692,7 +686,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 22,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 24,
@@ -893,13 +893,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 24,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 30,
@@ -945,7 +939,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
+   "status": "LIVE",
    "weather": {
     "temp": 30,
     "code": 1,
@@ -1179,7 +1173,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 18,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 41,
@@ -1381,13 +1381,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 49,
@@ -1641,7 +1635,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 26,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 59,
@@ -1791,13 +1791,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 61,
-    "icon": "🌦️",
-    "desc": "Light rain"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 65,
@@ -4004,11 +3998,6 @@
    0.39,
    0.258,
    0.352
-  ],
-  "31": [
-   0.479,
-   0.249,
-   0.273
   ],
   "32": [
    0.438,
