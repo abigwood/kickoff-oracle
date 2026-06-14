@@ -81,6 +81,15 @@ h2.day b{color:var(--text)}
 .badge.clash{background:var(--raise);color:var(--itv);border:1px solid var(--line)}
 .badge.stars{background:var(--raise);color:var(--dim);border:1px solid var(--line)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.intel{margin-top:10px;border-top:1px solid var(--line);padding-top:9px}
+.intel .ih{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+.intel .ih b{font-family:"Archivo";font-size:.68rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--text)}
+.intel .ih span{font-size:.66rem;color:var(--faint)}
+.intel .rail{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.intel .rail::-webkit-scrollbar{display:none}
+.intel .item{flex:0 0 88%;scroll-snap-align:start;background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:9px 10px}
+.intel .k{font-family:"Archivo";font-size:.62rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--bbc);margin-bottom:5px}
+.intel p{font-size:.76rem;line-height:1.35;color:var(--dim)}
 .timeline{margin-top:10px;border-top:1px dashed var(--line);padding-top:9px;font-size:.74rem;color:var(--dim)}
 .timeline .gl{display:flex;gap:8px;padding:2px 0;font-variant-numeric:tabular-nums}
 .timeline .gl .min{color:var(--faint);width:34px;flex:none;text-align:right}
@@ -243,11 +252,25 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v30-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v31-2026-06-14";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
 const MARQUEE = new Set(["England","Scotland","Brazil","Argentina","France","Spain","Germany","Portugal","Netherlands","Mexico","USA"]);
+const MATCH_INTEL = {
+  "Haiti|Scotland": [
+    {k:"Map", t:"Both occupy the rugged western/northern portion of a larger island, making this arguably a fixture between two mountainous edge-territories with strong coastal identities."}
+  ],
+  "Qatar|Switzerland": [
+    {k:"Map", t:"Qatar's highest natural point is lower than many Swiss villages, so this is basically sea-level peninsula football versus Alpine elevation football."}
+  ],
+  "Australia|Turkey": [
+    {k:"Map", t:"Both sit between major oceanic/cultural regions: Australia between the Indian and Pacific Oceans; Turkey between Europe, Asia, the Black Sea and the Mediterranean. Proper crossroads energy."}
+  ],
+  "Brazil|Netherlands": [
+    {k:"Map", t:"Brazil contains the Amazon basin; the Netherlands contains land that had to be argued back from the sea. One is vast river-world, the other is elite drainage engineering."}
+  ]
+};
 
 /* ---------- helpers ---------- */
 const fmtDay = iso => new Date(iso+"T12:00:00").toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
@@ -265,6 +288,7 @@ const stars = m => {                                  // "worth staying up" v1 h
   return "●".repeat(s) + "○".repeat(3-s);
 };
 const clashes = m => DATA.matches.filter(x => x.id!==m.id && x.ukKickoff===m.ukKickoff);
+const intelFor = m => MATCH_INTEL[`${m.team1}|${m.team2}`] || MATCH_INTEL[`${m.team2}|${m.team1}`] || null;
 const youtubeSrc = id => {
   const params = new URLSearchParams({
     playsinline: "1",
@@ -310,9 +334,19 @@ function card(m){
       ${m.weather?`<span class="tag wx" title="${m.weather.desc} at kick-off (local time)">${m.weather.icon} ${m.weather.temp}°C</span>`:""}
     </div>
     ${probStrip(m)}
+    ${matchIntel(m)}
     ${goalTimeline(m)}
     ${windowWidget(m)}
   </article>`;
+}
+
+function matchIntel(m){
+  const items = intelFor(m);
+  if (!items) return "";
+  return `<div class="intel">
+    <div class="ih"><b>Match Intel</b><span>${items.length} ${items.length===1?"read":"reads"}</span></div>
+    <div class="rail">${items.map(x=>`<div class="item"><div class="k">${x.k}</div><p>${x.t}</p></div>`).join("")}</div>
+  </div>`;
 }
 
 function goalTimeline(m){
