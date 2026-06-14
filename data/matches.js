@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-14T01:45:12.570495+01:00",
+ "updated": "2026-06-14T01:50:17.995006+01:00",
  "matches": [
   {
    "id": 1,
@@ -377,7 +377,22 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 1,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Ismael Saibari",
+     "minute": "21",
+     "team": "Morocco",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Vinícius Júnior",
+     "minute": "32",
+     "team": "Brazil",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "youtube": "oBklTAifI6c"
   },
@@ -425,7 +440,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 15,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 16,
@@ -736,13 +757,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 31,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 27,
@@ -762,7 +777,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 17,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 28,
@@ -1042,7 +1063,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 21,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 39,
@@ -1166,13 +1193,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 28,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 44,
@@ -1322,7 +1343,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 27,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 50,
@@ -1602,7 +1629,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 34,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 61,
@@ -1622,13 +1655,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 25,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 62,
@@ -1856,7 +1883,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 22,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 71,
@@ -1994,13 +2027,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 28,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 77,
@@ -3203,6 +3230,12 @@ window.WC_DATA = {
    "goals": 1
   },
   {
+   "name": "Ismael Saibari",
+   "team": "Morocco",
+   "flag": "🇲🇦",
+   "goals": 1
+  },
+  {
    "name": "Jovo Lukić",
    "team": "Bosnia & Herzegovina",
    "flag": "🇧🇦",
@@ -3236,6 +3269,12 @@ window.WC_DATA = {
    "name": "Raúl Jiménez",
    "team": "Mexico",
    "flag": "🇲🇽",
+   "goals": 1
+  },
+  {
+   "name": "Vinícius Júnior",
+   "team": "Brazil",
+   "flag": "🇧🇷",
    "goals": 1
   }
  ],
