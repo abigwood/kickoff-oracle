@@ -26,6 +26,7 @@ from xml.etree import ElementTree
 
 ROOT = Path(__file__).parent
 CHANNELS = {
+    "BBC Football": "UCli0KmmXMDjcgqvsheHfv-Q",
     "NBC Sports": "UCqZQlzSHbVJrwrn5XvzrzcA",
 }
 MANUAL_OVERRIDES = {
