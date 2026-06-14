@@ -77,6 +77,10 @@ h2.day b{color:var(--text)}
 .meta .tag.wx{color:var(--dim);font-variant-numeric:tabular-nums}
 .badge{font-size:.66rem;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:6px}
 .badge.live{background:var(--live);color:#fff;animation:pulse 1.4s infinite}
+.live-clock{display:inline-flex;align-items:center;gap:5px;background:var(--live);color:#fff;border-radius:999px;font-size:.7rem;font-weight:900;padding:4px 10px;letter-spacing:.04em;animation:pulse 1.4s infinite}
+.live-clock .min{font-variant-numeric:tabular-nums}
+.live-score{font-size:1.5rem;font-weight:900;text-align:center;letter-spacing:.06em;margin:6px 0 2px;color:#fff}
+.live-goals{margin-top:4px;font-size:.72rem;color:var(--dim);line-height:1.4}
 .badge.late{background:var(--raise);color:var(--bbc);border:1px solid var(--line)}
 .badge.clash{background:var(--raise);color:var(--itv);border:1px solid var(--line)}
 .badge.stars{background:var(--raise);color:var(--dim);border:1px solid var(--line)}
@@ -262,7 +266,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v37-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v38-2026-06-14";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -339,6 +343,54 @@ const stars = m => {                                  // "worth staying up" v1 h
 };
 const clashes = m => DATA.matches.filter(x => x.id!==m.id && x.ukKickoff===m.ukKickoff);
 const intelFor = m => MATCH_INTEL[`${m.team1}|${m.team2}`] || MATCH_INTEL[`${m.team2}|${m.team1}`] || null;
+/* ---- ESPN live overlay ---- */
+let ESPN_LIVE = {};   // keyed by "team1|team2" normalised, value: {score1,score2,minute,state,goals}
+const ESPN_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard";
+
+async function fetchESPN(){
+  try {
+    const r = await fetch(ESPN_URL, {cache:"no-store"});
+    if (!r.ok) return;
+    const d = await r.json();
+    const fresh = {};
+    for (const ev of (d.events||[])){
+      const comp = ev.competitions?.[0];
+      if (!comp) continue;
+      const status = comp.status?.type || {};
+      const state = status.state; // "pre"|"in"|"post"
+      if (state !== "in") continue;  // only patch live matches
+      const competitors = comp.competitors || [];
+      const home = competitors.find(c=>c.homeAway==="home");
+      const away = competitors.find(c=>c.homeAway==="away");
+      if (!home||!away) continue;
+      const minute = comp.status?.displayClock || "?";
+      const goals = (comp.details||[]).filter(x=>x.type?.text==="Goal").map(g=>({
+        minute: g.clock?.displayValue || "?",
+        name: g.athletesInvolved?.[0]?.displayName || "",
+        team: g.team?.displayName || ""
+      }));
+      // Build a key that will match our match data regardless of home/away order
+      const key1 = `${home.team.displayName}|${away.team.displayName}`;
+      const key2 = `${away.team.displayName}|${home.team.displayName}`;
+      const payload = {score1:+home.score||0, score2:+away.score||0, minute, state:"in", goals};
+      fresh[key1] = payload;
+      fresh[key2] = {score1:+away.score||0, score2:+home.score||0, minute, state:"in", goals};
+    }
+    ESPN_LIVE = fresh;
+  } catch(e){ /* silent fail */ }
+}
+
+function espnKey(m){ return `${m.team1}|${m.team2}`; }
+function espnData(m){ return ESPN_LIVE[espnKey(m)] || null; }
+
+function hasLiveMatch(){
+  return DATA.matches.some(m => {
+    const now = Date.now();
+    const ko = new Date(m.ukKickoff).getTime();
+    return m.status !== "FT" && ko <= now && (now - ko) < 130*60*1000;
+  });
+}
+
 const nextMatchId = () => {
   const upcoming = DATA.matches
     .filter(m => m.status === "UPCOMING" || m.status === "LIVE")
@@ -376,13 +428,19 @@ function card(m){
       <span class="chip ${chipClass(m.channel)}">${m.channel}</span>
     </div>
     <div class="teams">
-      <div class="team ${w1?"winner":""}"><span class="flag">${m.flag1}</span>${m.team1}
-        ${m.score1!=null?`<span class="score">${m.score1}</span>`:""}</div>
-      <div class="team ${w2?"winner":""}"><span class="flag">${m.flag2}</span>${m.team2}
-        ${m.score2!=null?`<span class="score">${m.score2}</span>`:""}</div>
+      ${(()=>{ const live=espnData(m); if(live){ return `
+        <div class="live-score">${m.flag1} ${live.score1} – ${live.score2} ${m.flag2}</div>
+        <div class="live-goals">${live.goals.map(g=>`⚽ ${g.minute} ${g.name} <span style='color:var(--faint)'>· ${g.team}</span>`).join(" &nbsp;·&nbsp; ")||""}</div>
+        <div style="font-size:.72rem;color:var(--faint);text-align:center;margin-top:2px">${m.team1} v ${m.team2}</div>`; }
+        return `
+        <div class="team ${w1?"winner":""}"><span class="flag">${m.flag1}</span>${m.team1}
+          ${m.score1!=null?`<span class="score">${m.score1}</span>`:""}</div>
+        <div class="team ${w2?"winner":""}"><span class="flag">${m.flag2}</span>${m.team2}
+          ${m.score2!=null?`<span class="score">${m.score2}</span>`:""}</div>`;
+      })()}
     </div>
     <div class="meta">
-      ${m.status==="LIVE"?`<span class="badge live">LIVE</span>`:""}
+      ${(()=>{ const live=espnData(m); return live ? `<div class="live-clock"><span>⚽ LIVE</span><span class="min">${live.minute}</span></div>` : m.status==="LIVE" ? `<span class="badge live">LIVE</span>` : ""; })()}
       ${isLate(m)&&m.status!=="FT"?`<span class="badge late">🌙 Late one ${stars(m)}</span>`:""}
       ${cls.length?`<span class="badge clash">⚡ Clashes: ${cls.map(c=>c.team1+" v "+c.team2).join(", ")}</span>`:""}
       <span class="tag">${m.stage==="Group"?"Group "+m.group:m.round}</span>
@@ -1103,6 +1161,20 @@ setInterval(async ()=>{
   if (tab==="league" && API){ try { await loadLeagues(); } catch {} render(); }
   else if (tab==="today") render();
 }, 60000);
+
+// ESPN live score loop — polls every 45s, only renders when a live match is detected
+(async function liveLoop(){
+  while(true){
+    await new Promise(r=>setTimeout(r, 45000));
+    if (document.hidden) continue;
+    await fetchESPN();
+    if (Object.keys(ESPN_LIVE).length > 0 || hasLiveMatch()){
+      render();
+    }
+  }
+})();
+// Kick off an immediate ESPN fetch so the live overlay is ready
+fetchESPN();
 
 // PWA service worker + FAST-UPDATE path. A new SW waits until WE tell it to take
 // over (so the takeover never races this page); the moment it does, we reload —
