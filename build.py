@@ -583,17 +583,70 @@ def fetch_balldontlie_results():
     return out
 
 
-def fallback_score(m, ko, now, bdl, wiki):
-    """openfootball had no score for this match. Fill from other sources once the
-    match is over (KO+2h): BALLDONTLIE first, then Wikipedia, then manual override."""
+ESPN_SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
+
+
+def fetch_espn_results():
+    """Fast, free FT results from ESPN's public scoreboard. ESPN carries a
+    DEFINITIVE finished flag (status state == "post"), so — unlike Wikipedia,
+    which needs the KO+2h / two-poll gate — a completed match here is trusted
+    immediately. This is what makes results auto-populate within minutes of the
+    whistle instead of waiting on openfootball/Wikipedia.
+
+    Fully defensive: any error returns {} so the build never breaks. ESPN team
+    displayNames are reconciled to our names via _canon/NAME_ALIAS (e.g.
+    "United States"->usa, "Türkiye"->turkey); an unrecognised name simply
+    doesn't match and falls through to the other sources.
+    Returns {(canon home, canon away): [home_score, away_score]} for FT games only.
+    """
+    out = {}
+    try:
+        req = urllib.request.Request(ESPN_SCOREBOARD, headers={"User-Agent": SRC_UA})
+        data = json.loads(urllib.request.urlopen(req, timeout=20).read())
+        for ev in data.get("events", []):
+            comp = (ev.get("competitions") or [{}])[0]
+            st = (comp.get("status") or {}).get("type") or {}
+            # only fully finished matches; "pre"/"in" are upcoming/live
+            if st.get("state") != "post":
+                continue
+            cs = comp.get("competitors") or []
+            home = next((c for c in cs if c.get("homeAway") == "home"), None)
+            away = next((c for c in cs if c.get("homeAway") == "away"), None)
+            if not home or not away:
+                continue
+            try:
+                hs, as_ = int(home.get("score")), int(away.get("score"))
+            except (TypeError, ValueError):
+                continue
+            hn = (home.get("team") or {}).get("displayName")
+            an = (away.get("team") or {}).get("displayName")
+            if hn and an:
+                out[(_canon(hn), _canon(an))] = [hs, as_]
+        if out:
+            print(f"espn: {len(out)} finished matches")
+    except Exception as e:
+        print(f"espn skipped: {e}")
+    return out
+
+
+def fallback_score(m, ko, now, espn, bdl, wiki):
+    """openfootball had no score for this match. ESPN carries a definitive FT
+    flag, so it's trusted the moment it reports the match finished; BALLDONTLIE,
+    Wikipedia and the manual override only fill once the match is safely over
+    (KO+2h). Precedence: openfootball (caller) -> ESPN -> BALLDONTLIE -> Wikipedia
+    -> manual override."""
+    k = (_canon(m["team1"]), _canon(m["team2"]))
+    kr = (k[1], k[0])
+    if k in espn:
+        return list(espn[k])
+    if kr in espn:
+        return [espn[kr][1], espn[kr][0]]  # teams listed the other way round
     if now >= ko + timedelta(hours=2):
-        k = (_canon(m["team1"]), _canon(m["team2"]))
-        kr = (k[1], k[0])
         for src in (bdl, wiki):
             if k in src:
                 return list(src[k])
             if kr in src:
-                return [src[kr][1], src[kr][0]]  # teams listed the other way round
+                return [src[kr][1], src[kr][0]]
     return RESULTS_OVERRIDE.get(f'{m["team1"]}|{m["team2"]}|{ko.strftime("%Y-%m-%d")}')
 
 
@@ -610,7 +663,7 @@ def main():
 
     # Pre-scan: which matches are over (KO+2h) but still have no openfootball
     # score? Fetch fallback sources only for the groups/stages that need them.
-    need_groups, need_knockout = set(), False
+    need_groups, need_knockout, need_espn = set(), False, False
     for m in feed["matches"]:
         fs1, fs2 = m.get("score1"), m.get("score2")
         if fs1 is None and isinstance(m.get("score"), dict):
@@ -623,6 +676,11 @@ def main():
             ko0 = uk_datetime(m["date"], m["time"])
         except Exception:
             continue
+        # ESPN has a definitive FT flag, so query it for ANY started-but-unscored
+        # match (it ignores still-live ones itself) — this is what lets results
+        # land within minutes of the whistle, not at KO+2h.
+        if now >= ko0:
+            need_espn = True
         if now < ko0 + timedelta(hours=2):
             continue
         g = (m.get("group", "") or "").replace("Group ", "").strip()
@@ -638,6 +696,7 @@ def main():
             prev_pending = json.loads(pending_file.read_text())
         except Exception:
             prev_pending = {}
+    espn_results = fetch_espn_results() if need_espn else {}      # fast FT flag, no KO+2h wait
     bdl_results, wiki_results, new_pending = {}, {}, {}
     if need_groups or need_knockout:
         bdl_results = fetch_balldontlie_results()                 # primary (key-gated)
@@ -664,9 +723,9 @@ def main():
             if len(ft) == 2:
                 s1, s2 = ft
         # openfootball is authoritative; if it has no score, fill from other
-        # sources (BALLDONTLIE → Wikipedia → manual override) once the match is over.
+        # sources (ESPN as soon as final → BALLDONTLIE → Wikipedia → manual override).
         if s1 is None or s2 is None:
-            fb = fallback_score(m, ko, now, bdl_results, wiki_results)
+            fb = fallback_score(m, ko, now, espn_results, bdl_results, wiki_results)
             if fb:
                 s1, s2 = fb
         played = s1 is not None and s2 is not None

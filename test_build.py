@@ -78,5 +78,51 @@ class TestGoalMinuteSort(unittest.TestCase):
         self.assertEqual(ordered, ["7", "31", "45+5", "73", "90+8", None])
 
 
+class TestFallbackPrecedence(unittest.TestCase):
+    """ESPN carries a definitive FT flag, so it fills immediately; BALLDONTLIE /
+    Wikipedia stay gated to KO+2h; manual override is last."""
+    # fake teams/date that are NOT in RESULTS_OVERRIDE, so the override never
+    # interferes with the gating assertions
+    M = {"team1": "Testland", "team2": "Mockia"}
+    KO = datetime(2026, 7, 1, 17, 0, 0, tzinfo=UK)
+    K = ("testland", "mockia")
+    OVR = "Testland|Mockia|2026-07-01"
+
+    def fb(self, now, espn=None, bdl=None, wiki=None):
+        return build.fallback_score(self.M, self.KO, now, espn or {}, bdl or {}, wiki or {})
+
+    def test_espn_fills_immediately_no_ko_plus_2h_wait(self):
+        # only 30 min after KO — bdl/wiki would be gated, but ESPN is trusted now
+        now = self.KO + timedelta(minutes=30)
+        self.assertEqual(self.fb(now, espn={self.K: [0, 0]}), [0, 0])
+
+    def test_espn_reverse_key_orientation(self):
+        now = self.KO + timedelta(minutes=30)
+        # ESPN listed the fixture the other way round (Mockia home)
+        self.assertEqual(self.fb(now, espn={(self.K[1], self.K[0]): [1, 0]}), [0, 1])
+
+    def test_espn_beats_bdl_and_wiki(self):
+        now = self.KO + timedelta(hours=3)
+        out = self.fb(now, espn={self.K: [0, 0]}, bdl={self.K: [2, 1]}, wiki={self.K: [3, 3]})
+        self.assertEqual(out, [0, 0], "ESPN takes precedence over bdl/wiki")
+
+    def test_bdl_wiki_still_gated_to_ko_plus_2h(self):
+        now = self.KO + timedelta(minutes=30)  # before +2h
+        self.assertIsNone(self.fb(now, bdl={self.K: [2, 1]}),
+                          "bdl/wiki must NOT fill before KO+2h when ESPN has nothing")
+
+    def test_bdl_fills_after_2h_when_no_espn(self):
+        now = self.KO + timedelta(hours=2, minutes=1)
+        self.assertEqual(self.fb(now, bdl={self.K: [2, 1]}), [2, 1])
+
+    def test_manual_override_last_resort(self):
+        now = self.KO + timedelta(hours=3)
+        build.RESULTS_OVERRIDE[self.OVR] = [4, 2]
+        try:
+            self.assertEqual(self.fb(now), [4, 2])
+        finally:
+            build.RESULTS_OVERRIDE.pop(self.OVR, None)
+
+
 if __name__ == "__main__":
     unittest.main()
