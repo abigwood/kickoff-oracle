@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-15T22:03:31.545897+01:00",
+ "updated": "2026-06-15T22:05:59.151571+01:00",
  "matches": [
   {
    "id": 1,
@@ -1166,7 +1166,22 @@
    "channel": "BBC One",
    "score1": 1,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Emam Ashour",
+     "minute": "19",
+     "team": "Egypt",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Mohamed Hany",
+     "minute": "66",
+     "team": "Belgium",
+     "og": true,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -1774,7 +1789,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 26,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
+   }
   },
   {
    "id": 62,
@@ -1794,13 +1815,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 16,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 63,
@@ -2158,7 +2173,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 34,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 77,
@@ -2178,13 +2199,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 31,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 78,
@@ -3409,6 +3424,12 @@
    "goals": 1
   },
   {
+   "name": "Emam Ashour",
+   "team": "Egypt",
+   "flag": "🇪🇬",
+   "goals": 1
+  },
+  {
    "name": "Felix Nmecha",
    "team": "Germany",
    "flag": "🇩🇪",
@@ -3478,12 +3499,6 @@
    "name": "Mattias Svanberg",
    "team": "Sweden",
    "flag": "🇸🇪",
-   "goals": 1
-  },
-  {
-   "name": "Mauricio",
-   "team": "Paraguay",
-   "flag": "🇵🇾",
    "goals": 1
   }
  ],
