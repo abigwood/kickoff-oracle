@@ -414,6 +414,7 @@ def add_weather(matches):
 # posts the real result it takes over, so entries here are safe to leave or remove.
 RESULTS_OVERRIDE = {
     "Mexico|South Africa|2026-06-11": [2, 0],
+    "Spain|Cape Verde|2026-06-15": [0, 0],  # FT 0-0 (ESPN + TheSportsDB); openfootball/Wikipedia lagged
 }
 
 # ---------------------------------------------------------------------------
