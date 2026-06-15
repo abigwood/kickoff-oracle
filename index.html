@@ -272,7 +272,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v47-2026-06-15";   // build marker (bumped each shell deploy)
+window.__BUILD = "v48-2026-06-15";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -304,28 +304,28 @@ const COUNTRY_MAPS = {
   "Belgium":      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Belgium_on_the_globe_%28Europe_centered%29.svg/330px-Belgium_on_the_globe_%28Europe_centered%29.svg.png",
   "Mexico":       "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Mexico_on_the_globe_%28Americas_centered%29.svg/330px-Mexico_on_the_globe_%28Americas_centered%29.svg.png",
   "South Africa": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/South_Africa_on_the_globe_%28Africa_centered%29.svg/330px-South_Africa_on_the_globe_%28Africa_centered%29.svg.png",
-  "Algeria": "https://commons.wikimedia.org/wiki/Special:FilePath/Algeria_on_the_globe_%28Africa_centered%29.svg?width=330",
-  "Austria": "https://commons.wikimedia.org/wiki/Special:FilePath/Austria_on_the_globe_%28Europe_centered%29.svg?width=330",
-  "Bosnia & Herzegovina": "https://commons.wikimedia.org/wiki/Special:FilePath/Bosnia_and_Herzegovina_on_the_globe_%28Europe_centered%29.svg?width=330",
-  "Cape Verde": "https://commons.wikimedia.org/wiki/Special:FilePath/Cape_Verde_on_the_globe_%28Africa_centered%29.svg?width=330",
-  "Colombia": "https://commons.wikimedia.org/wiki/Special:FilePath/Colombia_on_the_globe_%28Americas_centered%29.svg?width=330",
-  "Croatia": "https://commons.wikimedia.org/wiki/Special:FilePath/Croatia_on_the_globe_%28Europe_centered%29.svg?width=330",
-  "Czech Republic": "https://commons.wikimedia.org/wiki/Special:FilePath/Czech_Republic_on_the_globe_%28Europe_centered%29.svg?width=330",
-  "DR Congo": "https://commons.wikimedia.org/wiki/Special:FilePath/Democratic_Republic_of_the_Congo_on_the_globe_%28Africa_centered%29.svg?width=330",
-  "Egypt": "https://commons.wikimedia.org/wiki/Special:FilePath/Egypt_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
-  "Ghana": "https://commons.wikimedia.org/wiki/Special:FilePath/Ghana_on_the_globe_%28Africa_centered%29.svg?width=330",
-  "Iran": "https://commons.wikimedia.org/wiki/Special:FilePath/Iran_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
-  "Iraq": "https://commons.wikimedia.org/wiki/Special:FilePath/Iraq_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
-  "Jordan": "https://commons.wikimedia.org/wiki/Special:FilePath/Jordan_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
-  "New Zealand": "https://commons.wikimedia.org/wiki/Special:FilePath/New_Zealand_on_the_globe_%28Polynesia_centered%29.svg?width=330",
-  "Norway": "https://commons.wikimedia.org/wiki/Special:FilePath/Norway_on_the_globe_%28Europe_centered%29.svg?width=330",
-  "Panama": "https://commons.wikimedia.org/wiki/Special:FilePath/Panama_on_the_globe_%28Americas_centered%29.svg?width=330",
-  "Paraguay": "https://commons.wikimedia.org/wiki/Special:FilePath/Paraguay_on_the_globe_%28South_America_centered%29.svg?width=330",
-  "Saudi Arabia": "https://commons.wikimedia.org/wiki/Special:FilePath/Saudi_Arabia_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
-  "Senegal": "https://commons.wikimedia.org/wiki/Special:FilePath/Senegal_on_the_globe_%28Africa_centered%29.svg?width=330",
-  "South Korea": "https://commons.wikimedia.org/wiki/Special:FilePath/South_Korea_on_the_globe_%28Asia_centered%29.svg?width=330",
-  "Uruguay": "https://commons.wikimedia.org/wiki/Special:FilePath/Uruguay_on_the_globe_%28South_America_centered%29.svg?width=330",
-  "Uzbekistan": "https://commons.wikimedia.org/wiki/Special:FilePath/Uzbekistan_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
+  "Algeria": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Algeria_on_the_globe_%28Africa_centered%29.svg/330px-Algeria_on_the_globe_%28Africa_centered%29.svg.png",
+  "Austria": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Austria_on_the_globe_%28Europe_centered%29.svg/330px-Austria_on_the_globe_%28Europe_centered%29.svg.png",
+  "Bosnia & Herzegovina": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Bosnia_and_Herzegovina_on_the_globe_%28Europe_centered%29.svg/330px-Bosnia_and_Herzegovina_on_the_globe_%28Europe_centered%29.svg.png",
+  "Cape Verde": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Cape_Verde_on_the_globe_%28Africa_centered%29.svg/330px-Cape_Verde_on_the_globe_%28Africa_centered%29.svg.png",
+  "Colombia": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Colombia_on_the_globe_%28Americas_centered%29.svg/330px-Colombia_on_the_globe_%28Americas_centered%29.svg.png",
+  "Croatia": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Croatia_on_the_globe_%28Europe_centered%29.svg/330px-Croatia_on_the_globe_%28Europe_centered%29.svg.png",
+  "Czech Republic": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Czech_Republic_on_the_globe_%28Europe_centered%29.svg/330px-Czech_Republic_on_the_globe_%28Europe_centered%29.svg.png",
+  "DR Congo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Democratic_Republic_of_the_Congo_on_the_globe_%28Africa_centered%29.svg/330px-Democratic_Republic_of_the_Congo_on_the_globe_%28Africa_centered%29.svg.png",
+  "Egypt": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Egypt_on_the_globe_%28Afro-Eurasia_centered%29.svg/330px-Egypt_on_the_globe_%28Afro-Eurasia_centered%29.svg.png",
+  "Ghana": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Ghana_on_the_globe_%28Africa_centered%29.svg/330px-Ghana_on_the_globe_%28Africa_centered%29.svg.png",
+  "Iran": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Iran_on_the_globe_%28Afro-Eurasia_centered%29.svg/330px-Iran_on_the_globe_%28Afro-Eurasia_centered%29.svg.png",
+  "Iraq": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Iraq_on_the_globe_%28Afro-Eurasia_centered%29.svg/330px-Iraq_on_the_globe_%28Afro-Eurasia_centered%29.svg.png",
+  "Jordan": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Jordan_on_the_globe_%28Afro-Eurasia_centered%29.svg/330px-Jordan_on_the_globe_%28Afro-Eurasia_centered%29.svg.png",
+  "New Zealand": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/New_Zealand_on_the_globe_%28Polynesia_centered%29.svg/330px-New_Zealand_on_the_globe_%28Polynesia_centered%29.svg.png",
+  "Norway": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Norway_on_the_globe_%28Europe_centered%29.svg/330px-Norway_on_the_globe_%28Europe_centered%29.svg.png",
+  "Panama": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Panama_on_the_globe_%28Americas_centered%29.svg/330px-Panama_on_the_globe_%28Americas_centered%29.svg.png",
+  "Paraguay": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Paraguay_on_the_globe_%28South_America_centered%29.svg/330px-Paraguay_on_the_globe_%28South_America_centered%29.svg.png",
+  "Saudi Arabia": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Saudi_Arabia_on_the_globe_%28Afro-Eurasia_centered%29.svg/330px-Saudi_Arabia_on_the_globe_%28Afro-Eurasia_centered%29.svg.png",
+  "Senegal": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Senegal_on_the_globe_%28Africa_centered%29.svg/330px-Senegal_on_the_globe_%28Africa_centered%29.svg.png",
+  "South Korea": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/South_Korea_on_the_globe_%28Asia_centered%29.svg/330px-South_Korea_on_the_globe_%28Asia_centered%29.svg.png",
+  "Uruguay": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Uruguay_on_the_globe_%28South_America_centered%29.svg/330px-Uruguay_on_the_globe_%28South_America_centered%29.svg.png",
+  "Uzbekistan": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Uzbekistan_on_the_globe_%28Afro-Eurasia_centered%29.svg/330px-Uzbekistan_on_the_globe_%28Afro-Eurasia_centered%29.svg.png",
 };
 
 const MATCH_INTEL = {

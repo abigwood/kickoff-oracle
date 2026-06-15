@@ -216,7 +216,14 @@ def resolves_to_image(url, retries=4):
         try:
             with urllib.request.urlopen(req, timeout=20) as r:
                 ct = r.headers.get("Content-Type", "")
-                return (r.status == 200 and ct.startswith("image/")), ct
+                ok = r.status == 200 and ct.startswith("image/")
+                # On success return the FINAL resolved URL (after redirects) — the
+                # direct upload.wikimedia.org thumbnail. We must store THAT, not the
+                # Special:FilePath URL: the redirect chain carries no CORS headers,
+                # so a crossOrigin canvas load (the WhatsApp Intel share card) fails
+                # on it and silently drops the map. The direct upload URL serves
+                # 200 image + access-control-allow-origin:* and is canvas-safe.
+                return (ok, r.geturl() if ok else ct)
         except urllib.error.HTTPError as e:
             if e.code == 429:
                 time.sleep(2 * (attempt + 1) + 1)   # polite backoff
@@ -238,13 +245,12 @@ def resolve_maps(nations, existing_maps):
             continue
         ok_url = None
         for cand in MAP_CANDIDATES.get(nation, []):
-            url = filepath_url(cand)
-            ok, info = resolves_to_image(url)
+            ok, info = resolves_to_image(filepath_url(cand))
             tag = "OK " if ok else ("?? " if ok is None else "no ")
-            print(f"    map {nation:22} {tag} {cand}  {info if not ok else ''}", file=sys.stderr)
+            print(f"    map {nation:22} {tag} {cand}  {'' if ok else info}", file=sys.stderr)
             time.sleep(1.0)                               # be polite to Commons
             if ok:
-                ok_url = url
+                ok_url = info   # the resolved DIRECT upload URL (CORS/canvas-safe)
                 break
         if ok_url:
             resolved[nation] = ok_url
