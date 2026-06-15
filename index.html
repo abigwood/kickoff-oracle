@@ -272,7 +272,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v45-2026-06-14";   // build marker (bumped each shell deploy)
+window.__BUILD = "v46-2026-06-15";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -304,6 +304,28 @@ const COUNTRY_MAPS = {
   "Belgium":      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Belgium_on_the_globe_%28Europe_centered%29.svg/330px-Belgium_on_the_globe_%28Europe_centered%29.svg.png",
   "Mexico":       "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Mexico_on_the_globe_%28Americas_centered%29.svg/330px-Mexico_on_the_globe_%28Americas_centered%29.svg.png",
   "South Africa": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/South_Africa_on_the_globe_%28Africa_centered%29.svg/330px-South_Africa_on_the_globe_%28Africa_centered%29.svg.png",
+  "Algeria": "https://commons.wikimedia.org/wiki/Special:FilePath/Algeria_on_the_globe_%28Africa_centered%29.svg?width=330",
+  "Austria": "https://commons.wikimedia.org/wiki/Special:FilePath/Austria_on_the_globe_%28Europe_centered%29.svg?width=330",
+  "Bosnia & Herzegovina": "https://commons.wikimedia.org/wiki/Special:FilePath/Bosnia_and_Herzegovina_on_the_globe_%28Europe_centered%29.svg?width=330",
+  "Cape Verde": "https://commons.wikimedia.org/wiki/Special:FilePath/Cape_Verde_on_the_globe_%28Africa_centered%29.svg?width=330",
+  "Colombia": "https://commons.wikimedia.org/wiki/Special:FilePath/Colombia_on_the_globe_%28Americas_centered%29.svg?width=330",
+  "Croatia": "https://commons.wikimedia.org/wiki/Special:FilePath/Croatia_on_the_globe_%28Europe_centered%29.svg?width=330",
+  "Czech Republic": "https://commons.wikimedia.org/wiki/Special:FilePath/Czech_Republic_on_the_globe_%28Europe_centered%29.svg?width=330",
+  "DR Congo": "https://commons.wikimedia.org/wiki/Special:FilePath/Democratic_Republic_of_the_Congo_on_the_globe_%28Africa_centered%29.svg?width=330",
+  "Egypt": "https://commons.wikimedia.org/wiki/Special:FilePath/Egypt_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
+  "Ghana": "https://commons.wikimedia.org/wiki/Special:FilePath/Ghana_on_the_globe_%28Africa_centered%29.svg?width=330",
+  "Iran": "https://commons.wikimedia.org/wiki/Special:FilePath/Iran_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
+  "Iraq": "https://commons.wikimedia.org/wiki/Special:FilePath/Iraq_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
+  "Jordan": "https://commons.wikimedia.org/wiki/Special:FilePath/Jordan_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
+  "New Zealand": "https://commons.wikimedia.org/wiki/Special:FilePath/New_Zealand_on_the_globe_%28Polynesia_centered%29.svg?width=330",
+  "Norway": "https://commons.wikimedia.org/wiki/Special:FilePath/Norway_on_the_globe_%28Europe_centered%29.svg?width=330",
+  "Panama": "https://commons.wikimedia.org/wiki/Special:FilePath/Panama_on_the_globe_%28Americas_centered%29.svg?width=330",
+  "Paraguay": "https://commons.wikimedia.org/wiki/Special:FilePath/Paraguay_on_the_globe_%28South_America_centered%29.svg?width=330",
+  "Saudi Arabia": "https://commons.wikimedia.org/wiki/Special:FilePath/Saudi_Arabia_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
+  "Senegal": "https://commons.wikimedia.org/wiki/Special:FilePath/Senegal_on_the_globe_%28Africa_centered%29.svg?width=330",
+  "South Korea": "https://commons.wikimedia.org/wiki/Special:FilePath/South_Korea_on_the_globe_%28Asia_centered%29.svg?width=330",
+  "Uruguay": "https://commons.wikimedia.org/wiki/Special:FilePath/Uruguay_on_the_globe_%28South_America_centered%29.svg?width=330",
+  "Uzbekistan": "https://commons.wikimedia.org/wiki/Special:FilePath/Uzbekistan_on_the_globe_%28Afro-Eurasia_centered%29.svg?width=330",
 };
 
 const MATCH_INTEL = {
@@ -330,7 +352,202 @@ const MATCH_INTEL = {
   ],
   "Sweden|Tunisia": [
     {k:"Map", t:"Sweden extends from the 55th to the 69th parallel north, reaching above the Arctic Circle. Tunisia's northernmost point is still further south than Sweden's southernmost city. They share essentially zero geographic overlap: one is a sub-Arctic peninsula, the other is the Mediterranean gateway to the Sahara."}
-  ]
+  ],
+  "Algeria|Austria": [
+    {k:"Map", t:"Algeria is the largest country in Africa at over 2.3 million km², roughly 80% Sahara; Austria is a landlocked Alpine state of 83,879 km², roughly 62% mountains. One is a coastal desert giant, the other a mountain-locked fraction of its size."}
+  ],
+  "Argentina|Algeria": [
+    {k:"Map", t:"Two continental heavyweights on opposite sides of the equator: Argentina, 8th-largest on Earth, stretches down through the Pampas and Patagonia toward Tierra del Fuego; Algeria, largest in Africa, runs from its Mediterranean coast into a Sahara that swallows about 80% of it. Southern cone versus northern desert."}
+  ],
+  "Argentina|Austria": [
+    {k:"Map", t:"Both keep their mountains down one side — Argentina along the Andes to the west, Austria with ~62% Alpine terrain. But one is the 8th-largest country on Earth stretching to Tierra del Fuego, the other a landlocked 83,879 km² strip on the Danube. And they sit in opposite hemispheres entirely."}
+  ],
+  "Austria|Jordan": [
+    {k:"Map", t:"Austria is a landlocked Alpine mass where roughly 62% of the land tilts skyward; Jordan is a desert plateau dipping down to the Dead Sea shore, the lowest land on Earth at ~430 m below sea level. One country reaches up, the other reaches down."}
+  ],
+  "Belgium|Egypt": [
+    {k:"Map", t:"Belgium is a 30,528 km² lowland huddle on the North Sea; Egypt is a 1,010,408 km² expanse of Saharan desert threaded by the thin green ribbon of the Nile. One is a compact flat plain rising to the Ardennes, the other a continent-straddling near-emptiness where everyone clings to a single river."}
+  ],
+  "Belgium|Iran": [
+    {k:"Map", t:"Belgium is a compact 30,528 km² lowland on the North Sea, flat coastal plain easing up into the Ardennes. Iran is a 1,648,195 km² arid plateau ringed by mountains, hoarding two great salt deserts. One is a tidy delta-edge country; the other is fifty-odd Belgiums of desert and highland."}
+  ],
+  "Bosnia & Herzegovina|Qatar": [
+    {k:"Map", t:"Bosnia & Herzegovina is a mountainous Balkan mass of Dinaric Alps with just ~20 km of Adriatic coast, technically almost landlocked. Qatar is a flat desert peninsula jutting fully into the Persian Gulf, barely topping 100 m. One has all the elevation and no coastline; the other is all coastline and no elevation."}
+  ],
+  "Brazil|Haiti": [
+    {k:"Map", t:"Brazil is the fifth-largest country on Earth, sprawling across an entire continent from 5°N to 34°S and cradling most of the Amazon basin. Haiti is the mountainous western third of one Caribbean island. One is a continental colossus, the other a fragment of high ground on a fault line."}
+  ],
+  "Brazil|Morocco": [
+    {k:"Map", t:"Brazil spans the equator from 5°N to 34°S as the fifth-largest country on Earth, cradling most of the Amazon basin. Morocco sits entirely in the northern hemisphere, where the Atlas mountains hold back the Sahara. One is a continental rainforest giant; the other is Africa's doorstep to Europe."}
+  ],
+  "Canada|Bosnia & Herzegovina": [
+    {k:"Map", t:"Canada is the second-largest country on Earth and owns the world's longest coastline; Bosnia & Herzegovina is a mountainous Balkan country squeezed down to roughly 20 km of Adriatic shore at Neum. One has more coast than anyone alive can count, the other has barely a sliver."}
+  ],
+  "Canada|Qatar": [
+    {k:"Map", t:"Canada is the second-largest country on Earth with the longest coastline of any nation, sprawling up to 83°N into Arctic tundra; Qatar is a flat 11,586 km² desert peninsula barely cresting 100 m and topping out at 26°N. One is boreal infinity, the other a low Gulf nub with almost no surface water."}
+  ],
+  "Cape Verde|Saudi Arabia": [
+    {k:"Map", t:"Cape Verde is a 4,033 km² volcanic archipelago of 10 islands scattered in the Atlantic off West Africa; Saudi Arabia is a 2,149,690 km² landmass filling most of the Arabian Peninsula and home to the world's largest continuous sand desert. One is fragments in the ocean, the other an ocean of sand."}
+  ],
+  "Colombia|DR Congo": [
+    {k:"Map", t:"Both straddle the equator with near-mirrored latitude spans — Colombia from 4°S to 13°N, DR Congo from 5°N to 13°S — and both wrap their landmass around a vast tropical river basin. One leans Andean with twin coastlines on the Pacific and Caribbean; the other is a near-landlocked rainforest giant draining the Congo."}
+  ],
+  "Colombia|Portugal": [
+    {k:"Map", t:"Colombia is the only South American country fronting both the Pacific and the Caribbean, with the Andes splitting into three ranges; Portugal clings to the western edge of mainland Europe, Atlantic-facing with island outposts flung far offshore. Both are coastal extremists — one straddling the equator, the other looking west into open ocean."}
+  ],
+  "Croatia|Ghana": [
+    {k:"Map", t:"Croatia is a crescent of over a thousand islands strung along the deeply indented Dalmatian Adriatic; Ghana sits on the Gulf of Guinea where the Greenwich meridian crosses it, parking it near 0°,0°. One is fragmented Mediterranean coastline, the other a near-equatorial meeting of the zero lines."}
+  ],
+  "Curaçao|Ivory Coast": [
+    {k:"Map", t:"Ivory Coast is a 322,463 km² West African mainland on the Gulf of Guinea, just north of the equator; Curaçao is a 444 km² arid island in the southern Caribbean off the Venezuelan coast. One is a continental tropical-to-savanna sweep, the other a flat speck of land sitting at 12°N."}
+  ],
+  "Czech Republic|Mexico": [
+    {k:"Map", t:"The Czech Republic is a landlocked Bohemian basin of 78,871 km² ringed by low mountains; Mexico is a 1.97-million-km² plateau wedged between two Sierra Madre ranges with both Pacific and Caribbean coasts. One is twenty-five times the other, and one has no sea at all."}
+  ],
+  "Czech Republic|South Africa": [
+    {k:"Map", t:"The Czech Republic is a landlocked Bohemian basin of 78,871 km² in the northern hemisphere; South Africa is a 1,221,037 km² southern-tip giant where the Atlantic and Indian Oceans meet, and it fully surrounds another country. One is ringed by mountains, the other does the ringing."}
+  ],
+  "DR Congo|Uzbekistan": [
+    {k:"Map", t:"DR Congo straddles the equator inside the world's second-largest rainforest, drained by the Congo basin. Uzbekistan sits well north in the dry latitudes, one of only two doubly-landlocked countries on Earth, home to the Kyzylkum desert and the shrinking Aral Sea. Equatorial rainforest meets a desert with no route to any sea."}
+  ],
+  "Ecuador|Curaçao": [
+    {k:"Map", t:"Ecuador spans 283,561 km² of Andes, Amazon and Galápagos straddling the equator that names it; Curaçao is a 444 km² arid, flat island off the Venezuelan coast. One is an equatorial three-zone continent in miniature, the other a single sun-baked Caribbean speck."}
+  ],
+  "Ecuador|Germany": [
+    {k:"Map", t:"Ecuador is bisected by the equator, spanning a single degree north to five south; Germany sits firmly between the 47th and 55th parallels north. One straddles latitude zero with Andes and Amazon, the other is a central-European mass reaching from northern lowlands up to the Alps — different hemispheres, essentially."}
+  ],
+  "Egypt|Iran": [
+    {k:"Map", t:"Egypt is a desert flatland where life clings to a single thin Nile ribbon; Iran is a high arid plateau ringed by the Zagros and Alborz, with its own great salt deserts walled off by mountains. Both are mostly desert — but one drains to a river, the other to interior salt."}
+  ],
+  "England|Croatia": [
+    {k:"Map", t:"England occupies the south and centre of Great Britain, a single landmass with a lowland south and northern hills. Croatia is a crescent wrapped around the Adriatic, fraying into over a thousand islands along a deeply indented Dalmatian coast. One solid island, one shattered coastline."}
+  ],
+  "England|Ghana": [
+    {k:"Map", t:"England sits at 50°N–56°N on the island of Great Britain; Ghana stretches across 5°N–11°N on the Gulf of Guinea. They share one thing precisely: the Greenwich meridian, which runs through Ghana before reaching London — same line, vastly different latitudes."}
+  ],
+  "France|Iraq": [
+    {k:"Map", t:"France is the EU's largest country, the 'Hexagon' rising to Mont Blanc, the highest peak in western Europe, with Atlantic, Channel and Mediterranean coasts. Iraq is Mesopotamia, the fertile plain between the Tigris and Euphrates fading into western desert with only a narrow Gulf outlet. Three coasts versus one squeezed estuary."}
+  ],
+  "France|Senegal": [
+    {k:"Map", t:"France is the EU's largest country, a temperate Hexagon between 41°N and 51°N crowned by Mont Blanc, western Europe's highest peak. Senegal is flat Sahel hugging 12°N–17°N at the westernmost tip of mainland Africa. Both face the Atlantic, but one tilts Alpine, the other tropical."}
+  ],
+  "Germany|Ivory Coast": [
+    {k:"Map", t:"Two nations of near-identical size — roughly 357,000 versus 322,000 km² — sitting on opposite sides of the planet's thermostat: Germany runs from 47°N up to 55°N toward the Alps, while Ivory Coast hugs the Gulf of Guinea just north of the equator. Same footprint, wildly different latitude."}
+  ],
+  "Ghana|Panama": [
+    {k:"Map", t:"Ghana sits where the Greenwich meridian meets the equatorial belt of the Gulf of Guinea, hovering near 0°,0°. Panama is the narrow S-shaped isthmus stitching two continents together, sliced by a canal joining two oceans. One marks the origin of the map's coordinates; the other is the seam between hemispheres of land."}
+  ],
+  "Iran|New Zealand": [
+    {k:"Map", t:"Iran is a vast arid plateau in the northern hemisphere, ringed by mountains and walled with salt deserts; New Zealand is an isolated two-island Pacific nation deep in the south, about as far from any neighbour as land gets. Opposite hemispheres, opposite worlds — interior desert mass versus oceanic outpost."}
+  ],
+  "Iraq|Norway": [
+    {k:"Map", t:"Iraq sits between the Tigris and Euphrates, a fertile river plain trailing off into western desert with only a narrow Gulf outlet. Norway reaches above the Arctic Circle down a deeply fjorded, mountainous coast. The two share zero overlapping latitude — one is Mesopotamian heat, the other sub-Arctic fjord."}
+  ],
+  "Japan|Sweden": [
+    {k:"Map", t:"Japan spans 24°N to 46°N as a seismic Pacific archipelago of 6,852 islands; Sweden runs from the 55th to the 69th parallel, climbing above the Arctic Circle. They don't overlap by a single degree of latitude — one is a volcanic Ring of Fire chain, the other a sub-Arctic Scandinavian spine."}
+  ],
+  "Jordan|Algeria": [
+    {k:"Map", t:"Algeria is the largest country in Africa at over 2.3 million km², roughly twenty-six times the size of Jordan's 89,342 km². Both are overwhelmingly desert, but Jordan also holds the Dead Sea shore — the lowest land on Earth at some 430 m below sea level — while Algeria sprawls from the Mediterranean across 80% Sahara."}
+  ],
+  "Jordan|Argentina": [
+    {k:"Map", t:"Jordan is a desert plateau holding the lowest land on Earth at the Dead Sea shore, with only a sliver of coast at Aqaba. Argentina is the world's 8th-largest country, stretching from the subtropics to Tierra del Fuego. One clings to sea level and below; the other runs nearly the length of a hemisphere."}
+  ],
+  "Mexico|South Africa": [
+    {k:"Map", t:"Both are large two-ocean nations built around high interior plateaus, but they sit on opposite sides of the equator: Mexico spans 14°N–32°N between Pacific and Gulf/Caribbean, South Africa 22°S–35°S where the Atlantic meets the Indian Ocean. Plateau football, mirrored across hemispheres."}
+  ],
+  "Mexico|South Korea": [
+    {k:"Map", t:"Mexico is a near-two-million-km² wedge of high plateau pinned between two Sierra Madre ranges and two oceans; South Korea is a peninsula a twentieth the size, occupying half of one landmass with a ragged, island-strewn southern coast. One straddles the tropics, the other sits entirely north of it."}
+  ],
+  "Morocco|Haiti": [
+    {k:"Map", t:"Morocco spreads across 446,550 km² with Atlantic and Mediterranean coasts and the Atlas mountains walling off the Sahara; Haiti is a 27,750 km² mountainous third of Hispaniola whose very name means 'land of high mountains'. Both lean on their ranges, but one is a continental gateway to Europe and the other a Caribbean fault-line island."}
+  ],
+  "Netherlands|Sweden": [
+    {k:"Map", t:"The Netherlands is a 41,850 km² delta where roughly a sixth of the land was reclaimed from the sea behind dikes. Sweden sprawls over 450,295 km² from the 55th to the 69th parallel, reaching above the Arctic Circle. One country fights to keep the water out; the other counts its thousands of lakes."}
+  ],
+  "New Zealand|Belgium": [
+    {k:"Map", t:"New Zealand is two volcanic, Alpine islands marooned in the South Pacific — one of the most isolated nations on Earth — while Belgium is a small, densely packed North Sea lowland tucked between European neighbours. Add the hemisphere swap, and they share almost nothing but a coastline."}
+  ],
+  "New Zealand|Egypt": [
+    {k:"Map", t:"New Zealand is one of the most isolated nations on Earth, a pair of South Pacific islands ribbed with the Southern Alps and active volcanoes. Egypt is almost entirely Saharan desert, its population crammed onto a thin green ribbon of Nile valley. Opposite hemispheres, opposite relationships with water entirely."}
+  ],
+  "Norway|France": [
+    {k:"Map", t:"Norway is a long, narrow strip reaching past the Arctic Circle at 71°N, all fjords and mountains; France is the hexagonal heavyweight of the EU, topping out at Mont Blanc with Atlantic, Channel and Mediterranean frontage. Their latitude bands don't even touch — Norway begins north of where France ends."}
+  ],
+  "Norway|Senegal": [
+    {k:"Map", t:"Norway runs from the 58th parallel up past the Arctic Circle to 71°N, a fjord-shredded mountain ribbon; Senegal sits at a tropical 12°N–17°N as the flattest, westernmost tip of mainland Africa. One is sub-Arctic vertical, the other Sahel horizontal."}
+  ],
+  "Panama|Croatia": [
+    {k:"Map", t:"Both are oddly-shaped slivers: Panama a narrow S-shaped isthmus joining two continents, Croatia a crescent curling along the Adriatic. One is the land-bridge sliced by a canal linking two oceans; the other is a coastline shattered into over a thousand islands."}
+  ],
+  "Panama|England": [
+    {k:"Map", t:"Panama is a narrow S-shaped isthmus stitching two continents together, sliced through by a canal joining the Atlantic and Pacific. England occupies the south and centre of an island. One nation is a continental connector at 7°N; the other a temperate landmass sitting at 50°N and above."}
+  ],
+  "Paraguay|Australia": [
+    {k:"Map", t:"Both lie entirely in the southern hemisphere, but the resemblance ends at scale: Paraguay is a landlocked 406,752 km² heart of South America, while Australia is a 7,692,024 km² island-continent flanked by the Indian and Pacific Oceans. One has no coast at all; the other is nothing but coast."}
+  ],
+  "Portugal|DR Congo": [
+    {k:"Map", t:"Portugal is the westernmost sliver of mainland Europe, 92,212 km² clinging to the Atlantic edge of Iberia; DR Congo is the second-largest country in Africa at 2,344,858 km², straddling the equator across the Congo basin. One sits firmly in the northern temperate zone, the other has a foot in each hemisphere."}
+  ],
+  "Portugal|Uzbekistan": [
+    {k:"Map", t:"Portugal is the westernmost country of mainland Europe, clinging to the Atlantic edge of Iberia with island outposts scattered far offshore in the Azores and Madeira. Uzbekistan is one of only two doubly-landlocked nations on Earth, every neighbour itself sea-deprived. Maximum ocean versus zero ocean — twice over."}
+  ],
+  "Saudi Arabia|Uruguay": [
+    {k:"Map", t:"Saudi Arabia fills most of the Arabian Peninsula at 2,149,690 km², home to the world's largest continuous sand desert; Uruguay is gently rolling grassland barely a twelfth the size. One is the Empty Quarter, the other has no real mountains at all — desert north versus pastoral south, on opposite sides of the equator."}
+  ],
+  "Scotland|Brazil": [
+    {k:"Map", t:"Brazil is the fifth-largest country on Earth at over 8.5 million km², spanning from 5°N to 34°S; Scotland is a 77,933 km² northern sliver of Great Britain perched between the 55th and 61st parallels north. One straddles the equator and most of a continent, the other clings to the sub-Arctic Atlantic fringe."}
+  ],
+  "Scotland|Morocco": [
+    {k:"Map", t:"Scotland is a rugged sub-Arctic-leaning northern third of an island, scattered with ~790 isles between 55°N and 61°N; Morocco runs from 21°N to 36°N, where the Atlas range walls the coast off from the Sahara. One ends in cold Atlantic islands, the other in desert — and they never share a single parallel."}
+  ],
+  "Senegal|Iraq": [
+    {k:"Map", t:"Senegal is the westernmost point of mainland Africa, a flat Sahel coastline facing the open Atlantic. Iraq is Mesopotamia, the land cradled between the Tigris and Euphrates with only a narrow Gulf outlet. One is an Atlantic-facing edge; the other is a river-fed interior squeezed toward the sea."}
+  ],
+  "South Africa|South Korea": [
+    {k:"Map", t:"South Africa sits at Africa's southern tip where the Atlantic and Indian Oceans meet, a vast 1.2 million km² plateau spanning 22°S–35°S; South Korea is a mountainous peninsula a tenth the size, 33°N–39°N. Same numbers, opposite hemispheres."}
+  ],
+  "South Korea|Czech Republic": [
+    {k:"Map", t:"South Korea occupies the southern half of a peninsula, mountainous and fringed by thousands of islands off a ragged coast. The Czech Republic is a landlocked Bohemian basin ringed by low mountains, with the European watershed running through it. One is all coastline, the other has none."}
+  ],
+  "Spain|Cape Verde": [
+    {k:"Map", t:"Spain fills most of the Iberian peninsula, a high central Meseta plateau ringed by mountains and one of the most mountainous countries in Europe; Cape Verde is a volcanic archipelago of 10 islands scattered in the Atlantic some 570 km off West Africa. One is a continental landmass, the other is mid-ocean."}
+  ],
+  "Spain|Saudi Arabia": [
+    {k:"Map", t:"Both nations dominate their respective peninsulas — Spain filling Iberia, Saudi Arabia filling Arabia — but the scale and texture diverge sharply: Spain is a compact 505,990 km² of high plateau and ringing mountains, while Saudi Arabia sprawls over four times that, anchored by the Empty Quarter, the world's largest continuous sand desert."}
+  ],
+  "Switzerland|Bosnia & Herzegovina": [
+    {k:"Map", t:"Two mountainous, near-landlocked nations of similar size: Switzerland is fully landlocked under the Alps, while Bosnia & Herzegovina makes do with roughly 20 km of Adriatic coast at Neum. One has no sea at all; the other has barely any."}
+  ],
+  "Switzerland|Canada": [
+    {k:"Map", t:"Switzerland is a landlocked Alpine block of 41,285 km², its rivers born among villages above 1,000 m. Canada is the second-largest country on Earth at nearly ten million km², holding the longest coastline of any nation and reaching to 83°N. One is mountain interior; the other is continental scale with an Arctic edge."}
+  ],
+  "Tunisia|Japan": [
+    {k:"Map", t:"Tunisia is the northernmost country in Africa, a single Mediterranean mass tailing off into the Sahara. Japan is a volcanic archipelago of 6,852 islands strung along the Pacific Ring of Fire. One is continental sand giving way to desert; the other is ~73% mountainous and constantly shaking."}
+  ],
+  "Tunisia|Netherlands": [
+    {k:"Map", t:"Tunisia runs from a fertile Mediterranean north down into the Sahara, the tail-end of the Atlas range fading into desert. The Netherlands, meanwhile, sits a full 20 degrees of latitude north at or below sea level behind its dikes. One country fights the encroaching desert; the other fights the encroaching sea."}
+  ],
+  "Turkey|Paraguay": [
+    {k:"Map", t:"Turkey straddles two continents and three seas, split by the Bosphorus; Paraguay is the landlocked heart of South America, split internally by its namesake river into humid east and the dry Gran Chaco. One is a maritime crossroads, the other touches no ocean at all."}
+  ],
+  "Turkey|USA": [
+    {k:"Map", t:"Turkey straddles two continents across the Bosphorus, squeezed between three seas; the USA straddles a continent from Atlantic to Pacific across multiple time zones. Both are intercontinental in their own way, but at 783,562 km² versus 9,833,517 km², one spans straits while the other spans a landmass."}
+  ],
+  "USA|Australia": [
+    {k:"Map", t:"Two continental-scale giants on opposite sides of the equator: the USA stretches 25°N–49°N from Atlantic to Pacific, while Australia sits 10°S–43°S as an island continent between the Indian and Pacific Oceans. Hemispheric mirror images, both built on transcontinental scale."}
+  ],
+  "USA|Paraguay": [
+    {k:"Map", t:"The USA spans an entire continent from Atlantic to Pacific across multiple time zones; Paraguay is a landlocked pocket in the heart of South America with no coast at all. One touches two oceans, the other touches none — and they sit in opposite hemispheres to boot."}
+  ],
+  "Uruguay|Cape Verde": [
+    {k:"Map", t:"These two share an ocean and nothing else: Uruguay is a single rolling grassland mass in the South Atlantic with no real mountains, while Cape Verde is a volcanic ten-island archipelago in the North Atlantic crowned by the active Pico do Fogo. Opposite hemispheres, opposite reliefs."}
+  ],
+  "Uruguay|Spain": [
+    {k:"Map", t:"Uruguay is gently rolling grassland with no real mountains, fanned across the Río de la Plata and the Atlantic; Spain is the second-most-mountainous country in Europe, a high central Meseta ringed by peaks. Flat southern hemisphere versus rugged northern hemisphere."}
+  ],
+  "Uzbekistan|Colombia": [
+    {k:"Map", t:"Uzbekistan is one of only two doubly-landlocked countries on Earth, every neighbour itself landlocked; Colombia is the only South American nation touching both the Pacific and the Caribbean. One can't reach the sea without crossing two borders, the other has coastline to spare."}
+  ],
 };
 
 /* ---------- helpers ---------- */
