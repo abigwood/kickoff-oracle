@@ -35,15 +35,17 @@ test("picks only allowed once both teams are real", () => {
   assert.equal(bothTeamsReal("Côte d'Ivoire", "South Korea"), true, "apostrophes/spaces ok");
 });
 
-test("scoring — 3 exact / 1 result / 0 otherwise, no bankers", () => {
-  const A = { s1: 2, s2: 0 };
-  assert.deepEqual(scorePick({ s1: 2, s2: 0 }, A), { pts: 3, exact: true, hit: true, settled: true });
-  assert.deepEqual(scorePick({ s1: 1, s2: 0 }, A), { pts: 1, exact: false, hit: true, settled: true });
-  assert.deepEqual(scorePick({ s1: 1, s2: 1 }, A), { pts: 0, exact: false, hit: false, settled: true });
-  assert.deepEqual(scorePick({ s1: 0, s2: 2 }, A), { pts: 0, exact: false, hit: false, settled: true });
-  // draw result
-  assert.equal(scorePick({ s1: 0, s2: 0 }, { s1: 1, s2: 1 }).pts, 1, "any draw = correct result");
-  assert.equal(scorePick({ s1: 1, s2: 1 }, { s1: 1, s2: 1 }).pts, 3, "exact draw = 3");
+test("scoring — top-down hierarchy: 3 exact / 2 draw / 2 winner+GD / 1 winner / 0", () => {
+  const A = { s1: 2, s2: 0 }; // home win, GD 2
+  assert.deepEqual(scorePick({ s1: 2, s2: 0 }, A), { pts: 3, exact: true, hit: true, settled: true }, "exact");
+  assert.deepEqual(scorePick({ s1: 1, s2: 0 }, A), { pts: 1, exact: false, hit: true, settled: true }, "winner only (GD 1≠2)");
+  assert.deepEqual(scorePick({ s1: 3, s2: 1 }, A), { pts: 2, exact: false, hit: true, settled: true }, "winner+GD (both GD 2)");
+  assert.deepEqual(scorePick({ s1: 1, s2: 1 }, A), { pts: 0, exact: false, hit: false, settled: true }, "predicted draw, actual win");
+  assert.deepEqual(scorePick({ s1: 0, s2: 2 }, A), { pts: 0, exact: false, hit: false, settled: true }, "wrong winner");
+  // draw tiers — exact draw MUST beat the correct-draw tier
+  assert.equal(scorePick({ s1: 1, s2: 1 }, { s1: 1, s2: 1 }).pts, 3, "exact draw = 3, not 2");
+  assert.equal(scorePick({ s1: 0, s2: 0 }, { s1: 1, s2: 1 }).pts, 2, "correct draw, wrong score = 2");
+  assert.equal(scorePick({ s1: 2, s2: 1 }, { s1: 3, s2: 2 }).pts, 2, "correct winner + GD = 2");
   // unsettled / no pick
   assert.equal(scorePick({ s1: 1, s2: 0 }, { s1: null, s2: null }).settled, false);
   assert.equal(scorePick(null, A).pts, 0, "no pick = 0");
@@ -102,8 +104,8 @@ test("computeTable — points sum across matches, sorted, multi-member", () => {
   };
   const rows = computeTable(members, ft, picks);
   assert.deepEqual(rows.map((r) => [r.nick, r.pts, r.exact]), [
-    ["Smithy", 6, 2], // 3 + 3
-    ["Adam", 2, 0], // 1 + 1
+    ["Smithy", 6, 2], // 3 (exact 2-0) + 3 (exact 1-1)
+    ["Adam", 3, 0], // 1 (winner only 1-0 v 2-0) + 2 (correct draw 0-0 v 1-1)
     ["Dave", 0, 0], // wrong, then no pick
   ]);
   assert.equal(rows[2].streak, "😴1", "Dave's last outcome was no-pick");

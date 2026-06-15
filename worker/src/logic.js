@@ -16,22 +16,39 @@ export function windowState(koMs, nowMs) {
 export const isRealTeam = (t) => !!t && !/[\d/]/.test(t);
 export const bothTeamsReal = (a, b) => isRealTeam(a) && isRealTeam(b);
 
-// Score one prediction against the actual result. SIMPLE scoring (Adam, final):
-//   exact score        → 3 pts
-//   correct result W/D/L → 1 pt
-//   otherwise / no pick → 0 pts
+// Score one prediction against the actual result. Hierarchy (Adam, final) —
+// checked STRICTLY top-down, first match wins:
+//   1. exact score (incl. exact draws, e.g. 1–1 v 1–1)        → 3 pts
+//   2. correct draw, wrong score (e.g. 1–1 v 2–2)             → 2 pts
+//   3. correct winner AND correct goal difference (2–1 v 3–2) → 2 pts
+//   4. correct winner only, wrong GD                          → 1 pt
+//   5. wrong outcome / no pick                                → 0 pts
 // No bankers, no multipliers — do not reintroduce.
-// Returns {pts, exact, hit, settled}. settled=false when the match has no result yet.
+// exact MUST be tested before the draw/GD tiers so an exact draw scores 3, not 2.
+// Returns {pts, exact, hit, settled}. hit = scored > 0. settled=false when the
+// match has no result yet.
 export function scorePick(pred, actual) {
   if (!actual || actual.s1 == null || actual.s2 == null)
     return { pts: 0, exact: false, hit: false, settled: false };
   if (!pred || pred.s1 == null || pred.s2 == null)
     return { pts: 0, exact: false, hit: false, settled: true };
-  const exact = pred.s1 === actual.s1 && pred.s2 === actual.s2;
-  if (exact) return { pts: 3, exact: true, hit: true, settled: true };
+  // 1. exact score (covers exact draws too — checked first)
+  if (pred.s1 === actual.s1 && pred.s2 === actual.s2)
+    return { pts: 3, exact: true, hit: true, settled: true };
   const sign = (a, b) => (a > b ? 1 : a < b ? -1 : 0);
-  const correct = sign(pred.s1, pred.s2) === sign(actual.s1, actual.s2);
-  return { pts: correct ? 1 : 0, exact: false, hit: correct, settled: true };
+  const pOut = sign(pred.s1, pred.s2);
+  const aOut = sign(actual.s1, actual.s2);
+  // 2. correct draw, wrong scoreline (both draws, not exact)
+  if (pOut === 0 && aOut === 0)
+    return { pts: 2, exact: false, hit: true, settled: true };
+  // 3. correct winner AND correct goal difference
+  if (pOut === aOut && pred.s1 - pred.s2 === actual.s1 - actual.s2)
+    return { pts: 2, exact: false, hit: true, settled: true };
+  // 4. correct winner only, wrong GD
+  if (pOut === aOut)
+    return { pts: 1, exact: false, hit: true, settled: true };
+  // 5. wrong outcome
+  return { pts: 0, exact: false, hit: false, settled: true };
 }
 
 // Trailing streak label from a chronological list of per-match outcomes.
