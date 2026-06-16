@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-16T12:35:45.582363+01:00",
+ "updated": "2026-06-16T12:40:43.688559+01:00",
  "matches": [
   {
    "id": 1,
@@ -355,9 +355,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 16,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
    }
   },
   {
@@ -446,9 +446,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 25,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
    }
   },
   {
@@ -692,7 +692,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 21,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 24,
@@ -848,9 +854,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 21,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
    }
   },
   {
@@ -900,9 +906,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 28,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
    }
   },
   {
@@ -923,13 +929,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 26,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 31,
@@ -1092,9 +1092,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 30,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -1118,9 +1118,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 36,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
    }
   },
   {
@@ -1282,9 +1282,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 23,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
    }
   },
   {
@@ -1308,9 +1308,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 18,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -1334,9 +1334,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 17,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
    }
   },
   {
@@ -1417,9 +1417,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 30,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
    }
   },
   {
@@ -1440,7 +1440,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 31,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 47,
@@ -1463,9 +1469,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 32,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -1567,9 +1573,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 27,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -1593,9 +1599,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 19,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
    }
   },
   {
@@ -1616,13 +1622,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 29,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 54,
@@ -1775,9 +1775,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 26,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -1801,9 +1801,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 34,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
    }
   },
   {
@@ -1879,9 +1879,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 33,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -1957,9 +1957,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 34,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
