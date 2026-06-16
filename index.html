@@ -895,7 +895,7 @@ const DEMO_LEAGUES = [
   ],
   reveals:[
     {match:"Mexico v South Africa", picks:[
-      {nick:"Smithy", s:"2–0", hit:true, pts:"+3 🎯", exact:true},
+      {nick:"Smithy", s:"2–0", hit:true, pts:"+5 🎯", exact:true},
       {nick:"Adam", s:"1–0", hit:true, pts:"+1"},
       {nick:"Dave", s:"1–1", hit:false, pts:"0"},
       {nick:"Wrighty", s:"😴 no pick", hit:false, pts:"0", asleep:true},
@@ -1091,7 +1091,7 @@ function viewLeague(){
       <button class="sharecard" data-card="${ri}" style="margin:0 14px 14px;width:calc(100% - 28px)">📤 Share reveal card to the group chat</button>
       </div>`).join("")}
     <button class="invite" onclick="navigator.share?navigator.share({title:'${LEAGUE.name}',text:'Join my World Cup predictor league — pick the score anytime before kick-off. Code: ${LEAGUE.code}',url:location.origin+location.pathname+'?league=${LEAGUE.code}'}):alert('League code: ${LEAGUE.code}')">📲 Invite mates · code ${LEAGUE.code}</button>
-    <p class="note" style="margin-top:12px">The rules: pick the score anytime before kick-off — you can change it until KO, when picks lock and reveal. 🎯 Exact score = 3. Correct draw (wrong score) or right winner + goal difference = 2. Right winner only = 1. Wrong or no pick = 0. Highest total when the cup's lifted wins.</p>`
+    <p class="note" style="margin-top:12px">The rules: pick the score anytime before kick-off — you can change it until KO, when picks lock and reveal. 🎯 Exact score = 5. Correct draw (wrong score) or right winner + goal difference = 2. Right winner only = 1. Wrong or no pick = 0. Highest total when the cup's lifted wins.</p>`
    + (DEMO?"":`<div class="rcard">🔑 <b>Your recovery code:</b> <span class="rcode">${myCode||"…"}</span><br>
        <span style="color:var(--dim)">Save this. Enter it on any other device (or after clearing Safari) to restore your identity, picks and leagues.</span>
        <button class="lact" data-restore style="margin-top:6px">Restore on this device</button></div>`)
