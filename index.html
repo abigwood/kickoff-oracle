@@ -1224,7 +1224,7 @@ async function revealCard(rv){
   // footer
   x.fillStyle="#242C42"; x.fillRect(60,H-150,W-120,2);
   x.fillStyle="#8A93A8"; x.font="700 32px -apple-system,sans-serif";
-  x.fillText("🎯 exact 3 · draw/GD 2 · winner 1",60,H-90);
+  x.fillText("🎯 exact 5 · draw/GD 2 · winner 1",60,H-90);
   x.textAlign="right"; x.fillStyle="#FFD230"; x.font="900 36px -apple-system,sans-serif";
   x.fillText("KICKOFF ORACLE · "+LEAGUE.name, W-60, H-90); x.textAlign="left";
   return new Promise(res=>c.toBlob(res,"image/png"));
@@ -1276,7 +1276,7 @@ async function tableCard(L){
     x.textAlign="left"; y+=rowH;
   });
   x.fillStyle="#242C42"; x.fillRect(60,H-150,W-120,2);
-  x.textAlign="left"; x.fillStyle="#8A93A8"; x.font="700 30px -apple-system,sans-serif"; x.fillText("🎯 exact = 3 · result = 1 · join with code "+L.code, 60, H-92);
+  x.textAlign="left"; x.fillStyle="#8A93A8"; x.font="700 30px -apple-system,sans-serif"; x.fillText("🎯 exact = 5 · result = 1 · join with code "+L.code, 60, H-92);
   x.textAlign="right"; x.fillStyle="#FFD230"; x.font="900 36px -apple-system,Archivo,sans-serif"; x.fillText("KICKOFF ORACLE", W-60, H-92); x.textAlign="left";
   return new Promise(res=>c.toBlob(res,"image/png"));
 }

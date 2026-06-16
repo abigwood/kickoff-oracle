@@ -18,13 +18,13 @@ export const bothTeamsReal = (a, b) => isRealTeam(a) && isRealTeam(b);
 
 // Score one prediction against the actual result. Hierarchy (Adam, final) —
 // checked STRICTLY top-down, first match wins:
-//   1. exact score (incl. exact draws, e.g. 1–1 v 1–1)        → 3 pts
+//   1. exact score (incl. exact draws, e.g. 1–1 v 1–1)        → 5 pts
 //   2. correct draw, wrong score (e.g. 1–1 v 2–2)             → 2 pts
 //   3. correct winner AND correct goal difference (2–1 v 3–2) → 2 pts
 //   4. correct winner only, wrong GD                          → 1 pt
 //   5. wrong outcome / no pick                                → 0 pts
 // No bankers, no multipliers — do not reintroduce.
-// exact MUST be tested before the draw/GD tiers so an exact draw scores 3, not 2.
+// exact MUST be tested before the draw/GD tiers so an exact draw scores 5, not 2.
 // Returns {pts, exact, hit, settled}. hit = scored > 0. settled=false when the
 // match has no result yet.
 export function scorePick(pred, actual) {
@@ -34,7 +34,7 @@ export function scorePick(pred, actual) {
     return { pts: 0, exact: false, hit: false, settled: true };
   // 1. exact score (covers exact draws too — checked first)
   if (pred.s1 === actual.s1 && pred.s2 === actual.s2)
-    return { pts: 3, exact: true, hit: true, settled: true };
+    return { pts: 5, exact: true, hit: true, settled: true };
   const sign = (a, b) => (a > b ? 1 : a < b ? -1 : 0);
   const pOut = sign(pred.s1, pred.s2);
   const aOut = sign(actual.s1, actual.s2);

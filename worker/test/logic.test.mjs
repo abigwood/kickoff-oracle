@@ -35,15 +35,15 @@ test("picks only allowed once both teams are real", () => {
   assert.equal(bothTeamsReal("Côte d'Ivoire", "South Korea"), true, "apostrophes/spaces ok");
 });
 
-test("scoring — top-down hierarchy: 3 exact / 2 draw / 2 winner+GD / 1 winner / 0", () => {
+test("scoring — top-down hierarchy: 5 exact / 2 draw / 2 winner+GD / 1 winner / 0", () => {
   const A = { s1: 2, s2: 0 }; // home win, GD 2
-  assert.deepEqual(scorePick({ s1: 2, s2: 0 }, A), { pts: 3, exact: true, hit: true, settled: true }, "exact");
+  assert.deepEqual(scorePick({ s1: 2, s2: 0 }, A), { pts: 5, exact: true, hit: true, settled: true }, "exact");
   assert.deepEqual(scorePick({ s1: 1, s2: 0 }, A), { pts: 1, exact: false, hit: true, settled: true }, "winner only (GD 1≠2)");
   assert.deepEqual(scorePick({ s1: 3, s2: 1 }, A), { pts: 2, exact: false, hit: true, settled: true }, "winner+GD (both GD 2)");
   assert.deepEqual(scorePick({ s1: 1, s2: 1 }, A), { pts: 0, exact: false, hit: false, settled: true }, "predicted draw, actual win");
   assert.deepEqual(scorePick({ s1: 0, s2: 2 }, A), { pts: 0, exact: false, hit: false, settled: true }, "wrong winner");
   // draw tiers — exact draw MUST beat the correct-draw tier
-  assert.equal(scorePick({ s1: 1, s2: 1 }, { s1: 1, s2: 1 }).pts, 3, "exact draw = 3, not 2");
+  assert.equal(scorePick({ s1: 1, s2: 1 }, { s1: 1, s2: 1 }).pts, 5, "exact draw = 5, not 2");
   assert.equal(scorePick({ s1: 0, s2: 0 }, { s1: 1, s2: 1 }).pts, 2, "correct draw, wrong score = 2");
   assert.equal(scorePick({ s1: 2, s2: 1 }, { s1: 3, s2: 2 }).pts, 2, "correct winner + GD = 2");
   // unsettled / no pick
@@ -74,17 +74,17 @@ test("computeTable + buildReveals IGNORE picks timestamped at/after KO", () => {
   const ft = [{ id: 2, s1: 2, s2: 1, koMs: KOms }];
   const picks = {
     2: {
-      a: { s1: 2, s2: 1, ts: KOms - 1000 }, // valid (pre-KO) exact → 3
+      a: { s1: 2, s2: 1, ts: KOms - 1000 }, // valid (pre-KO) exact → 5
       b: { s1: 2, s2: 1, ts: KOms + 1000 }, // INVALID (post-KO) — must NOT score despite being exact
     },
   };
   const rows = computeTable(members, ft, picks);
-  assert.equal(rows.find((r) => r.uid === "a").pts, 3, "valid pre-KO pick scores");
+  assert.equal(rows.find((r) => r.uid === "a").pts, 5, "valid pre-KO pick scores");
   assert.equal(rows.find((r) => r.uid === "b").pts, 0, "post-KO pick ignored in scoring");
   // reveals: the post-KO pick shows as no-pick, not as a scored pick
   const matches = [{ id: 2, team1: "X", team2: "Y", ukKickoff: "2026-06-12T03:00:00+01:00", status: "FT", score1: 2, score2: 1 }];
   const [rv] = buildReveals(members, matches, picks, KOms + 5 * 3600 * 1000);
-  assert.equal(rv.picks.find((p) => p.uid === "a").pts, 3);
+  assert.equal(rv.picks.find((p) => p.uid === "a").pts, 5);
   assert.equal(rv.picks.find((p) => p.uid === "b").asleep, true, "post-KO pick revealed as no-pick");
 });
 
@@ -104,7 +104,7 @@ test("computeTable — points sum across matches, sorted, multi-member", () => {
   };
   const rows = computeTable(members, ft, picks);
   assert.deepEqual(rows.map((r) => [r.nick, r.pts, r.exact]), [
-    ["Smithy", 6, 2], // 3 (exact 2-0) + 3 (exact 1-1)
+    ["Smithy", 10, 2], // 5 (exact 2-0) + 5 (exact 1-1)
     ["Adam", 3, 0], // 1 (winner only 1-0 v 2-0) + 2 (correct draw 0-0 v 1-1)
     ["Dave", 0, 0], // wrong, then no pick
   ]);
@@ -133,8 +133,8 @@ test("computeTable — league join baseline ignores matches before member joined
     },
   };
   const rows = computeTable(members, ft, picks);
-  assert.equal(rows.find((r) => r.uid === "legacy").pts, 6, "legacy/no-baseline member keeps historical scoring");
-  assert.equal(rows.find((r) => r.uid === "new").pts, 3, "new member starts from matches after joining");
+  assert.equal(rows.find((r) => r.uid === "legacy").pts, 10, "legacy/no-baseline member keeps historical scoring");
+  assert.equal(rows.find((r) => r.uid === "new").pts, 5, "new member starts from matches after joining");
 });
 
 test("buildReveals hides open windows, reveals shut ones, scores when FT", () => {
@@ -166,7 +166,7 @@ test("buildReveals hides open windows, reveals shut ones, scores when FT", () =>
   );
   assert.equal(reveals[0].picks.length, 3, "whole league shown, incl. non-pickers");
   const smithy = reveals[0].picks.find((p) => p.nick === "Smithy");
-  assert.equal(smithy.pts, 3);
+  assert.equal(smithy.pts, 5);
   assert.equal(smithy.exact, true);
   const wrighty = reveals[0].picks.find((p) => p.nick === "Wrighty");
   assert.equal(wrighty.asleep, true, "no pick → asleep");

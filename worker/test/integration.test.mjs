@@ -129,7 +129,7 @@ test("full lifecycle: create → join → pick window edges → reveal gating �
   const rows = table.json.table;
   const adamRow = rows.find((r) => r.nick === "Adam");
   const smithyRow = rows.find((r) => r.nick === "Smithy");
-  assert.equal(adamRow.pts, 3, "Adam nailed 2–1 → exact → 3");
+  assert.equal(adamRow.pts, 5, "Adam nailed 2–1 → exact → 5");
   assert.equal(adamRow.exact, 1);
   assert.equal(smithyRow.pts, 0, "Smithy 1–1 vs 2–1 → wrong result → 0");
   assert.equal(rows[0].nick, "Adam", "leader first");
@@ -173,7 +173,7 @@ test("ownership: nick edit, leave, admin kick/rename, and cross-league pick inte
   assert.equal(ne.status, 200);
   const fixed = (await call(env, "GET", `/state?code=${L1}`, at(180))).json.table.find((r) => r.uid === "adam");
   assert.equal(fixed.nick, "Adam", "nick fixed in L1 immediately (cache busted)");
-  assert.equal(fixed.pts, 3, "Adam's exact 2–1 scores");
+  assert.equal(fixed.pts, 5, "Adam's exact 2–1 scores");
   const stillL2 = (await call(env, "GET", `/state?code=${L2}`, at(180))).json.table.find((r) => r.uid === "adam");
   assert.equal(stillL2.nick, "Adma", "renaming in L1 does NOT change the name in L2");
 
@@ -198,7 +198,7 @@ test("ownership: nick edit, leave, admin kick/rename, and cross-league pick inte
   assert.equal(s1.json.owner, "smithy", "admin handed to remaining member on owner-leave");
   const s2 = await call(env, "GET", `/state?code=${L2}`, at(180));
   const adamInL2 = s2.json.table.find((r) => r.uid === "adam");
-  assert.equal(adamInL2.pts, 3, "Adam's pick still counts in L2 — pick was never deleted");
+  assert.equal(adamInL2.pts, 5, "Adam's pick still counts in L2 — pick was never deleted");
   // the global pick record is intact
   const picks = await env.KV.get("picks:50", "json");
   assert.deepEqual({ s1: picks.adam.s1, s2: picks.adam.s2 }, { s1: 2, s2: 1 });
@@ -229,8 +229,8 @@ test("per-league names: one uid, different name per league; picks shared; reveal
   const sb = (await call(env, "GET", `/state?code=${B}`, at(180))).json;
   assert.equal(sa.table.find((r) => r.uid === "u1").nick, "Adam");
   assert.equal(sb.table.find((r) => r.uid === "u1").nick, "Biggers");
-  assert.equal(sa.table.find((r) => r.uid === "u1").pts, 3, "shared pick scores in A");
-  assert.equal(sb.table.find((r) => r.uid === "u1").pts, 3, "...and in B");
+  assert.equal(sa.table.find((r) => r.uid === "u1").pts, 5, "shared pick scores in A");
+  assert.equal(sb.table.find((r) => r.uid === "u1").pts, 5, "...and in B");
   // reveals show the league-correct name for the SAME uid
   assert.equal(sa.reveals[0].picks.find((p) => p.uid === "u1").nick, "Adam");
   assert.equal(sb.reveals[0].picks.find((p) => p.uid === "u1").nick, "Biggers");
@@ -259,7 +259,7 @@ test("new league created mid-tournament starts from zero without resetting exist
   MATCHES.matches[0] = { ...MATCHES.matches[0], status: "FT", score1: 2, score2: 1 };
 
   const before = (await call(env, "GET", `/state?code=${oldLeague}`, at(180))).json;
-  assert.equal(before.table.find((r) => r.uid === "adam").pts, 3, "old league has accumulated points");
+  assert.equal(before.table.find((r) => r.uid === "adam").pts, 5, "old league has accumulated points");
 
   const newLeague = (await call(env, "POST", "/league", {
     body: { uid: "adam", nickname: "Adam", name: "DUBAI MATES" },
@@ -272,7 +272,7 @@ test("new league created mid-tournament starts from zero without resetting exist
 
   const oldAfter = (await call(env, "GET", `/state?code=${oldLeague}`, at(183))).json;
   const fresh = (await call(env, "GET", `/state?code=${newLeague}`, at(183))).json;
-  assert.equal(oldAfter.table.find((r) => r.uid === "adam").pts, 3, "existing league still keeps its points");
+  assert.equal(oldAfter.table.find((r) => r.uid === "adam").pts, 5, "existing league still keeps its points");
   assert.equal(fresh.table.find((r) => r.uid === "adam").pts, 0, "same old pick does not back-score in new league");
   assert.equal(fresh.table.find((r) => r.uid === "smithy").pts, 0, "new mate also starts on zero");
   assert.equal(fresh.reveals.length, 0, "new league does not show old reveals from before joining");
@@ -288,7 +288,7 @@ test("fast settle: scores from pushed results (no Pages wait) and is frugal on n
   const s1 = await call(env, "POST", "/settle", { body: { secret: "s3cr3t", results: { "50": [2, 1] } } });
   assert.equal(s1.json.changed, true);
   const t1 = (await call(env, "GET", `/table?code=${code}`, { now: koMs + 10 * MIN })).json.table;
-  assert.equal(t1.find((r) => r.uid === "adam").pts, 3, "scored from pushed results, not Pages");
+  assert.equal(t1.find((r) => r.uid === "adam").pts, 5, "scored from pushed results, not Pages");
   // identical results again → no recompute (keeps a 5-min cron inside the free tier)
   const s2 = await call(env, "POST", "/settle", { body: { secret: "s3cr3t", results: { "50": [2, 1] } } });
   assert.equal(s2.json.unchanged, true);
