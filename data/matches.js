@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-16T22:05:48.509994+01:00",
+ "updated": "2026-06-16T22:08:48.182300+01:00",
  "matches": [
   {
    "id": 1,
@@ -718,13 +718,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 26,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 25,
@@ -1095,7 +1089,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 25,
+    "code": 81,
+    "icon": "🌧️",
+    "desc": "Showers"
+   }
   },
   {
    "id": 35,
@@ -1466,13 +1466,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 30,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 48,
@@ -1517,7 +1511,36 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 3,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Kylian Mbappé",
+     "minute": "66",
+     "team": "France",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Bradley Barcola",
+     "minute": "82",
+     "team": "France",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ibrahim Mbaye",
+     "minute": "90+5",
+     "team": "Senegal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Kylian Mbappé",
+     "minute": "90+6",
+     "team": "France",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -1798,7 +1821,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 61,
@@ -1948,13 +1977,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 28,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 67,
@@ -2286,7 +2309,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 19,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 80,
@@ -3423,6 +3452,12 @@ window.WC_DATA = {
    "goals": 2
   },
   {
+   "name": "Kylian Mbappé",
+   "team": "France",
+   "flag": "🇫🇷",
+   "goals": 2
+  },
+  {
    "name": "Yasin Ayari",
    "team": "Sweden",
    "flag": "🇸🇪",
@@ -3450,6 +3485,12 @@ window.WC_DATA = {
    "name": "Boualem Khoukhi",
    "team": "Qatar",
    "flag": "🇶🇦",
+   "goals": 1
+  },
+  {
+   "name": "Bradley Barcola",
+   "team": "France",
+   "flag": "🇫🇷",
    "goals": 1
   },
   {
@@ -3513,6 +3554,12 @@ window.WC_DATA = {
    "goals": 1
   },
   {
+   "name": "Ibrahim Mbaye",
+   "team": "Senegal",
+   "flag": "🇸🇳",
+   "goals": 1
+  },
+  {
    "name": "Ismael Saibari",
    "team": "Morocco",
    "flag": "🇲🇦",
@@ -3534,24 +3581,6 @@ window.WC_DATA = {
    "name": "Jovo Lukić",
    "team": "Bosnia & Herzegovina",
    "flag": "🇧🇦",
-   "goals": 1
-  },
-  {
-   "name": "Julián Quiñones",
-   "team": "Mexico",
-   "flag": "🇲🇽",
-   "goals": 1
-  },
-  {
-   "name": "Keito Nakamura",
-   "team": "Japan",
-   "flag": "🇯🇵",
-   "goals": 1
-  },
-  {
-   "name": "Ladislav Krejcí",
-   "team": "Czech Republic",
-   "flag": "🇨🇿",
    "goals": 1
   }
  ],
