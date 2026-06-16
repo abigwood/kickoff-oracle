@@ -1201,7 +1201,7 @@ async function revealCard(rv){
     x.textAlign="left"; y += 134;
   }
   x.fillStyle="#8A93A8"; x.font="600 32px -apple-system,sans-serif";
-  x.fillText(rv.settled ? "Everyone's picks, scored against the result:" : "Everyone's picks, locked before kick-off:", 60, y+54);
+  x.fillText(rv.settled ? "Full time — here's how you got on!" : "Everyone's picks, locked before kick-off:", 60, y+54);
   // pick rows — scaled so they always fit under the score
   const top = y + 96, n = rv.picks.length || 1;
   const rowH = Math.max(72, Math.min(124, (H - top - 170) / n));
@@ -1238,7 +1238,7 @@ async function shareCard(ri){
   const blob = await revealCard((LEAGUE.shownReveals||LEAGUE.reveals)[ri]);
   const file = new File([blob],"reveal.png",{type:"image/png"});
   if (navigator.canShare && navigator.canShare({files:[file]})){
-    try{ await navigator.share({files:[file],title:"Window shut — picks revealed"}); return;}catch(e){}
+    try{ await navigator.share({files:[file],title:"Full time — here's how you got on!"}); return;}catch(e){}
   }
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download="reveal.png"; a.click();
