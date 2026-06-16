@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-16T04:05:37.488372+01:00",
+ "updated": "2026-06-16T04:10:43.879507+01:00",
  "matches": [
   {
    "id": 1,
@@ -495,7 +495,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 32,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 18,
@@ -515,13 +521,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 34,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 19,
@@ -1115,7 +1115,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 37,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 36,
@@ -1135,13 +1141,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 30,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 37,
@@ -1196,7 +1196,36 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 2,
    "score2": 2,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Elijah Just",
+     "minute": "7",
+     "team": "New Zealand",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ramin Rezaeian",
+     "minute": "32",
+     "team": "Iran",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Elijah Just",
+     "minute": "54",
+     "team": "New Zealand",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Mohammad Mohebbi",
+     "minute": "64",
+     "team": "Iran",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -1534,7 +1563,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 27,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 52,
@@ -1554,13 +1589,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 23,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 53,
@@ -1814,7 +1843,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 17,
+    "code": 53,
+    "icon": "🌦️",
+    "desc": "Drizzle"
+   }
   },
   {
    "id": 63,
@@ -1860,13 +1895,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 18,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 65,
@@ -2120,7 +2149,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 30,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 75,
@@ -2218,13 +2253,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 79,
@@ -3363,6 +3392,12 @@ window.WC_DATA = {
  },
  "scorers": [
   {
+   "name": "Elijah Just",
+   "team": "New Zealand",
+   "flag": "🇳🇿",
+   "goals": 2
+  },
+  {
    "name": "Folarin Balogun",
    "team": "USA",
    "flag": "🇺🇸",
@@ -3504,12 +3539,6 @@ window.WC_DATA = {
    "name": "Ladislav Krejcí",
    "team": "Czech Republic",
    "flag": "🇨🇿",
-   "goals": 1
-  },
-  {
-   "name": "Livano Comenencia",
-   "team": "Curaçao",
-   "flag": "🇨🇼",
    "goals": 1
   }
  ],
