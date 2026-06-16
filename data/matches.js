@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-16T05:05:36.335848+01:00",
+ "updated": "2026-06-16T05:10:40.792152+01:00",
  "matches": [
   {
    "id": 1,
@@ -495,13 +495,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 32,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 18,
@@ -877,7 +871,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 25,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 29,
@@ -1089,13 +1089,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 30,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 35,
@@ -1569,7 +1563,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 27,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 52,
@@ -1589,13 +1589,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 23,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 53,
@@ -1953,13 +1947,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 34,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 67,
@@ -2005,7 +1993,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 18,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 69,
