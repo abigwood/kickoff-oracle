@@ -1,5 +1,5 @@
-window.WC_DATA = {
- "updated": "2026-06-17T20:00:44.159028+01:00",
+const MATCHES_DATA = {
+ "updated": "2026-06-17T20:04:58.617102+01:00",
  "build": "v55-2026-06-17",
  "matches": [
   {
@@ -1920,7 +1920,22 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 1,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "João Neves",
+     "minute": "6",
+     "team": "Portugal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Yoane Wissa",
+     "minute": "45+5",
+     "team": "DR Congo",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
