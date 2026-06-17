@@ -272,7 +272,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v50-2026-06-17";   // build marker (bumped each shell deploy)
+window.__BUILD = "v51-2026-06-17";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -931,6 +931,12 @@ const setLeagueCodes = a => localStorage.setItem("wc_leagues", JSON.stringify([.
 // the window is still open (the Worker hides everyone's picks until it shuts).
 let myPicks = DEMO ? {} : (()=>{ try { return JSON.parse(localStorage.getItem("wc_picks")||"{}"); } catch { return {}; } })();
 const saveMyPicks = () => { if(!DEMO) localStorage.setItem("wc_picks", JSON.stringify(myPicks)); };
+// recovery code cached locally (Phase 1 of the identity fix): the device keeps
+// showing/using it even after Phase 2 stops the server returning it by bare uid.
+const setMyCode = c => { if (c) localStorage.setItem("wc_code", c); };
+// a brand-new context (likely a Safari↔home-screen split) that hasn't done anything yet
+function freshIdentity(){ return !DEMO && !!API && myLeagueCodes().length===0
+  && Object.keys(myPicks).length===0 && !myNick() && !localStorage.getItem("wc_seen"); }
 
 async function api(path, body){
   const opts = body ? {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)} : {};
@@ -951,13 +957,13 @@ const mapReveal = rv => ({
     pts: !p.settled ? "" : (p.pts > 0 ? "+" + p.pts + (p.exact ? " 🎯" : "") : "0"),
   })),
 });
-let myCode = null;                 // this device's recovery code (3 words)
+let myCode = (!DEMO && localStorage.getItem("wc_code")) || null;   // recovery code, seeded from local cache
 async function loadLeagues(){
   if (DEMO) return;
   // /me gives this device's recovery code + the server's authoritative league list
   const me = await api("/me?uid="+encodeURIComponent(uid())).catch(()=>({status:0}));
   if (me.status===200){
-    myCode = me.j.recovery;
+    if (me.j.recovery){ myCode = me.j.recovery; setMyCode(myCode); }  // cache locally (survives Phase 2)
     if (me.j.nickname && !myNick()) setNick(me.j.nickname);
     if (Array.isArray(me.j.leagues)) setLeagueCodes(me.j.leagues);
   }
@@ -982,6 +988,8 @@ async function restoreIdentity(){
   const { status, j } = await api("/restore", { code });
   if (status!==200){ alert(j.error || "That code didn't match an identity."); return; }
   localStorage.setItem("wc_uid", j.uid);
+  if (j.recovery){ myCode = j.recovery; setMyCode(j.recovery); }   // persist restored code locally
+  localStorage.setItem("wc_seen","1");                            // a restored device is not "fresh"
   if (j.nickname) setNick(j.nickname);
   setLeagueCodes(j.leagues || []);
   myPicks = {}; saveMyPicks();          // picks come from the server now
@@ -1025,7 +1033,7 @@ function windowWidget(m){
     : `<span class="open">🪟 PICK OPEN</span><span class="wait">locks at KO · ${m.ukTime}</span>`;
   const p = myPicks[m.id] || {s1:0, s2:0};
   const has = !!myPicks[m.id];
-  return `<div class="window" data-wid="${m.id}"><div class="wlbl">${head}</div>
+  return `<div class="window" data-wid="${m.id}" data-ko="${m.ukKickoff}"><div class="wlbl">${head}</div>
     ${has?`<div class="locked" style="margin-bottom:8px">🔒 Your pick: ${m.team1} ${p.s1}–${p.s2} ${m.team2}<br>
       <span style="color:var(--dim);font-weight:400;font-size:.68rem">Change it anytime before kick-off · hidden from your mates until KO</span></div>`:""}
     <div class="picker">
@@ -1092,8 +1100,10 @@ function viewLeague(){
       </div>`).join("")}
     <button class="invite" onclick="navigator.share?navigator.share({title:'${LEAGUE.name}',text:'Join my World Cup predictor league — pick the score anytime before kick-off. Code: ${LEAGUE.code}',url:location.origin+location.pathname+'?league=${LEAGUE.code}'}):alert('League code: ${LEAGUE.code}')">📲 Invite mates · code ${LEAGUE.code}</button>
     <p class="note" style="margin-top:12px">The rules: pick the score anytime before kick-off — you can change it until KO, when picks lock and reveal. 🎯 Exact score = 5. Correct draw (wrong score) or right winner + goal difference = 2. Right winner only = 1. Wrong or no pick = 0. Highest total when the cup's lifted wins.</p>`
-   + (DEMO?"":`<div class="rcard">🔑 <b>Your recovery code:</b> <span class="rcode">${myCode||"…"}</span><br>
-       <span style="color:var(--dim)">Save this. Enter it on any other device (or after clearing Safari) to restore your identity, picks and leagues.</span>
+   + (DEMO?"":`<div class="rcard">🔑 <b>Your recovery code:</b> <span class="rcode">${myCode||"…"}</span>
+       ${myCode?`<button class="lact" data-copy="${myCode}" style="margin-left:6px">Copy code</button>
+       <button class="lact" data-copylink="${myCode}" style="margin-left:6px">Copy restore link</button>`:""}<br>
+       <span style="color:var(--dim)">Save this. Enter it (or open your restore link) on any other device — or after clearing Safari — to restore your identity, picks and leagues. Best: always open the app from your home-screen icon.</span>
        <button class="lact" data-restore style="margin-top:6px">Restore on this device</button></div>`)
    + (DEMO?"":`<p class="note" style="margin-top:10px">✏️ tap the pencil by your name to set the name you go by <i>in this league</i> (you can be someone else in another), 🚪 to leave.${iAmAdmin?" As admin you can ✏️ rename this league, ✖ remove members and merge unlinked picks.":""} <button class="lact danger" data-startagain>↺ Start again</button> wipes your identity on this device and leaves every league.</p>`);
 }
@@ -1317,6 +1327,17 @@ function render(){
       el.textContent = d<=0 ? "SHUT" : "shuts in "+Math.floor(d/6e4)+":"+String(Math.floor(d%6e4/1e3)).padStart(2,"0"); });
     wt(); setInterval(wt,1000);
   }
+  // COSMETIC KO-LOCK: when KO passes, visibly lock any open picker (disable steppers +
+  // lock button, relabel). Server already fails closed — this only stops a confusing
+  // "tap → rejected" on stale UI. Runs for every open window regardless of the >60m/<60m head.
+  const lockShut = ()=>document.querySelectorAll('.window[data-ko]').forEach(w=>{
+    if (w.dataset.shut || (new Date(w.dataset.ko)-Date.now()) > 0) return;
+    w.dataset.shut = "1";
+    w.querySelectorAll("[data-st],[data-lock]").forEach(b=>{ b.disabled = true; });
+    const open = w.querySelector(".wlbl .open"); if (open) open.textContent = "🔒 PICKS SHUT";
+    const wait = w.querySelector(".wlbl .wait"); if (wait) wait.textContent = "locked at kick-off";
+  });
+  if (document.querySelector('.window[data-ko]')){ lockShut(); setInterval(lockShut,1000); }
 }
 document.querySelector("nav").addEventListener("click",async e=>{
   const b = e.target.closest("button"); if(!b) return; tab=b.dataset.tab; render(); $("#main")?.scrollTo(0,0);
@@ -1370,6 +1391,11 @@ document.addEventListener("click",async e=>{
   if (API && e.target.closest(".lact")){
     const L = LEAGUE;
     if (e.target.closest("[data-restore]")){ await restoreIdentity(); return; }
+    const cp = e.target.closest("[data-copy]");
+    if (cp){ copyText(cp.dataset.copy); cp.textContent="Copied ✓"; setTimeout(()=>cp.textContent="Copy code",1500); return; }
+    const cl = e.target.closest("[data-copylink]");
+    if (cl){ copyText(location.origin+location.pathname+"?restore="+encodeURIComponent(cl.dataset.copylink));
+             cl.textContent="Link copied ✓"; setTimeout(()=>cl.textContent="Copy restore link",1500); return; }
     const mg = e.target.closest("[data-merge]");
     if (mg){
       const [dropUid, keepUid, code] = mg.dataset.merge.split("|");
@@ -1436,6 +1462,14 @@ document.addEventListener("click",async e=>{
     if (e.target.closest("[data-lock]")){
       const s1 = +w.querySelector('[data-v="s1"]').textContent,
             s2 = +w.querySelector('[data-v="s2"]').textContent;
+      // INTERCEPT a split: a fresh context locking its first pick is likely the same
+      // person from Safari/another device — steer them to Restore before they orphan a pick.
+      if (freshIdentity()){
+        if (!confirm("First time here?\n\nIf you've already picked on another device or in Safari, tap Cancel and use “🔑 Restore my identity” so your picks aren't split onto a new account.\n\nTap OK to continue as a NEW player.")){
+          await restoreIdentity(); return;
+        }
+        localStorage.setItem("wc_seen","1");
+      }
       if (API){
         const btn = e.target.closest("[data-lock]"); const label = btn.textContent;
         btn.disabled = true; btn.textContent = "Saving…";
@@ -1472,10 +1506,44 @@ async function loadData(){
 loadData().then(render);
 render();
 
-/* THE WINDOW: load the player's leagues, and honour ?league=CODE invite links */
+// clipboard helper (Phase 1, frictionless restore)
+function copyText(t){ try { navigator.clipboard.writeText(t); } catch { try { prompt("Copy this:", t); } catch {} } }
+
+// (A) SINGLE-CONTEXT STEERING: splits happen when a person oscillates Safari ↔ the
+// home-screen PWA (separate localStorage → separate identity). If we're NOT in the
+// installed app, steer them to open from the icon. Dismissible per session.
+function isStandalone(){ return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true; }
+function showSteeringBanner(){
+  if (DEMO || isStandalone() || sessionStorage.getItem("wc_ctx_dismiss") || document.getElementById("ko-ctx-bar")) return;
+  const bar = document.createElement("div");
+  bar.id = "ko-ctx-bar";
+  bar.style.cssText = "position:fixed;left:0;right:0;top:0;z-index:9998;background:#2A1E10;color:#FFE9C7;"
+    + "font:600 .76rem -apple-system,sans-serif;padding:8px 12px;display:flex;gap:10px;align-items:center;justify-content:center";
+  bar.innerHTML = "📲 Open from your home-screen icon so your picks & identity stay put "
+    + '<button id="ko-ctx-x" style="background:#FFD230;color:#2A1E10;border:0;border-radius:7px;padding:4px 9px;font-weight:800">Got it</button>';
+  document.body.appendChild(bar);
+  document.getElementById("ko-ctx-x").onclick = () => { sessionStorage.setItem("wc_ctx_dismiss","1"); bar.remove(); };
+}
+showSteeringBanner();
+
+/* THE WINDOW: auto-restore from a personal link, honour ?league= invites, intercept fresh contexts */
 if (API){
   (async () => {
-    const invite = new URLSearchParams(location.search).get("league");
+    const params = new URLSearchParams(location.search);
+    // (C) one-tap restore: opening a personal ?restore=CODE link rebinds this device, no typing
+    const rcode = (params.get("restore")||"").trim();
+    if (rcode){
+      const { status, j } = await api("/restore", { code: rcode }).catch(()=>({status:0}));
+      if (status===200){
+        localStorage.setItem("wc_uid", j.uid);
+        if (j.recovery){ myCode=j.recovery; setMyCode(j.recovery); }
+        localStorage.setItem("wc_seen","1");
+        if (j.nickname) setNick(j.nickname);
+        setLeagueCodes(j.leagues || []); myPicks = {}; saveMyPicks(); tab = "league";
+      }
+      history.replaceState(null,"",location.pathname);   // drop the code from the URL either way
+    }
+    const invite = params.get("league");
     if (invite && !myLeagueCodes().includes(invite.toUpperCase())){
       if (confirm("Join the predictor league with code "+invite.toUpperCase()+"?")){
         await joinByCode(invite);
@@ -1484,6 +1552,15 @@ if (API){
       }
     }
     await loadLeagues();
+    // (B) FIRST-RUN INTERCEPT: a brand-new context — likely a returning player on a new
+    // context — is offered Restore before they create a duplicate identity by picking.
+    if (freshIdentity() && !rcode){
+      if (confirm("Played before on another device or in Safari?\n\nTap OK to RESTORE your identity (keeps your picks & leagues — you'll enter your recovery code).\n\nTap Cancel if you're brand new.")){
+        await restoreIdentity();
+      } else {
+        localStorage.setItem("wc_seen","1");
+      }
+    }
     render();
   })();
 }
