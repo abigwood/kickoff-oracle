@@ -199,6 +199,9 @@ select.pill{appearance:none;-webkit-appearance:none}
 .scrow .bar{flex:1;height:8px;background:var(--raise);border-radius:99px;overflow:hidden}
 .scrow .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--itv),var(--bbc));border-radius:99px}
 .scrow .pc{font-family:"Archivo";font-weight:800;font-variant-numeric:tabular-nums;width:52px;text-align:right;flex:none}
+.scrow .mv{width:14px;flex:none;text-align:center;font-size:.66rem;line-height:1;color:#7b8398}
+.scrow .mv.up{color:#39D98A}
+.scrow .mv.down{color:#ff5a5a}
 .probs{display:flex;height:6px;border-radius:99px;overflow:hidden;margin-top:10px}
 .probs i{display:block;height:100%}
 .problbl{display:flex;justify-content:space-between;font-size:.64rem;color:var(--faint);margin-top:4px;font-variant-numeric:tabular-nums}
@@ -276,7 +279,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v55-2026-06-17";   // build marker (bumped each shell deploy)
+window.__BUILD = "v56-2026-06-17";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -920,8 +923,8 @@ let activeLeague = 0;
 const DEMO_LEAGUES = [
  {code:"BNTR26", name:"THE BANTER CUP",
   table:[
-    {nick:"Smithy", pts:9, exact:2, streak:"W3"},
-    {nick:"Adam", pts:7, exact:1, streak:"W1"},
+    {nick:"Smithy", pts:9, exact:2, streak:"W3", move:"up"},
+    {nick:"Adam", pts:7, exact:1, streak:"W1", move:"down"},
     {nick:"Dave", pts:4, exact:0, streak:"L1"},
     {nick:"Wrighty", pts:2, exact:0, streak:"😴1"},
   ],
@@ -1079,6 +1082,13 @@ function windowWidget(m){
     ${has?"":`<div style="text-align:center;color:var(--dim);font-size:.66rem;margin-top:6px">Hidden from your mates until kick-off, then everyone reveals at once</div>`}</div>`;
 }
 
+// chart-style movement triangle vs the table BEFORE the last settled match
+// (server-computed 'move'): green ▲ up, red ▼ down, white – unchanged / new / unknown.
+function moveArrow(mv){
+  if (mv==="up")   return `<span class="mv up" title="Up since the last result">▲</span>`;
+  if (mv==="down") return `<span class="mv down" title="Down since the last result">▼</span>`;
+  return `<span class="mv" title="No change">–</span>`;
+}
 function viewLeague(){
   const L = LEAGUE;
   const switcher = `<div class="pills">
@@ -1117,6 +1127,7 @@ function viewLeague(){
         <span class="pc" style="width:22px;text-align:left;color:var(--faint)">${i+1}</span>
         <span class="nm">${r.nick}${isMe?` <span class="youtag">you</span>`:""}<div class="lmeta"><span>${r.exact} exact</span><span>${r.streak}</span></div></span>
         ${ctrl?`<span class="lctrls">${ctrl}</span>`:""}
+        ${moveArrow(r.move)}
         <span class="pc">${r.pts}</span></div>`;
       }).join("")}
     </div>
