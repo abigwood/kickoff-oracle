@@ -272,7 +272,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v52-2026-06-17";   // build marker (bumped each shell deploy)
+window.__BUILD = "v53-2026-06-17";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -653,7 +653,7 @@ const ics = m => {
 function card(m){
   const cls = clashes(m);
   const w1 = m.status==="FT" && m.score1>m.score2, w2 = m.status==="FT" && m.score2>m.score1;
-  return `<article class="match">
+  return `<article class="match" data-mid="${m.id}">
     <a class="ics" href="${ics(m)}" download="${m.team1}-v-${m.team2}.ics" aria-label="Add to calendar">＋</a>
     <div class="toprow">
       <div class="ko">${m.ukTime}<small>UK time</small></div>
@@ -1127,6 +1127,7 @@ function viewToday(){
   [...recent, ...todays, ...coming].forEach(m => { if (!seen.has(m.id)){ seen.add(m.id); win.push(m); } });
   const next = DATA.matches.filter(m=>m.status==="UPCOMING" && koMs(m)>now)
                            .sort((a,b)=>koMs(a)-koMs(b))[0];
+  nextUpcomingId = next ? next.id : null;   // jump target for the Today nav (soonest un-kicked-off game)
   let hero = "";
   if (next) hero = `<div class="next"><div class="lbl">Next kick-off · ${next.channel}</div>
       <div class="cd" id="cd" data-ko="${next.ukKickoff}">—</div>
@@ -1317,22 +1318,43 @@ async function shareTable(){
 }
 
 /* ---------- render & wire-up ---------- */
-// One-shot: on the FIRST Today render with data, scroll so "Today" sits at the top
-// (recent results above → scroll up; coming up below). Never re-snaps on the 60s
-// refresh, on tab return, or once the user has scrolled — so it can't fight a pick.
-let todayAnchored = false;
-function anchorTodayOnce(){
-  if (todayAnchored) return;
-  const el = document.querySelector('#main [data-today]');
-  if (!el) return;                              // no Today header yet (pre-data / rest day) — try next render
-  if (window.scrollY > 40){ todayAnchored = true; return; }   // user already moved — don't fight them
-  todayAnchored = true;                         // claim the one-shot before the async scroll
-  requestAnimationFrame(()=> el.scrollIntoView({ block: "start" }));
+let nextUpcomingId = null;                       // set by viewToday() = soonest un-kicked-off match id
+// Each time the user lands on Today, jump the soonest un-kicked-off fixture to the top
+// (recent results scroll UP from there, later games scroll DOWN). Two guards:
+//  (1) never jump while a pick is mid-edit (unsaved stepper / focused input / save in
+//      flight) — skip so it can't interrupt picking;
+//  (2) jump once per navigation only — jumpToNextPending is set on nav-to-Today / first
+//      load and cleared after the jump, so the 60s refresh and a later manual scroll are
+//      left alone until the user navigates away and back.
+let jumpToNextPending = true;                    // first load lands on Today → jump once
+function pickBusy(){                             // a pick is mid-edit — don't yank the view
+  if (document.querySelector('[data-lock][disabled]')) return true;           // save in flight
+  const ae = document.activeElement;
+  if (ae && ae.matches && ae.matches('input, textarea, [contenteditable]')) return true;
+  for (const w of document.querySelectorAll('.window[data-wid]')){
+    const id = w.dataset.wid;
+    const s1 = +(w.querySelector('[data-v="s1"]')||{}).textContent;
+    const s2 = +(w.querySelector('[data-v="s2"]')||{}).textContent;
+    const saved = (typeof myPicks!=="undefined") ? myPicks[id] : null;
+    if (saved){ if (s1!==saved.s1 || s2!==saved.s2) return true; }             // edited, not re-locked
+    else if (s1!==0 || s2!==0) return true;                                    // typed, never locked
+  }
+  return false;
+}
+function maybeJumpToNext(){
+  if (!jumpToNextPending) return;
+  if (pickBusy()){ jumpToNextPending = false; return; }                        // guard (1): never interrupt a pick
+  const el = (nextUpcomingId!=null && document.querySelector(`#main [data-mid="${nextUpcomingId}"]`)) // next fixture card
+          || document.querySelector('#main [data-today]')                      // fallback: Today header
+          || document.querySelector('#main .match');                          // fallback: most-recent card / top
+  if (!el) return;                              // nothing rendered yet (pre-data) — keep pending for next render
+  jumpToNextPending = false;                    // guard (2): one jump per navigation
+  requestAnimationFrame(()=> el.scrollIntoView({ block: "start" }));           // runs after the nav handler's scrollTo(0,0)
 }
 function render(){
   const views = {today:viewToday,fixtures:viewFixtures,groups:viewGroups,bracket:viewBracket,stats:viewStats,league:viewLeague,england:viewEngland};
   $("#main").innerHTML = views[tab]();
-  if (tab==="today") anchorTodayOnce();
+  if (tab==="today") maybeJumpToNext();
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
   if (DATA.updated) $("#updated").textContent = "Updated " +
     new Date(DATA.updated).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
@@ -1366,7 +1388,9 @@ function render(){
   if (document.querySelector('.window[data-ko]')){ lockShut(); setInterval(lockShut,1000); }
 }
 document.querySelector("nav").addEventListener("click",async e=>{
-  const b = e.target.closest("button"); if(!b) return; tab=b.dataset.tab; render(); $("#main")?.scrollTo(0,0);
+  const b = e.target.closest("button"); if(!b) return; tab=b.dataset.tab;
+  if (tab==="today") jumpToNextPending = true;   // re-arm the jump every time we land on Today
+  render(); $("#main")?.scrollTo(0,0);
   if (tab==="league" && API){ await loadLeagues(); render(); }   // pull fresh table/reveals
 });
 document.addEventListener("click",async e=>{
