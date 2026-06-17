@@ -272,7 +272,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v49-2026-06-16";   // build marker (bumped each shell deploy)
+window.__BUILD = "v50-2026-06-17";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -1465,7 +1465,7 @@ async function loadData(){
     const r = await fetch("data/matches.json",{cache:"no-store"});
     isOffline = r.headers.get("X-From-Cache")==="1";   // SW gave us last saved data
     const d = await r.json();
-    if (d && d.matches) DATA = d;
+    if (d && d.matches) { DATA = d; window.maybeShowUpdateBanner && window.maybeShowUpdateBanner(); }
   } catch { isOffline = true; }   // total network failure → keep last data
   return DATA;
 }
@@ -1516,21 +1516,58 @@ fetchESPN();
 // without relaunching. We only trigger the takeover for an UPDATE (a current
 // controller already exists), so the genuine first install never reloads.
 if ("serviceWorker" in navigator) {
-  let refreshing = false, updateTriggered = false;
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (refreshing || !updateTriggered) return;   // only reload for an update we asked for
-    refreshing = true;
-    location.reload();                            // the new SW took over → swap to the new app
+  let updateTriggered = false, reloaded = false, pendingReload = false;
+
+  // GUARD: never yank a user mid-pick. "In progress" = a /pick save in flight, an open
+  // window whose stepper differs from the saved pick, or a focused text input.
+  function pickInProgress() {
+    if (document.querySelector('[data-lock][disabled]')) return true;            // save in flight
+    const ae = document.activeElement;
+    if (ae && ae.matches && ae.matches('input, textarea, [contenteditable]')) return true;
+    for (const w of document.querySelectorAll('.window[data-wid]')) {
+      const id = w.dataset.wid;
+      const s1 = +(w.querySelector('[data-v="s1"]') || {}).textContent;
+      const s2 = +(w.querySelector('[data-v="s2"]') || {}).textContent;
+      const saved = (typeof myPicks !== "undefined") ? myPicks[id] : null;
+      if (saved) { if (s1 !== saved.s1 || s2 !== saved.s2) return true; }         // edited, not re-locked
+      else if (s1 !== 0 || s2 !== 0) return true;                                 // typed, never locked
+    }
+    return false;
+  }
+
+  function safeReload(force) {
+    if (reloaded) return;                                                          // one-shot per page instance
+    if (document.querySelector('[data-lock][disabled]')) { pendingReload = true; return; } // never during a save
+    if (!force && (document.hidden || pickInProgress())) { pendingReload = true; showUpdateBanner(); return; }
+    const target = window.__SERVER_BUILD || window.__BUILD || "";
+    if (target && sessionStorage.getItem("ko_applied") === target) return;        // loop guard across reloads
+    if (target) sessionStorage.setItem("ko_applied", target);
+    reloaded = true;
+    location.reload();
+  }
+
+  // apply a deferred update the moment it's safe (back in foreground, or a tap once picking's done)
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && pendingReload) safeReload(); });
+  document.addEventListener("click", () => { if (pendingReload && !pickInProgress()) safeReload(); }, true);
+
+  navigator.serviceWorker.addEventListener("message", (e) => {
+    if (e.data && e.data.type === "SW_UPDATED") {
+      if (e.source) e.source.postMessage({ type: "RELOAD_ACK" });  // I'll handle my own (guarded) reload
+      safeReload();
+    }
   });
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (updateTriggered) safeReload(); });
+
   addEventListener("load", async () => {
     try {
       const reg = await navigator.serviceWorker.register("sw.js", { updateViaCache: "none" });
-      const apply = (w) => { if (w) { updateTriggered = true; w.postMessage({ type: "SKIP_WAITING" }); } };
-      if (reg.waiting && navigator.serviceWorker.controller) apply(reg.waiting); // update already ready
+      window.__swReg = reg;
+      const ping = (w) => { if (w) { updateTriggered = true; w.postMessage({ type: "SKIP_WAITING" }); } };
+      if (reg.waiting && navigator.serviceWorker.controller) { ping(reg.waiting); showUpdateBanner(); } // ready
       reg.addEventListener("updatefound", () => {
         const nw = reg.installing;
         nw && nw.addEventListener("statechange", () => {
-          if (nw.state === "installed" && navigator.serviceWorker.controller) apply(nw); // a fresh update
+          if (nw.state === "installed" && navigator.serviceWorker.controller) { ping(nw); showUpdateBanner(); }
         });
       });
       const check = () => { if (!document.hidden) reg.update().catch(()=>{}); };
@@ -1538,6 +1575,38 @@ if ("serviceWorker" in navigator) {
       setInterval(check, 30 * 60 * 1000);                       // periodic backstop
     } catch {}
   });
+
+  // --- "new version available" banner (network-first build gate + waiting-SW signal) ---
+  window.buildNum = (s) => { const m = /v(\d+)/.exec(s || ""); return m ? +m[1] : 0; };
+  window.showUpdateBanner = function () {
+    if (document.getElementById("ko-update-bar")) return;
+    const bar = document.createElement("div");
+    bar.id = "ko-update-bar";
+    bar.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#16321F;color:#EAFBF0;"
+      + "font:600 .8rem -apple-system,sans-serif;padding:10px 14px;display:flex;gap:12px;align-items:center;"
+      + "justify-content:center;box-shadow:0 -2px 12px rgba(0,0,0,.4)";
+    bar.innerHTML = '🔄 New version available '
+      + '<button id="ko-update-go" style="background:#39D98A;color:#06210F;border:0;border-radius:8px;'
+      + 'padding:6px 12px;font-weight:800">Tap to update</button>';
+    document.body.appendChild(bar);
+    document.getElementById("ko-update-go").onclick = async () => {
+      bar.querySelector("button").textContent = "Updating…";
+      try {
+        const reg = window.__swReg || await navigator.serviceWorker.getRegistration();
+        if (reg && reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
+        else if (reg) await reg.update();
+      } catch {}
+      safeReload(true);   // explicit user choice → apply now (still waits out any in-flight save)
+    };
+  };
+  window.maybeShowUpdateBanner = function () {
+    const server = (typeof DATA !== "undefined") && DATA.build;
+    if (server) window.__SERVER_BUILD = server;
+    if (server && buildNum(server) > buildNum(window.__BUILD)) showUpdateBanner();  // strictly newer only
+  };
+} else {
+  window.showUpdateBanner = function () {};
+  window.maybeShowUpdateBanner = function () {};
 }
 // reflect connectivity + pull fresh the moment we're back online
 addEventListener("offline", ()=>{ isOffline=true; render(); });

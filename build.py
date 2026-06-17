@@ -824,8 +824,16 @@ def main():
     add_weather(matches)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
+    # Surface the deployed frontend build so clients can detect they're stale
+    # (update-delivery only — not used in any scoring/window logic).
+    try:
+        _bm = re.search(r'__BUILD\s*=\s*"([^"]+)"', (Path(__file__).parent / "index.html").read_text())
+        build_marker = _bm.group(1) if _bm else None
+    except Exception:
+        build_marker = None
     payload = json.dumps({
         "updated": now.isoformat(),
+        "build": build_marker,
         "matches": matches,
         "groups": tables,
         "scorers": scorers,

@@ -4,7 +4,7 @@
      and league tables are never stale; offline falls back to the last response
      tagged so the app can show an "offline" note.
    Bump VERSION on each deploy to roll the caches. */
-const VERSION = "v49-2026-06-16";
+const VERSION = "v50-2026-06-17";
 const SHELL = VERSION + "-shell";
 const RUNTIME = VERSION + "-runtime";
 const API_HOST = "kickoff-oracle-window.abigwood.workers.dev";
@@ -29,17 +29,41 @@ self.addEventListener("install", (e) => {
   );
 });
 
-// the page asks us to take over the instant it's ready for the update
+// clients that said "I'll reload myself safely" — don't force-navigate them
+const ackedClients = new Set();
+
 self.addEventListener("message", (e) => {
-  if (e.data && e.data.type === "SKIP_WAITING") self.skipWaiting();
+  if (!e.data) return;
+  // the page asks us to take over the instant it's ready for the update
+  if (e.data.type === "SKIP_WAITING") self.skipWaiting();
+  // a cooperating page will handle its OWN guarded reload — exempt it from the fallback navigate
+  if (e.data.type === "RELOAD_ACK" && e.source) ackedClients.add(e.source.id);
 });
 
 self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => !k.startsWith(VERSION)).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
+  e.waitUntil((async () => {
+    const keys = await caches.keys();
+    const stale = keys.filter((k) => !k.startsWith(VERSION));
+    await Promise.all(stale.map((k) => caches.delete(k)));
+    await self.clients.claim();
+
+    // FIRST install (no prior version cached) → the page already loaded fresh; reload no one.
+    if (stale.length === 0) return;
+
+    // This is an UPDATE → rescue open windows onto the fresh shell. Cooperating
+    // (new-build) pages ACK and reload THEMSELVES at a safe moment (never mid-pick).
+    // Pages that don't ACK (old stranded builds with no handler) are force-navigated
+    // as a fallback — they only reach activate right after a fresh navigation/open,
+    // so they are not mid-pick. (client.navigate is flaky on iOS WebKit; those PWAs
+    // self-heal on the next cold relaunch, which serves the fresh shell.)
+    let wins = await self.clients.matchAll({ type: "window" });
+    wins.forEach((c) => c.postMessage({ type: "SW_UPDATED", version: VERSION }));
+    await new Promise((r) => setTimeout(r, 3000)); // grace for cooperating pages to ACK / self-reload
+    wins = await self.clients.matchAll({ type: "window" });
+    for (const c of wins) {
+      if (!ackedClients.has(c.id)) { try { await c.navigate(c.url); } catch {} }
+    }
+  })());
 });
 
 // network-first: always fresh online; offline → last cached, tagged X-From-Cache
