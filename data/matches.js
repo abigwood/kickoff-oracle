@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-17T22:05:43.904771+01:00",
+ "updated": "2026-06-17T22:10:42.799743+01:00",
  "build": "v55-2026-06-17",
  "matches": [
   {
@@ -128,9 +128,9 @@ window.WC_DATA = {
    "status": "UPCOMING",
    "weather": {
     "temp": 20,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
    }
   },
   {
@@ -154,9 +154,9 @@ window.WC_DATA = {
    "status": "UPCOMING",
    "weather": {
     "temp": 17,
-    "code": 80,
+    "code": 53,
     "icon": "🌦️",
-    "desc": "Showers"
+    "desc": "Drizzle"
    }
   },
   {
@@ -1493,13 +1493,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 19,
-    "code": 53,
-    "icon": "🌦️",
-    "desc": "Drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 49,
@@ -1626,7 +1620,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 26,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 52,
@@ -1960,9 +1960,9 @@ window.WC_DATA = {
    "status": "UPCOMING",
    "weather": {
     "temp": 17,
-    "code": 53,
-    "icon": "🌦️",
-    "desc": "Drizzle"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -2012,9 +2012,9 @@ window.WC_DATA = {
    "status": "UPCOMING",
    "weather": {
     "temp": 17,
-    "code": 51,
+    "code": 53,
     "icon": "🌦️",
-    "desc": "Light drizzle"
+    "desc": "Drizzle"
    }
   },
   {
@@ -2139,13 +2139,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 29,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 70,
@@ -2191,7 +2185,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 19,
+    "code": 61,
+    "icon": "🌦️",
+    "desc": "Light rain"
+   }
   },
   {
    "id": 72,
@@ -2523,13 +2523,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 25,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 85,
