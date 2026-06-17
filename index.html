@@ -272,7 +272,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v53-2026-06-17";   // build marker (bumped each shell deploy)
+window.__BUILD = "v54-2026-06-17";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -570,6 +570,18 @@ const intelFor = m => MATCH_INTEL[`${m.team1}|${m.team2}`] || MATCH_INTEL[`${m.t
 /* ---- ESPN live overlay ---- */
 let ESPN_LIVE = {};   // keyed by "team1|team2" normalised, value: {score1,score2,minute,state,goals}
 const ESPN_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard";
+// ESPN's team names differ from ours (e.g. "Congo DR" vs "DR Congo") — without
+// this map the live-score key never matches and the overlay silently no-ops even
+// though the match is live. Mirrors build.py's NAME_ALIAS. Maps any variant → OUR name.
+const ESPN_NAME = {
+  "congo dr":"DR Congo", "democratic republic of the congo":"DR Congo",
+  "united states":"USA", "côte d'ivoire":"Ivory Coast", "cote d'ivoire":"Ivory Coast",
+  "türkiye":"Turkey", "turkiye":"Turkey", "korea republic":"South Korea",
+  "czechia":"Czech Republic", "cabo verde":"Cape Verde", "ir iran":"Iran",
+  "bosnia and herzegovina":"Bosnia & Herzegovina", "bosnia-herzegovina":"Bosnia & Herzegovina",
+  "curacao":"Curaçao",
+};
+const espnName = n => ESPN_NAME[String(n||"").toLowerCase().trim()] || n;
 
 async function fetchESPN(){
   try {
@@ -603,8 +615,9 @@ async function fetchESPN(){
       // team1Id/team2Id orient the goals to team1 (left) / team2 (right) per key —
       // ESPN credits a goal's team.id to the side that benefits (own goals included),
       // so the per-side counts sum to the scoreline.
-      const key1 = `${home.team.displayName}|${away.team.displayName}`;
-      const key2 = `${away.team.displayName}|${home.team.displayName}`;
+      const hn = espnName(home.team.displayName), an = espnName(away.team.displayName);
+      const key1 = `${hn}|${an}`;
+      const key2 = `${an}|${hn}`;
       fresh[key1] = {score1:+home.score||0, score2:+away.score||0, minute, state:"in", goals, team1Id:home.team.id, team2Id:away.team.id};
       fresh[key2] = {score1:+away.score||0, score2:+home.score||0, minute, state:"in", goals, team1Id:away.team.id, team2Id:home.team.id};
     }
