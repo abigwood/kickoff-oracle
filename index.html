@@ -272,7 +272,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v51-2026-06-17";   // build marker (bumped each shell deploy)
+window.__BUILD = "v52-2026-06-17";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -877,7 +877,7 @@ const byDay = list => {
   list.forEach(m => (days[m.ukDate] = days[m.ukDate]||[]).push(m));
   // the feed is ordered by group, not date — sort day-groups chronologically
   return Object.entries(days).sort((a,b)=>a[0].localeCompare(b[0])).map(([d,ms]) =>
-    `<h2 class="day">${fmtDay(d)}${d===todayUK()?" · <b>Today</b>":""}</h2>` +
+    `<h2 class="day"${d===todayUK()?' data-today="1"':''}>${fmtDay(d)}${d===todayUK()?" · <b>Today</b>":""}</h2>` +
     ms.sort((a,b)=>a.ukKickoff.localeCompare(b.ukKickoff)).map(card).join(""));
 };
 
@@ -1111,18 +1111,31 @@ function viewLeague(){
 /* ---------- views ---------- */
 function viewToday(){
   const t = todayUK();
-  const todays = DATA.matches.filter(m=>m.ukDate===t);
-  const next = DATA.matches.filter(m=>m.status==="UPCOMING" && new Date(m.ukKickoff)>new Date())
-                           .sort((a,b)=>a.ukKickoff.localeCompare(b.ukKickoff))[0];
+  const now = Date.now();
+  const koMs = m => Date.parse(m.ukKickoff);
+  const PAST = 30*3600*1000, FUT = 36*3600*1000;   // window: recent ~30h back, upcoming ~36h ahead
+  // recent: kicked off within the last 30h (results + in-play) — most recent first, capped
+  const recent = DATA.matches.filter(m => { const k=koMs(m); return k<=now && now-k<=PAST; })
+                   .sort((a,b)=>koMs(b)-koMs(a)).slice(0,6);
+  // coming up: kicks off within the next 36h, so early-hours (02:00/05:00) games surface the
+  // evening before and stay pickable in good time (window is open until KO regardless) — capped
+  const coming = DATA.matches.filter(m => { const k=koMs(m); return k>now && k-now<=FUT; })
+                   .sort((a,b)=>koMs(a)-koMs(b)).slice(0,8);
+  const todays = DATA.matches.filter(m => m.ukDate===t);
+  // merge into one chronological window, de-duped by id (today overlaps the time windows)
+  const seen = new Set(), win = [];
+  [...recent, ...todays, ...coming].forEach(m => { if (!seen.has(m.id)){ seen.add(m.id); win.push(m); } });
+  const next = DATA.matches.filter(m=>m.status==="UPCOMING" && koMs(m)>now)
+                           .sort((a,b)=>koMs(a)-koMs(b))[0];
   let hero = "";
   if (next) hero = `<div class="next"><div class="lbl">Next kick-off · ${next.channel}</div>
       <div class="cd" id="cd" data-ko="${next.ukKickoff}">—</div>
       <div class="who">${next.flag1} ${next.team1} <span class="vs">v</span> ${next.team2} ${next.flag2}</div></div>`;
-  if (!todays.length){
+  if (!win.length){
     const up = DATA.matches.filter(m=>m.ukDate>t).sort((a,b)=>a.ukKickoff.localeCompare(b.ukKickoff)).slice(0,6);
-    return hero + `<div class="empty">No matches today.<br>Here's what's next:</div>` + byDay(up).join("");
+    return hero + `<div class="empty">No matches right now.<br>Here's what's next:</div>` + byDay(up).join("");
   }
-  return hero + byDay(todays).join("");
+  return hero + byDay(win).join("");
 }
 
 function viewFixtures(){
@@ -1304,9 +1317,22 @@ async function shareTable(){
 }
 
 /* ---------- render & wire-up ---------- */
+// One-shot: on the FIRST Today render with data, scroll so "Today" sits at the top
+// (recent results above → scroll up; coming up below). Never re-snaps on the 60s
+// refresh, on tab return, or once the user has scrolled — so it can't fight a pick.
+let todayAnchored = false;
+function anchorTodayOnce(){
+  if (todayAnchored) return;
+  const el = document.querySelector('#main [data-today]');
+  if (!el) return;                              // no Today header yet (pre-data / rest day) — try next render
+  if (window.scrollY > 40){ todayAnchored = true; return; }   // user already moved — don't fight them
+  todayAnchored = true;                         // claim the one-shot before the async scroll
+  requestAnimationFrame(()=> el.scrollIntoView({ block: "start" }));
+}
 function render(){
   const views = {today:viewToday,fixtures:viewFixtures,groups:viewGroups,bracket:viewBracket,stats:viewStats,league:viewLeague,england:viewEngland};
   $("#main").innerHTML = views[tab]();
+  if (tab==="today") anchorTodayOnce();
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
   if (DATA.updated) $("#updated").textContent = "Updated " +
     new Date(DATA.updated).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
