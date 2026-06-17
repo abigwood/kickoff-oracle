@@ -92,6 +92,10 @@ h2.day b{color:var(--text)}
 .badge.stars{background:var(--raise);color:var(--dim);border:1px solid var(--line)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
 .intel{margin-top:10px;border-top:1px solid var(--line);padding-top:9px;position:relative}
+.intel-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.mypick{font-family:"Archivo";font-size:.7rem;font-weight:800;letter-spacing:.02em;color:var(--dim);
+  background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:5px 11px;white-space:nowrap}
+.mypick b{color:var(--text);font-weight:900;letter-spacing:.04em}
 .intel-pill{appearance:none;-webkit-appearance:none;background:var(--raise);border:1px solid var(--bbc);
   border-radius:999px;color:var(--bbc);font-family:"Archivo";font-size:.7rem;font-weight:900;
   letter-spacing:.08em;padding:6px 12px;cursor:pointer}
@@ -272,7 +276,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v54-2026-06-17";   // build marker (bumped each shell deploy)
+window.__BUILD = "v55-2026-06-17";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -697,12 +701,24 @@ function card(m){
       ${m.weather?`<span class="tag wx" title="${m.weather.desc} at kick-off (local time)">${m.weather.icon} ${m.weather.temp}°C</span>`:""}
     </div>
     ${probStrip(m)}
-    ${matchIntel(m)}
+    ${(()=>{ const intel=matchIntel(m); if(intel) return intel;
+              const pr=pickReminder(m); return pr?`<div class="intel" style="display:flex;justify-content:flex-end">${pr}</div>`:""; })()}
     ${goalTimeline(m)}
     ${windowWidget(m)}
   </article>`;
 }
 
+// A constant, private reminder of YOUR locked score on a kicked-off match (live/FT),
+// shown opposite the Intel pill so you can follow the live score against your pick.
+// Pre-KO the picker widget already shows it. Your OWN pick only (from localStorage) —
+// reveals nothing about rivals; purely display, no scoring/KV effect.
+function pickReminder(m){
+  if (DEMO) return "";
+  const p = (typeof myPicks!=="undefined") && myPicks[m.id];
+  if (!p) return "";
+  if (windowState(m)==="open") return "";   // window still open → the picker widget shows it
+  return `<span class="mypick">Your pick: ${m.flag1} <b>${p.s1}–${p.s2}</b> ${m.flag2}</span>`;
+}
 function matchIntel(m){
   const items = intelFor(m);
   if (!items) return "";
@@ -722,7 +738,10 @@ function matchIntel(m){
       </div>`
     : "";
   return `<div class="intel">
-    <button type="button" class="intel-pill" data-intel aria-expanded="false">Intel</button>
+    <div class="intel-head">
+      <button type="button" class="intel-pill" data-intel aria-expanded="false">Intel</button>
+      ${pickReminder(m)}
+    </div>
     <div class="intel-pop" hidden>${items.map(x=>`<p>${x.t}</p>`).join("")}
       ${mapH}
       <button type="button" class="intel-share" data-intel-share="${m.id}" aria-label="Share Intel to WhatsApp">↗</button>
