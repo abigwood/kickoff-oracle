@@ -152,6 +152,15 @@ async function recomputeLeague(env, code) {
     .map((m) => ({ id: m.id, s1: m.score1, s2: m.score2, koMs: Date.parse(m.ukKickoff) }));
   const picksByMatch = await loadPicksByMatch(env, ft.map((m) => m.id));
   const rows = computeTable(members, ft, picksByMatch);
+  // POSITION-MOVEMENT ARROWS (additive): annotate each row with movement vs its
+  // index in prev:{code} (frozen at the last settle). Index-based, matching the
+  // visible table order. Reads ONLY prev:{code}; does not affect scoring/order.
+  // No prior position (just joined / first settle) → "new" → client shows a dash.
+  const prevPos = ((await kvGet(env, `prev:${code}`)) || {}).pos || {};
+  rows.forEach((r, i) => {
+    const was = prevPos[r.uid];
+    r.move = (was == null) ? "new" : (i < was ? "up" : i > was ? "down" : "same");
+  });
   await kvPut(env, `table:${code}`, { rows, ts: Date.now() });
   return rows;
 }
@@ -535,7 +544,19 @@ async function settle(env, body) {
   const list = await env.KV.list({ prefix: "league:" });
   let n = 0;
   for (const k of list.keys) {
-    await recomputeLeague(env, k.name.slice("league:".length));
+    const code = k.name.slice("league:".length);
+    // POSITION-MOVEMENT ARROWS (additive): snapshot the CURRENT table positions —
+    // i.e. the standings as they were BEFORE this settle's result — into prev:{code}.
+    // Only happens here, only when results actually changed (or force), so the
+    // baseline is "before the most recently settled match" and is frozen until the
+    // next settle. Reads only the derived table:{code} cache; never picks/identity.
+    const cur = await kvGet(env, `table:${code}`);
+    if (cur && Array.isArray(cur.rows)) {
+      const pos = {};
+      cur.rows.forEach((r, i) => { pos[r.uid] = i; });
+      await kvPut(env, `prev:${code}`, { pos, ts: Date.now() });
+    }
+    await recomputeLeague(env, code);
     n++;
   }
   const orphans = await refreshOrphans(env); // watchdog: flag picks under league-less uids
