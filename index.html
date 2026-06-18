@@ -279,7 +279,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v58-2026-06-18";   // build marker (bumped each shell deploy)
+window.__BUILD = "v59-2026-06-18";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -969,9 +969,12 @@ const saveMyPicks = () => { if(!DEMO) localStorage.setItem("wc_picks", JSON.stri
 // recovery code cached locally (Phase 1 of the identity fix): the device keeps
 // showing/using it even after Phase 2 stops the server returning it by bare uid.
 const setMyCode = c => { if (c) localStorage.setItem("wc_code", c); };
-// a brand-new context (likely a Safari↔home-screen split) that hasn't done anything yet
+// a brand-new context (likely a Safari↔home-screen split) that hasn't done anything yet.
+// NB: deliberately NOT gated on wc_seen — the first-pick gate must still protect a
+// returning user who taps "New here" (OK) at boot by mistake; the boot intercept
+// carries its own wc_seen guard so IT only ever fires once.
 function freshIdentity(){ return !DEMO && !!API && myLeagueCodes().length===0
-  && Object.keys(myPicks).length===0 && !myNick() && !localStorage.getItem("wc_seen"); }
+  && Object.keys(myPicks).length===0 && !myNick(); }
 
 async function api(path, body){
   const opts = body ? {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)} : {};
@@ -1052,6 +1055,32 @@ async function joinByCode(code){
   return true;
 }
 
+// CREATE your own league → become its admin and get a shareable code. Explicit
+// path (no "leave blank to create" ambiguity); reused by the empty-state button
+// and the ＋ switcher pill.
+async function createMyLeague(){
+  if (DEMO){ alert("Creating leagues goes live with the Worker — this demo just shows switching."); return; }
+  let n = myNick();
+  if (!n){ n = (prompt("Pick a nickname your mates will see:")||"").trim(); if(!n) return; setNick(n); }
+  const name = (prompt("Name your new league:")||"").trim() || "My League";
+  const { status, j } = await api("/league", { uid:uid(), nickname:n, name });
+  if (status!==200){ alert(j.error || "Couldn't create the league."); return; }
+  setLeagueCodes([...myLeagueCodes(), j.code]);
+  await loadLeagues();
+  activeLeague = Math.max(0, LEAGUES.findIndex(l=>l.code===j.code));
+  render();
+  alert("League created 🎉\n\nShare this code in the group chat:\n\n  "+j.code+"\n\nMates tap ＋ Join / create and enter it.");
+}
+
+// JOIN a mate's league with their code. Explicit path; reused by the empty-state
+// button and the ＋ switcher pill.
+async function joinMyLeague(){
+  if (DEMO){ alert("Joining leagues goes live with the Worker — this demo just shows switching."); return; }
+  const code = (prompt("Enter your mate's league code:")||"").trim();
+  if (!code) return;
+  if (await joinByCode(code)) render();
+}
+
 // Picks are open any time before KO (no more KO−60 gate), once both teams are real.
 const realTeams = m => !/[\d/]/.test(m.team1) && !/[\d/]/.test(m.team2);
 const windowState = m => {
@@ -1095,8 +1124,12 @@ function viewLeague(){
     ${LEAGUES.map((lg,i)=>`<button class="pill ${i===activeLeague?"on":""}" data-lg="${i}">🏅 ${lg.name}</button>`).join("")}
     <button class="pill" data-lg="join">＋ Join / create</button>
   </div>`;
-  if (!DEMO && !L) return switcher + `<div class="demo-ribbon">📱 <b>Install the app:</b> Share → Add to Home Screen — then always open it from that icon, so your identity stays put.<br><br>You're not in a league yet. Tap <b>＋ Join / create</b> to start one (you'll get a code to share) or enter a mate's code. You predict each match once — the pick counts in every league you're in.<br><br>🪟 Pick the score anytime before kick-off — change it until KO, when picks lock and reveal.</div>
-    <p class="note" style="margin-top:4px">Been here before on another device? <button class="lact" data-restore>🔑 Restore my identity</button></p>`;
+  if (!DEMO && !L) return switcher + `<div class="demo-ribbon">📱 <b>Install the app:</b> Share → Add to Home Screen — then always open it from that icon, so your identity stays put.<br><br>You're not in a league yet — start your own or join a mate's. You predict each match once; the pick counts in every league you're in.<br><br>🪟 Pick the score anytime before kick-off — change it until KO, when picks lock and reveal.</div>
+    <div style="display:flex;gap:10px;margin:10px 14px 0">
+      <button class="sharecard" data-create style="flex:1">➕ Create a league</button>
+      <button class="sharecard" data-joincode style="flex:1">🎟️ Join with a code</button>
+    </div>
+    <p class="note" style="margin-top:10px">Been here before on another device? <button class="lact" data-restore>🔑 Restore my identity</button></p>`;
   const me = DEMO ? null : uid();
   const iAmAdmin = !DEMO && L && L.owner === me;
   // ADMIN: orphan-watchdog → one-tap merge of split-device duplicates
@@ -1453,30 +1486,21 @@ document.addEventListener("click",async e=>{
   const p = e.target.closest(".pill[data-team]"); if(p){ teamFilter=p.dataset.team; render(); return; }
   if (e.target.closest("[data-sharetable]")){ shareTable(); return; }
   const sc = e.target.closest(".sharecard[data-card]"); if(sc){ shareCard(+sc.dataset.card); return; }
+  if (e.target.closest("[data-create]")){ await createMyLeague(); return; }
+  if (e.target.closest("[data-joincode]")){ await joinMyLeague(); return; }
   const lg = e.target.closest("[data-lg]");
   if (lg){
     if (lg.dataset.lg==="join"){
       if (DEMO){
-        const code = prompt("Enter a league code to join, or leave blank to create a new league:");
-        if (code===null) return;
+        prompt("Enter a league code to join, or leave blank to create a new league:");
         alert("Joining and creating leagues goes live with the Worker — this demo has two sample leagues to show how switching works.");
         return;
       }
-      let n = myNick();
-      if (!n){ n = (prompt("Pick a nickname your mates will see:")||"").trim(); if(!n) return; setNick(n); }
-      const code = prompt("Enter a mate's league code to JOIN — or leave blank to CREATE a new league:");
-      if (code===null) return;
-      if (code.trim()===""){
-        const name = (prompt("Name your new league:")||"").trim() || "My League";
-        const { status, j } = await api("/league", { uid:uid(), nickname:n, name });
-        if (status!==200){ alert(j.error || "Couldn't create the league."); return; }
-        setLeagueCodes([...myLeagueCodes(), j.code]);
-        await loadLeagues();
-        activeLeague = Math.max(0, LEAGUES.findIndex(l=>l.code===j.code));
-        render();
-        alert("League created 🎉\n\nShare this code in the group chat:\n\n  "+j.code+"\n\nMates tap ＋ Join / create and enter it.");
-      } else if (await joinByCode(code)){
-        render();
+      // explicit choice — no more "leave blank to create"
+      if (confirm("Start your OWN league?\n\nTap OK to CREATE a new league (you'll get a code to share).\n\nTap Cancel to JOIN a mate's league with their code.")){
+        await createMyLeague();
+      } else {
+        await joinMyLeague();
       }
       return;
     }
@@ -1650,11 +1674,11 @@ if (API){
     await loadLeagues();
     // (B) FIRST-RUN INTERCEPT: a brand-new context — likely a returning player on a new
     // context — is offered Restore before they create a duplicate identity by picking.
-    if (freshIdentity() && !rcode){
-      if (confirm("Played before on another device or in Safari?\n\nTap OK to RESTORE your identity (keeps your picks & leagues — you'll enter your recovery code).\n\nTap Cancel if you're brand new.")){
-        await restoreIdentity();
+    if (freshIdentity() && !rcode && !localStorage.getItem("wc_seen")){
+      if (confirm("New here? Tap OK to get started.\n\nPlayed before on another device or in Safari? Tap Cancel to RESTORE your picks & leagues (you'll enter your recovery code).")){
+        localStorage.setItem("wc_seen","1");   // suppress only THIS dialog; the first-pick gate still protects a mis-tap
       } else {
-        localStorage.setItem("wc_seen","1");
+        await restoreIdentity();
       }
     }
     render();
