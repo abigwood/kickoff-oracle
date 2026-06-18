@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-18T22:00:30.074863+01:00",
+ "updated": "2026-06-18T22:05:30.823084+01:00",
  "build": "v60-2026-06-18",
  "matches": [
   {
@@ -283,7 +283,43 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 4,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Johan Manzambi",
+     "minute": "74",
+     "team": "Switzerland",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Rubén Vargas",
+     "minute": "84",
+     "team": "Switzerland",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Johan Manzambi",
+     "minute": "90",
+     "team": "Switzerland",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ermin Mahmic",
+     "minute": "90+3",
+     "team": "Bosnia & Herzegovina",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Granit Xhaka",
+     "minute": "90+7",
+     "team": "Switzerland",
+     "og": false,
+     "pen": true
+    }
+   ],
    "status": "FT"
   },
   {
@@ -933,13 +969,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 25,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 31,
@@ -1073,7 +1103,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 30,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
+   }
   },
   {
    "id": 34,
@@ -1852,13 +1888,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 22,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 59,
@@ -1904,7 +1934,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 61,
@@ -2441,13 +2477,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 79,
@@ -2597,7 +2627,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 26,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 85,
@@ -3652,6 +3688,12 @@ window.WC_DATA = {
    "goals": 2
   },
   {
+   "name": "Johan Manzambi",
+   "team": "Switzerland",
+   "flag": "🇨🇭",
+   "goals": 2
+  },
+  {
    "name": "Kai Havertz",
    "team": "Germany",
    "flag": "🇩🇪",
@@ -3763,12 +3805,6 @@ window.WC_DATA = {
    "name": "Deniz Undav",
    "team": "Germany",
    "flag": "🇩🇪",
-   "goals": 1
-  },
-  {
-   "name": "Emam Ashour",
-   "team": "Egypt",
-   "flag": "🇪🇬",
    "goals": 1
   }
  ],
