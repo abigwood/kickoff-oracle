@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-18T05:05:29.968780+01:00",
+ "updated": "2026-06-18T05:10:32.042929+01:00",
  "build": "v56-2026-06-17",
  "matches": [
   {
@@ -496,13 +496,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 18,
@@ -904,7 +898,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 24,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 30,
@@ -1090,13 +1090,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 22,
-    "code": 81,
-    "icon": "🌧️",
-    "desc": "Showers"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 35,
@@ -1704,13 +1698,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 24,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 55,
@@ -1849,7 +1837,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 22,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 59,
@@ -1956,7 +1950,36 @@
    "channel": "BBC One",
    "score1": 1,
    "score2": 3,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Daniel Muñoz",
+     "minute": "40",
+     "team": "Colombia",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Abbosbek Fayzullaev",
+     "minute": "60",
+     "team": "Uzbekistan",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Luis Díaz",
+     "minute": "65",
+     "team": "Colombia",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Jáminton Campaz",
+     "minute": "90+9",
+     "team": "Colombia",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2277,13 +2300,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 24,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 74,
@@ -2459,7 +2476,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 31,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 81,
@@ -2557,13 +2580,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 27,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 85,
@@ -3630,6 +3647,12 @@
    "goals": 2
   },
   {
+   "name": "Abbosbek Fayzullaev",
+   "team": "Uzbekistan",
+   "flag": "🇺🇿",
+   "goals": 1
+  },
+  {
    "name": "Abdulelah Al-Amri",
    "team": "Saudi Arabia",
    "flag": "🇸🇦",
@@ -3708,6 +3731,12 @@
    "goals": 1
   },
   {
+   "name": "Daniel Muñoz",
+   "team": "Colombia",
+   "flag": "🇨🇴",
+   "goals": 1
+  },
+  {
    "name": "Deniz Undav",
    "team": "Germany",
    "flag": "🇩🇪",
@@ -3717,18 +3746,6 @@
    "name": "Emam Ashour",
    "team": "Egypt",
    "flag": "🇪🇬",
-   "goals": 1
-  },
-  {
-   "name": "Felix Nmecha",
-   "team": "Germany",
-   "flag": "🇩🇪",
-   "goals": 1
-  },
-  {
-   "name": "Giovanni Reyna",
-   "team": "USA",
-   "flag": "🇺🇸",
    "goals": 1
   }
  ],
