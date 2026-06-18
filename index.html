@@ -279,7 +279,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v57-2026-06-18";   // build marker (bumped each shell deploy)
+window.__BUILD = "v58-2026-06-18";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -1327,6 +1327,7 @@ async function tableCard(L){
   const ny=wrapTextY(x, L.name, 60, 196, W-120, 70);
   const stamp=new Date(DATA.updated||Date.now()).toLocaleDateString("en-GB",{day:"numeric",month:"long"});
   x.fillStyle="#8A93A8"; x.font="600 32px -apple-system,sans-serif"; x.fillText("Standings · "+stamp, 60, ny+44);
+  x.textAlign="right"; x.fillStyle="#8A93A8"; x.font="700 26px -apple-system,sans-serif"; x.fillText("PTS", W-100, ny+78); x.textAlign="left";   // single column header over the points column (sits in the gap above the first row)
   const rows=L.table||[], top=ny+90, rowH=Math.max(70,Math.min(116,(H-top-170)/Math.max(rows.length,1)));
   let y=top;
   rows.forEach((r,i)=>{
@@ -1342,7 +1343,6 @@ async function tableCard(L){
     const ptsW=x.measureText(String(r.pts)).width;   // font still 900 52px here — measure the number we just drew
     const mv=r.move, ag=mv==="up"?"▲":mv==="down"?"▼":"–", ac=mv==="up"?"#39D98A":mv==="down"?"#ff5a5a":"#8A93A8";  // green up / red down / grey same|new|missing — no false arrow for new
     x.fillStyle=ac; x.font="900 30px -apple-system,Archivo,sans-serif"; x.textAlign="right"; x.fillText(ag, (W-100)-ptsW-20, mid+2);  // immediately left of the points, small gap
-    x.fillStyle="#8A93A8"; x.font="600 24px -apple-system,sans-serif"; x.fillText("pts", W-100, mid+36);
     x.textAlign="left"; y+=rowH;
   });
   x.fillStyle="#242C42"; x.fillRect(60,H-150,W-120,2);
