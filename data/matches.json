@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-18T20:10:31.496545+01:00",
+ "updated": "2026-06-18T20:15:33.708176+01:00",
  "build": "v60-2026-06-18",
  "matches": [
   {
@@ -505,13 +505,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 18,
@@ -939,7 +933,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 25,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 31,
@@ -1073,13 +1073,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 32,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 34,
@@ -1502,13 +1496,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 19,
-    "code": 53,
-    "icon": "🌦️",
-    "desc": "Drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 49,
@@ -1832,7 +1820,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 58,
@@ -2094,13 +2088,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 67,
@@ -2473,13 +2461,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 19,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 80,
@@ -2499,7 +2481,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 35,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 81,
