@@ -161,14 +161,21 @@ async function recomputeLeague(env, code) {
     const was = prevPos[r.uid];
     r.move = (was == null) ? "new" : (i < was ? "up" : i > was ? "down" : "same");
   });
-  await kvPut(env, `table:${code}`, { rows, ts: Date.now() });
+  // Stamp the cache with the results "version" it was built from, so a stale
+  // table (built before a newer result settled) is detected and rebuilt on read.
+  const rv = normResults(await getResults(env));
+  await kvPut(env, `table:${code}`, { rows, ts: Date.now(), rv });
   return rows;
 }
 
-// Read path: serve the cached table (one KV read, no write); recompute on miss.
+// Read path: serve the cached table only while it's CURRENT — i.e. built from the
+// same results set as live now. If results have moved on since (a match settled
+// after this cache was written, or a legacy cache with no version), recompute.
+// One extra KV read on the hit path; still no write unless actually stale.
 async function standings(env, code) {
   const cached = await kvGet(env, `table:${code}`);
-  if (cached) return cached.rows;
+  const rv = normResults(await getResults(env));
+  if (cached && cached.rv === rv) return cached.rows;
   return await recomputeLeague(env, code);
 }
 
@@ -556,7 +563,13 @@ async function settle(env, body) {
       cur.rows.forEach((r, i) => { pos[r.uid] = i; });
       await kvPut(env, `prev:${code}`, { pos, ts: Date.now() });
     }
-    await recomputeLeague(env, code);
+    // BUST, don't inline-recompute: recomputing every league serially here is what
+    // exhausted the per-invocation budget and left leagues after the cutoff stale.
+    // Deleting the cache is O(1) per league; the staleness-aware read path rebuilds
+    // each league lazily on next view (and stamps it with the current results version).
+    // NB: the prev:{code} snapshot above ran BEFORE this delete, so movement arrows
+    // still measure against the standings as they were before this settle.
+    await env.KV.delete(`table:${code}`);
     n++;
   }
   const orphans = await refreshOrphans(env); // watchdog: flag picks under league-less uids
