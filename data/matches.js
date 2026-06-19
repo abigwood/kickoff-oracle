@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-19T01:10:29.912256+01:00",
+ "updated": "2026-06-19T01:15:31.655671+01:00",
  "build": "v60-2026-06-18",
  "matches": [
   {
@@ -339,7 +339,50 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 6,
    "score2": 0,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Cyle Larin",
+     "minute": "16",
+     "team": "Canada",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Jonathan David",
+     "minute": "29",
+     "team": "Canada",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Jonathan David",
+     "minute": "45+3",
+     "team": "Canada",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Nathan Saliba",
+     "minute": "64",
+     "team": "Canada",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Mohamed Manai",
+     "minute": "75",
+     "team": "Canada",
+     "og": true,
+     "pen": false
+    },
+    {
+     "name": "Jonathan David",
+     "minute": "90+2",
+     "team": "Canada",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -700,13 +743,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 19,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 23,
@@ -937,7 +974,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 30,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 30,
@@ -1313,13 +1356,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 22,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 41,
@@ -1737,7 +1774,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 26,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 55,
@@ -1902,13 +1945,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 26,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 60,
@@ -2367,13 +2404,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 34,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 75,
@@ -2471,7 +2502,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 34,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 79,
@@ -2725,13 +2762,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 36,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 89,
@@ -3664,10 +3695,22 @@ window.WC_DATA = {
  },
  "scorers": [
   {
+   "name": "Jonathan David",
+   "team": "Canada",
+   "flag": "🇨🇦",
+   "goals": 3
+  },
+  {
    "name": "Lionel Messi",
    "team": "Argentina",
    "flag": "🇦🇷",
    "goals": 3
+  },
+  {
+   "name": "Cyle Larin",
+   "team": "Canada",
+   "flag": "🇨🇦",
+   "goals": 2
   },
   {
    "name": "Elijah Just",
@@ -3790,12 +3833,6 @@ window.WC_DATA = {
    "goals": 1
   },
   {
-   "name": "Cyle Larin",
-   "team": "Canada",
-   "flag": "🇨🇦",
-   "goals": 1
-  },
-  {
    "name": "Daichi Kamada",
    "team": "Japan",
    "flag": "🇯🇵",
@@ -3805,12 +3842,6 @@ window.WC_DATA = {
    "name": "Daniel Muñoz",
    "team": "Colombia",
    "flag": "🇨🇴",
-   "goals": 1
-  },
-  {
-   "name": "Deniz Undav",
-   "team": "Germany",
-   "flag": "🇩🇪",
    "goals": 1
   }
  ],
