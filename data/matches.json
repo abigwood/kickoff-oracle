@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-19T20:05:26.277173+01:00",
+ "updated": "2026-06-19T20:10:27.626429+01:00",
  "build": "v61-2026-06-19",
  "matches": [
   {
@@ -167,9 +167,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 17,
-    "code": 80,
+    "code": 53,
     "icon": "🌦️",
-    "desc": "Showers"
+    "desc": "Drizzle"
    }
   },
   {
@@ -1578,9 +1578,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 20,
-    "code": 80,
-    "icon": "🌦️",
-    "desc": "Showers"
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
    }
   },
   {
@@ -1905,7 +1905,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 58,
@@ -2115,13 +2121,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 18,
-    "code": 55,
-    "icon": "🌧️",
-    "desc": "Heavy drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 65,
@@ -2572,7 +2572,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 81,
@@ -2618,13 +2624,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 18,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 83,
