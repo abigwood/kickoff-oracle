@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-20T11:55:24.273483+01:00",
+ "updated": "2026-06-20T12:00:21.595036+01:00",
  "build": "v62-2026-06-20",
  "matches": [
   {
@@ -260,10 +260,10 @@ window.WC_DATA = {
      "pen": true
     },
     {
-     "name": "Boualem Khoukhi",
+     "name": "Miro Muheim",
      "minute": "90+4",
      "team": "Qatar",
-     "og": false,
+     "og": true,
      "pen": false
     }
    ],
@@ -996,9 +996,9 @@ window.WC_DATA = {
    "status": "UPCOMING",
    "weather": {
     "temp": 31,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
    }
   },
   {
@@ -1045,7 +1045,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 28,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 31,
@@ -1369,13 +1375,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 40,
@@ -1608,7 +1608,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 19,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
+   }
   },
   {
    "id": 49,
@@ -2148,13 +2154,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 18,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 65,
@@ -2319,7 +2319,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 18,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 70,
@@ -2651,7 +2657,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 20,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 83,
@@ -2671,13 +2683,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 31,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 84,
@@ -3878,12 +3884,6 @@ window.WC_DATA = {
    "goals": 1
   },
   {
-   "name": "Boualem Khoukhi",
-   "team": "Qatar",
-   "flag": "🇶🇦",
-   "goals": 1
-  },
-  {
    "name": "Bradley Barcola",
    "team": "France",
    "flag": "🇫🇷",
@@ -3899,6 +3899,12 @@ window.WC_DATA = {
    "name": "Caleb Yirenkyi",
    "team": "Ghana",
    "flag": "🇬🇭",
+   "goals": 1
+  },
+  {
+   "name": "Connor Metcalfe",
+   "team": "Australia",
+   "flag": "🇦🇺",
    "goals": 1
   }
  ],
