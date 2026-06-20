@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-20T20:05:23.938591+01:00",
+ "updated": "2026-06-20T20:10:19.348706+01:00",
  "build": "v62-2026-06-20",
  "matches": [
   {
@@ -1188,32 +1188,44 @@ window.WC_DATA = {
     {
      "name": "Brian Brobbey",
      "minute": "5",
-     "team": "Netherlands"
+     "team": "Netherlands",
+     "og": false,
+     "pen": false
     },
     {
      "name": "Brian Brobbey",
      "minute": "17",
-     "team": "Netherlands"
+     "team": "Netherlands",
+     "og": false,
+     "pen": false
     },
     {
      "name": "Cody Gakpo",
      "minute": "47",
-     "team": "Netherlands"
+     "team": "Netherlands",
+     "og": false,
+     "pen": false
     },
     {
      "name": "Cody Gakpo",
      "minute": "54",
-     "team": "Netherlands"
+     "team": "Netherlands",
+     "og": false,
+     "pen": false
     },
     {
      "name": "Anthony Elanga",
      "minute": "59",
-     "team": "Sweden"
+     "team": "Sweden",
+     "og": false,
+     "pen": false
     },
     {
      "name": "Crysencio Summerville",
      "minute": "89",
-     "team": "Netherlands"
+     "team": "Netherlands",
+     "og": false,
+     "pen": false
     }
    ],
    "status": "FT"
@@ -1236,7 +1248,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 24,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 35,
@@ -1394,13 +1412,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 40,
@@ -1766,7 +1778,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 27,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 52,
@@ -2009,13 +2027,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 27,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 60,
@@ -2370,7 +2382,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 23,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 71,
@@ -2520,13 +2538,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 77,
@@ -2676,7 +2688,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 25,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 83,
@@ -2878,13 +2896,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 35,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 91,
