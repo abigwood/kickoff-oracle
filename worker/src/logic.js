@@ -51,6 +51,29 @@ export function scorePick(pred, actual) {
   return { pts: 0, exact: false, hit: false, settled: true };
 }
 
+// KNOCKOUT scoring (Phase 2). The BASE is scorePick on the 90-MINUTE score — called
+// byte-identically; scorePick is never modified. Then a +1 ADVANCER BONUS is added
+// ONLY when: this is a knockout result (actual.ko), the 90-min result WAS a draw
+// (so the base is a correct draw — 5 exact-draw or 2), the player also predicted a
+// draw, both advancers are known, and the player called the right team through.
+// The bonus only ADDS — a wrong (or missing) advancer can NEVER reduce the base, and
+// a non-draw prediction never earns it. Worked tiers (all on the 90-min score):
+//   exact 90-min (incl exact draw) = 5; correct winner+GD = 2; correct draw wrong
+//   score = 2; correct winner wrong GD = 1; exact draw + right advancer = 6;
+//   correct draw (wrong score) + right advancer = 3; correct draw + wrong advancer = 2.
+export function scoreKnockout(pred, actual) {
+  const base = scorePick(pred, actual); // base on the 90-minute score (scorePick untouched)
+  if (
+    actual && actual.ko &&
+    actual.s1 != null && actual.s2 != null && actual.s1 === actual.s2 && // 90-min WAS a draw
+    pred && pred.s1 != null && pred.s2 != null && pred.s1 === pred.s2 && // player predicted a draw
+    pred.adv != null && actual.adv != null && pred.adv === actual.adv     // right advancer
+  ) {
+    return { ...base, pts: base.pts + 1 };
+  }
+  return base;
+}
+
 // Trailing streak label from a chronological list of per-match outcomes.
 // outcome: "W" (scored ≥1), "L" (picked but 0), "S" (no pick / asleep).
 // Mirrors the demo UI: "W3", "L1", "😴1", or "—" when there's nothing yet.
@@ -91,7 +114,10 @@ export function computeTable(members, ftMatches, picksByMatch) {
       if (mem.since && m.koMs != null && m.koMs < mem.since) continue;
       let pick = (picksByMatch[m.id] || {})[mem.uid];
       if (m.koMs != null && pick && !pickValid(pick, m.koMs)) pick = undefined; // ignore post-KO picks
-      const res = scorePick(pick, { s1: m.s1, s2: m.s2 });
+      // group → scorePick verbatim; knockout (m.ko, fed the 90-min score + advancer) → scoreKnockout
+      const res = m.ko
+        ? scoreKnockout(pick, { s1: m.s1, s2: m.s2, ko: true, adv: m.adv })
+        : scorePick(pick, { s1: m.s1, s2: m.s2 });
       if (!pick) {
         outcomes.push("S");
         continue;
@@ -121,14 +147,19 @@ export function buildReveals(members, matches, picksByMatch, nowMs) {
     if (!eligibleMembers.length) continue;
     const picks = picksByMatch[m.id] || {};
     if (!eligibleMembers.some((mem) => picks[mem.uid])) continue; // nobody engaged → no reveal
-    const settled = m.score1 != null && m.score2 != null;
+    // Knockout (m.ko, enriched with the confirmed 90-min score + advancer) settles on
+    // that record; an unconfirmed knockout has its result nulled upstream → unsettled.
+    const settled = m.ko ? true : (m.score1 != null && m.score2 != null);
     // reveal the WHOLE league: everyone's pick, plus who fell asleep (no pick).
     const memberPicks = eligibleMembers.map((mem) => {
       const raw = picks[mem.uid];
       const p = pickValid(raw, koMs) ? raw : null; // a post-KO pick is treated as no pick
       if (!p)
         return { uid: mem.uid, nick: nickOf[mem.uid] || "?", asleep: true, s1: null, s2: null, hit: false, exact: false, pts: 0, settled };
-      const res = scorePick(p, { s1: m.score1, s2: m.score2 });
+      // group → scorePick verbatim; knockout → scoreKnockout on the 90-min score + advancer
+      const res = m.ko
+        ? scoreKnockout(p, { s1: m.ninety[0], s2: m.ninety[1], ko: true, adv: m.adv })
+        : scorePick(p, { s1: m.score1, s2: m.score2 });
       return { uid: mem.uid, nick: nickOf[mem.uid] || "?", s1: p.s1, s2: p.s2, hit: res.hit, exact: res.exact, pts: res.pts, settled: res.settled };
     });
     out.push({
@@ -137,8 +168,8 @@ export function buildReveals(members, matches, picksByMatch, nowMs) {
       team1: m.team1,
       team2: m.team2,
       settled,                                  // true once the match has a final score
-      score1: settled ? m.score1 : null,
-      score2: settled ? m.score2 : null,
+      score1: settled ? (m.ko ? m.ninety[0] : m.score1) : null,
+      score2: settled ? (m.ko ? m.ninety[1] : m.score2) : null,
       ko: m.ukKickoff,
       picks: memberPicks,
     });

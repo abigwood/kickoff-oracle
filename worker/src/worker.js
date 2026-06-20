@@ -146,10 +146,24 @@ async function recomputeLeague(env, code) {
   const league = await kvGet(env, `league:${code}`);
   if (!league) return null;
   const members = await resolveMembers(env, league);
+  const koResults = (await kvGet(env, "knockout:results")) || {};
   const ft = (await scoredMatches(env))
     .filter((m) => m.status === "FT" && m.score1 != null)
     .sort((a, b) => Date.parse(a.ukKickoff) - Date.parse(b.ukKickoff))
-    .map((m) => ({ id: m.id, s1: m.score1, s2: m.score2, koMs: Date.parse(m.ukKickoff) }));
+    .map((m) => {
+      const koMs = Date.parse(m.ukKickoff);
+      if (m.stage && m.stage !== "Group") {
+        // KNOCKOUT: score the CONFIRMED 90-min record only. A flagged/absent record →
+        // null → excluded (never scored off the group results:ft final). No knockout is
+        // FT today, so this branch is inert and the group ft list is byte-identical.
+        const kr = koResults[String(m.id)];
+        if (kr && kr.status === "confirmed" && Array.isArray(kr.ninety))
+          return { id: m.id, s1: kr.ninety[0], s2: kr.ninety[1], koMs, ko: true, adv: kr.adv == null ? null : kr.adv };
+        return null;
+      }
+      return { id: m.id, s1: m.score1, s2: m.score2, koMs };
+    })
+    .filter(Boolean);
   const picksByMatch = await loadPicksByMatch(env, ft.map((m) => m.id));
   const rows = computeTable(members, ft, picksByMatch);
   // POSITION-MOVEMENT ARROWS (additive): annotate each row with movement vs its
@@ -490,6 +504,19 @@ async function makePick(env, body) {
   return j({ ok: true, matchId, s1, s2, adv: rec.adv ?? null }, 200, env);
 }
 
+// PHASE 2: enrich a match for the reveal feed with knockout scoring data. Group
+// matches pass through UNCHANGED. A CONFIRMED knockout gets {ko, ninety, adv} so
+// buildReveals scores on the 90-minute score; an unconfirmed knockout (flagged/absent
+// record) has its FT result nulled so it reveals picks WITHOUT points until manually
+// confirmed — never auto-scored off the group results:ft final.
+function knockoutReveal(m, koResults) {
+  if (!(m.stage && m.stage !== "Group")) return m;
+  const kr = koResults[String(m.id)];
+  if (kr && kr.status === "confirmed" && Array.isArray(kr.ninety))
+    return { ...m, ko: true, ninety: kr.ninety, adv: kr.adv == null ? null : kr.adv };
+  return { ...m, score1: null, score2: null };
+}
+
 async function getPicks(env, url) {
   const code = (url.searchParams.get("code") || "").toUpperCase();
   const matchId = Number(url.searchParams.get("matchId"));
@@ -503,8 +530,9 @@ async function getPicks(env, url) {
   const league = await kvGet(env, `league:${code}`);
   if (!league) return j({ error: "no such league" }, 404, env);
   const members = await resolveMembers(env, league);
+  const koResults = (await kvGet(env, "knockout:results")) || {};
   const picksByMatch = await loadPicksByMatch(env, [matchId]);
-  const [reveal] = buildReveals(members, [match], picksByMatch, Date.now());
+  const [reveal] = buildReveals(members, [knockoutReveal(match, koResults)], picksByMatch, Date.now());
   return j(reveal || { matchId, match: `${match.team1} v ${match.team2}`, picks: [] }, 200, env);
 }
 
@@ -519,10 +547,12 @@ async function getState(env, url) {
   const now = Date.now();
   // reveal feed: only shut-window matches, most recent 12 — bounds KV reads so
   // live-refresh polling stays well inside the free tier.
+  const koResults = (await kvGet(env, "knockout:results")) || {};
   const shut = (await scoredMatches(env))
     .filter((m) => windowState(Date.parse(m.ukKickoff), now) === "shut")
     .sort((a, b) => Date.parse(b.ukKickoff) - Date.parse(a.ukKickoff))
-    .slice(0, 12);
+    .slice(0, 12)
+    .map((m) => knockoutReveal(m, koResults));
   const picksByMatch = await loadPicksByMatch(env, shut.map((m) => m.id));
   const reveals = buildReveals(members, shut, picksByMatch, now);
   return j({ code, name: league.name, owner: leagueOwner(league), table: rows, reveals }, 200, env);
