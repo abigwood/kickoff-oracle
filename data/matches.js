@@ -1,5 +1,9 @@
 window.WC_DATA = {
+<<<<<<< Updated upstream
  "updated": "2026-06-20T20:00:22.988579+01:00",
+=======
+ "updated": "2026-06-20T20:04:16.025062+01:00",
+>>>>>>> Stashed changes
  "build": "v62-2026-06-20",
  "matches": [
   {
@@ -1184,7 +1188,42 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 5,
    "score2": 1,
+<<<<<<< Updated upstream
    "goals": [],
+=======
+   "goals": [
+    {
+     "name": "Brian Brobbey",
+     "minute": "5",
+     "team": "Netherlands"
+    },
+    {
+     "name": "Brian Brobbey",
+     "minute": "17",
+     "team": "Netherlands"
+    },
+    {
+     "name": "Cody Gakpo",
+     "minute": "47",
+     "team": "Netherlands"
+    },
+    {
+     "name": "Cody Gakpo",
+     "minute": "54",
+     "team": "Netherlands"
+    },
+    {
+     "name": "Anthony Elanga",
+     "minute": "59",
+     "team": "Sweden"
+    },
+    {
+     "name": "Crysencio Summerville",
+     "minute": "89",
+     "team": "Netherlands"
+    }
+   ],
+>>>>>>> Stashed changes
    "status": "FT"
   },
   {
@@ -1231,7 +1270,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 36,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 36,
@@ -3764,6 +3809,24 @@ window.WC_DATA = {
    "goals": 3
   },
   {
+   "name": "Brian Brobbey",
+   "team": "Netherlands",
+   "flag": "🇳🇱",
+   "goals": 2
+  },
+  {
+   "name": "Cody Gakpo",
+   "team": "Netherlands",
+   "flag": "🇳🇱",
+   "goals": 2
+  },
+  {
+   "name": "Crysencio Summerville",
+   "team": "Netherlands",
+   "flag": "🇳🇱",
+   "goals": 2
+  },
+  {
    "name": "Cyle Larin",
    "team": "Canada",
    "flag": "🇨🇦",
@@ -3872,33 +3935,15 @@ window.WC_DATA = {
    "goals": 1
   },
   {
+   "name": "Anthony Elanga",
+   "team": "Sweden",
+   "flag": "🇸🇪",
+   "goals": 1
+  },
+  {
    "name": "Aymen Hussein",
    "team": "Iraq",
    "flag": "🇮🇶",
-   "goals": 1
-  },
-  {
-   "name": "Bradley Barcola",
-   "team": "France",
-   "flag": "🇫🇷",
-   "goals": 1
-  },
-  {
-   "name": "Breel Embolo",
-   "team": "Switzerland",
-   "flag": "🇨🇭",
-   "goals": 1
-  },
-  {
-   "name": "Caleb Yirenkyi",
-   "team": "Ghana",
-   "flag": "🇬🇭",
-   "goals": 1
-  },
-  {
-   "name": "Connor Metcalfe",
-   "team": "Australia",
-   "flag": "🇦🇺",
    "goals": 1
   }
  ],

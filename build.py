@@ -416,6 +416,18 @@ RESULTS_OVERRIDE = {
     "Mexico|South Africa|2026-06-11": [2, 0],
     "Spain|Cape Verde|2026-06-15": [0, 0],  # FT 0-0 (ESPN + TheSportsDB); openfootball/Wikipedia lagged
     "Belgium|Egypt|2026-06-15": [1, 1],     # FT 1-1 (ESPN + TheSportsDB)
+    "Netherlands|Sweden|2026-06-20": [5, 1], # FT 5-1; upstream feed lagged after full-time
+}
+
+GOALS_OVERRIDE = {
+    "Netherlands|Sweden|2026-06-20": [
+        {"name": "Brian Brobbey", "minute": "5", "team": "Netherlands"},
+        {"name": "Brian Brobbey", "minute": "17", "team": "Netherlands"},
+        {"name": "Cody Gakpo", "minute": "47", "team": "Netherlands"},
+        {"name": "Cody Gakpo", "minute": "54", "team": "Netherlands"},
+        {"name": "Anthony Elanga", "minute": "59", "team": "Sweden"},
+        {"name": "Crysencio Summerville", "minute": "89", "team": "Netherlands"},
+    ],
 }
 
 # ---------------------------------------------------------------------------
@@ -930,6 +942,9 @@ def main():
                     events.append({"name": nm, "minute": g.get("minute"),
                                    "team": team, "og": bool(g.get("owngoal")),
                                    "pen": bool(g.get("penalty"))})
+        if not events:
+            goal_key = f'{m["team1"]}|{m["team2"]}|{ko.strftime("%Y-%m-%d")}'
+            events = [dict(g) for g in GOALS_OVERRIDE.get(goal_key, [])]
         events.sort(key=lambda e: goal_minute_sort_key(e["minute"]))
 
         rec = {
@@ -983,14 +998,13 @@ def main():
 
     # --- Golden Boot: aggregate scorers from the feed (appear as results land) ---
     boot = {}
-    for raw, rec in zip(feed["matches"], matches):
-        for side, team in (("goals1", rec["team1"]), ("goals2", rec["team2"])):
-            for g in raw.get(side) or []:
-                name = g.get("name") or g.get("scorer")
-                if not name or g.get("owngoal"):
-                    continue
-                k = (name, team)
-                boot[k] = boot.get(k, 0) + 1
+    for rec in matches:
+        for g in rec.get("goals") or []:
+            name = g.get("name")
+            if not name or g.get("og"):
+                continue
+            k = (name, g.get("team"))
+            boot[k] = boot.get(k, 0) + 1
     scorers = sorted(({"name": n, "team": t, "flag": FLAGS.get(t, "⚽"), "goals": c}
                       for (n, t), c in boot.items()),
                      key=lambda x: (-x["goals"], x["name"]))[:25]
