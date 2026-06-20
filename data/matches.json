@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-20T03:35:26.315735+01:00",
+ "updated": "2026-06-20T03:40:25.340735+01:00",
  "build": "v61-2026-06-19",
  "matches": [
   {
@@ -553,7 +553,29 @@
    "channel": "ITV1",
    "score1": 3,
    "score2": 0,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Matheus Cunha",
+     "minute": "23",
+     "team": "Brazil",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Matheus Cunha",
+     "minute": "36",
+     "team": "Brazil",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Vinícius Júnior",
+     "minute": "45+3",
+     "team": "Brazil",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -1157,13 +1179,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 31,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 34,
@@ -1209,7 +1225,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 37,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 36,
@@ -1791,13 +1813,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 23,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 55,
@@ -1988,7 +2004,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 34,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 61,
@@ -2473,13 +2495,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 34,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 77,
@@ -2577,7 +2593,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 32,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 81,
@@ -3790,6 +3812,18 @@
    "goals": 2
   },
   {
+   "name": "Matheus Cunha",
+   "team": "Brazil",
+   "flag": "🇧🇷",
+   "goals": 2
+  },
+  {
+   "name": "Vinícius Júnior",
+   "team": "Brazil",
+   "flag": "🇧🇷",
+   "goals": 2
+  },
+  {
    "name": "Yasin Ayari",
    "team": "Sweden",
    "flag": "🇸🇪",
@@ -3859,18 +3893,6 @@
    "name": "Caleb Yirenkyi",
    "team": "Ghana",
    "flag": "🇬🇭",
-   "goals": 1
-  },
-  {
-   "name": "Connor Metcalfe",
-   "team": "Australia",
-   "flag": "🇦🇺",
-   "goals": 1
-  },
-  {
-   "name": "Crysencio Summerville",
-   "team": "Netherlands",
-   "flag": "🇳🇱",
    "goals": 1
   }
  ],
