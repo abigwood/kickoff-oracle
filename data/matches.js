@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-20T08:00:19.913773+01:00",
+ "updated": "2026-06-20T08:05:18.490252+01:00",
  "build": "v61-2026-06-19",
  "matches": [
   {
@@ -1237,13 +1237,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 36,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 36,
@@ -1263,7 +1257,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 26,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 37,
@@ -2016,7 +2016,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 34,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 61,
@@ -2148,13 +2154,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 18,
-    "code": 80,
-    "icon": "🌦️",
-    "desc": "Showers"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 65,
