@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-20T09:10:19.445078+01:00",
+ "updated": "2026-06-20T09:15:18.774456+01:00",
  "build": "v61-2026-06-19",
  "matches": [
   {
@@ -1045,7 +1045,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 28,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 31,
@@ -1179,13 +1185,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 26,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 34,
@@ -1559,9 +1559,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 24,
-    "code": 82,
-    "icon": "⛈️",
-    "desc": "Violent showers"
+    "code": 80,
+    "icon": "🌦️",
+    "desc": "Showers"
    }
   },
   {
@@ -1767,13 +1767,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 55,
-    "icon": "🌧️",
-    "desc": "Heavy drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 53,
@@ -1819,7 +1813,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 23,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 55,
@@ -2397,13 +2397,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 27,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 73,
@@ -2553,7 +2547,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 31,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
+   }
   },
   {
    "id": 79,
@@ -2833,13 +2833,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 24,
-    "code": 80,
-    "icon": "🌦️",
-    "desc": "Showers"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 90,
