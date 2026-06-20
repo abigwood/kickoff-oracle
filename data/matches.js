@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-20T01:00:27.806009+01:00",
+ "updated": "2026-06-20T01:05:25.765057+01:00",
  "build": "v61-2026-06-19",
  "matches": [
   {
@@ -525,7 +525,15 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 0,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Ismael Saibari",
+     "minute": "2",
+     "team": "Morocco",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -937,7 +945,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 19,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 28,
@@ -1928,7 +1942,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 23,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 59,
@@ -2361,13 +2381,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 22,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 73,
@@ -2387,7 +2401,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 24,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 74,
@@ -2667,7 +2687,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 24,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 85,
@@ -3752,6 +3778,12 @@ window.WC_DATA = {
    "goals": 2
   },
   {
+   "name": "Ismael Saibari",
+   "team": "Morocco",
+   "flag": "🇲🇦",
+   "goals": 2
+  },
+  {
    "name": "Johan Manzambi",
    "team": "Switzerland",
    "flag": "🇨🇭",
@@ -3851,12 +3883,6 @@ window.WC_DATA = {
    "name": "Crysencio Summerville",
    "team": "Netherlands",
    "flag": "🇳🇱",
-   "goals": 1
-  },
-  {
-   "name": "Daichi Kamada",
-   "team": "Japan",
-   "flag": "🇯🇵",
    "goals": 1
   }
  ],
