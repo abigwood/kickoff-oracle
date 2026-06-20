@@ -160,7 +160,7 @@ export function buildReveals(members, matches, picksByMatch, nowMs) {
       const res = m.ko
         ? scoreKnockout(p, { s1: m.ninety[0], s2: m.ninety[1], ko: true, adv: m.adv })
         : scorePick(p, { s1: m.score1, s2: m.score2 });
-      return { uid: mem.uid, nick: nickOf[mem.uid] || "?", s1: p.s1, s2: p.s2, hit: res.hit, exact: res.exact, pts: res.pts, settled: res.settled };
+      return { uid: mem.uid, nick: nickOf[mem.uid] || "?", s1: p.s1, s2: p.s2, hit: res.hit, exact: res.exact, pts: res.pts, settled: res.settled, ...(m.ko && p.adv != null ? { adv: p.adv } : {}) }; // Phase 3: each pick's called advancer (knockout only)
     });
     out.push({
       matchId: m.id,
@@ -172,6 +172,8 @@ export function buildReveals(members, matches, picksByMatch, nowMs) {
       score2: settled ? (m.ko ? m.ninety[1] : m.score2) : null,
       ko: m.ukKickoff,
       picks: memberPicks,
+      // Phase 3 read-only display passthrough — knockout reveals only; group reveals are byte-identical
+      ...(m.ko ? { decided: m.decided || null, shootout: Array.isArray(m.shootout) ? m.shootout : null, advanced: m.adv == null ? null : m.adv } : {}),
     });
   }
   out.sort((a, b) => Date.parse(b.ko) - Date.parse(a.ko));

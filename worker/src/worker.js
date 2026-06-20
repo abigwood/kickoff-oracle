@@ -513,7 +513,8 @@ function knockoutReveal(m, koResults) {
   if (!(m.stage && m.stage !== "Group")) return m;
   const kr = koResults[String(m.id)];
   if (kr && kr.status === "confirmed" && Array.isArray(kr.ninety))
-    return { ...m, ko: true, ninety: kr.ninety, adv: kr.adv == null ? null : kr.adv };
+    return { ...m, ko: true, ninety: kr.ninety, adv: kr.adv == null ? null : kr.adv,
+             decided: kr.decided || null, shootout: Array.isArray(kr.shootout) ? kr.shootout : null }; // Phase 3 display passthrough
   return { ...m, score1: null, score2: null };
 }
 
