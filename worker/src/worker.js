@@ -476,9 +476,18 @@ async function makePick(env, body) {
     await kvPut(env, `user:${uid}`, user);
   }
   const picks = (await kvGet(env, `picks:${matchId}`)) || {};
-  picks[uid] = { s1, s2, ts: Date.now() };
+  const rec = { s1, s2, ts: Date.now() };
+  // KNOCKOUT ADVANCER (Phase 1, additive): store `adv` (1=team1, 2=team2) ONLY when
+  // this is a knockout match AND the prediction is a draw. Any other case stores no
+  // `adv` — so editing a draw→non-draw (or a group pick) naturally CLEARS it. The
+  // field is stored but NOT yet scored (Phase 2). Scoring ignores it entirely.
+  if (match.stage && match.stage !== "Group" && s1 === s2) {
+    const adv = Number(body.adv);
+    if (adv === 1 || adv === 2) rec.adv = adv;
+  }
+  picks[uid] = rec;
   await kvPut(env, `picks:${matchId}`, picks);
-  return j({ ok: true, matchId, s1, s2 }, 200, env);
+  return j({ ok: true, matchId, s1, s2, adv: rec.adv ?? null }, 200, env);
 }
 
 async function getPicks(env, url) {

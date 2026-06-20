@@ -220,6 +220,12 @@ select.pill{appearance:none;-webkit-appearance:none}
   font-variant-numeric:tabular-nums}
 .picker .dash{color:var(--faint);font-weight:800}
 .wrow{display:flex;gap:8px;align-items:center}
+.advq{margin:0 0 10px}
+.advlbl{text-align:center;color:var(--dim);font-size:.72rem;font-weight:700;margin-bottom:6px}
+.advrow{display:flex;gap:8px}
+.advbtn{flex:1;background:var(--raise);border:1px solid var(--line);border-radius:9px;color:var(--ink);
+  font-size:.74rem;font-weight:700;padding:9px 6px;cursor:pointer}
+.advbtn.on{background:var(--win);border-color:var(--win);color:#06280F}
 .banker{flex:1;background:var(--raise);border:1px solid var(--line);border-radius:9px;color:var(--dim);
   font-size:.72rem;font-weight:700;padding:9px;cursor:pointer}
 .banker.on{background:var(--bbc);color:#0B0D14;border-color:var(--bbc)}
@@ -279,7 +285,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v61-2026-06-19";   // build marker (bumped each shell deploy)
+window.__BUILD = "v62-2026-06-20";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -1097,14 +1103,28 @@ function windowWidget(m){
     : `<span class="open">🪟 PICK OPEN</span><span class="wait">locks at KO · ${m.ukTime}</span>`;
   const p = myPicks[m.id] || {s1:0, s2:0};
   const has = !!myPicks[m.id];
+  // KNOCKOUT advancer (Phase 1): a "who goes through?" question shown ONLY for a
+  // knockout game (stage≠Group, real teams — the picker only renders for real teams)
+  // when the current prediction is a DRAW. Display + payload only; scoring ignores it.
+  const isKO = m.stage && m.stage !== "Group";
+  const draw = p.s1 === p.s2;
+  const advBlock = isKO ? `
+    <div class="advq" data-advq${draw?"":" hidden"}>
+      <div class="advlbl">🤝 If it ends level — who goes through?</div>
+      <div class="advrow">
+        <button class="advbtn${p.adv===1?" on":""}" data-adv="1">${m.flag1||""} ${m.team1}</button>
+        <button class="advbtn${p.adv===2?" on":""}" data-adv="2">${m.flag2||""} ${m.team2}</button>
+      </div>
+    </div>` : "";
+  const advTag = (isKO && has && draw && p.adv) ? ` · ${p.adv===1?m.team1:m.team2} through` : "";
   return `<div class="window" data-wid="${m.id}" data-ko="${m.ukKickoff}"><div class="wlbl">${head}</div>
-    ${has?`<div class="locked" style="margin-bottom:8px">🔒 Your pick: ${m.team1} ${p.s1}–${p.s2} ${m.team2}<br>
+    ${has?`<div class="locked" style="margin-bottom:8px">🔒 Your pick: ${m.team1} ${p.s1}–${p.s2} ${m.team2}${advTag}<br>
       <span style="color:var(--dim);font-weight:400;font-size:.68rem">Change it anytime before kick-off · hidden from your mates until KO</span></div>`:""}
     <div class="picker">
       <div class="step"><button data-st="s1,-1">−</button><span class="v" data-v="s1">${p.s1}</span><button data-st="s1,1">＋</button></div>
       <span class="dash">–</span>
       <div class="step"><button data-st="s2,-1">−</button><span class="v" data-v="s2">${p.s2}</span><button data-st="s2,1">＋</button></div>
-    </div>
+    </div>${advBlock}
     <div class="wrow">
       <button class="lockbtn" data-lock>${has?"Update pick":"Lock it in"}</button>
     </div>
@@ -1581,10 +1601,26 @@ document.addEventListener("click",async e=>{
     const id = w.dataset.wid;
     const st = e.target.closest("[data-st]");
     if (st){ const [k,d] = st.dataset.st.split(","); const v = w.querySelector(`[data-v="${k}"]`);
-      v.textContent = Math.max(0, Math.min(9, +v.textContent + +d)); return; }
+      v.textContent = Math.max(0, Math.min(9, +v.textContent + +d));
+      // KNOCKOUT advancer: show the "who goes through?" question only while it's a draw;
+      // clear any selection when the prediction is no longer a draw (draw→non-draw).
+      const advq = w.querySelector("[data-advq]");
+      if (advq){
+        const a = +w.querySelector('[data-v="s1"]').textContent, b = +w.querySelector('[data-v="s2"]').textContent;
+        if (a===b){ advq.hidden = false; }
+        else { advq.hidden = true; advq.querySelectorAll("[data-adv]").forEach(x=>x.classList.remove("on")); }
+      }
+      return; }
+    const advBtn = e.target.closest("[data-adv]");
+    if (advBtn){ w.querySelectorAll("[data-adv]").forEach(x=>x.classList.toggle("on", x===advBtn)); return; }
     if (e.target.closest("[data-lock]")){
       const s1 = +w.querySelector('[data-v="s1"]').textContent,
             s2 = +w.querySelector('[data-v="s2"]').textContent;
+      // KNOCKOUT advancer (Phase 1): include adv ONLY for a knockout draw with a selection.
+      // For group games / non-draws there is no [data-adv] / no .on → adv stays undefined,
+      // so the payload + cache are byte-identical to before.
+      const advOn = w.querySelector("[data-adv].on");
+      const adv = (s1===s2 && advOn) ? +advOn.dataset.adv : undefined;
       // INTERCEPT a split: a fresh context locking its first pick is likely the same
       // person from Safari/another device — steer them to Restore before they orphan a pick.
       if (freshIdentity()){
@@ -1597,7 +1633,7 @@ document.addEventListener("click",async e=>{
         const btn = e.target.closest("[data-lock]"); const label = btn.textContent;
         btn.disabled = true; btn.textContent = "Saving…";
         // server-side check is authoritative — rejects at/after KO and placeholder teams
-        const { status, j } = await api("/pick", { uid:uid(), nickname:myNick()||"Anon", matchId:+id, s1, s2 });
+        const { status, j } = await api("/pick", { uid:uid(), nickname:myNick()||"Anon", matchId:+id, s1, s2, ...(adv?{adv}:{}) });
         if (status!==200){
           btn.disabled = false; btn.textContent = label;
           alert(j.error==="window has shut" ? "Too late — picks shut at kick-off." :
@@ -1606,7 +1642,7 @@ document.addEventListener("click",async e=>{
           return;
         }
       }
-      myPicks[id] = {s1,s2}; saveMyPicks();
+      myPicks[id] = adv ? {s1,s2,adv} : {s1,s2}; saveMyPicks();
       render(); return;
     }
   }
