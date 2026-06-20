@@ -617,6 +617,32 @@ async function exportAll(env, body) {
   return j({ exportedAt: Date.now(), count: Object.keys(data).length, data }, 200, env);
 }
 
+// PHASE 0 — KNOCKOUT RESULTS STORE (isolated; reads/writes ONLY `knockout:results`).
+// build.py captures the 90-min score + advancer from ESPN (with the G1–G7 gates)
+// and pushes the assembled records here. This endpoint NEVER touches results:ft,
+// NEVER recomputes a table, and NOTHING reads knockout:results yet (scoring wiring
+// is Phase 2). So it is a pure no-op on every league table.
+// Merge rule: a manually-confirmed record (src:"manual", status:"confirmed") is
+// authoritative and is never overwritten by an automated push — this protects the
+// wrangler-edit manual-confirm fallback from being clobbered on the next build.
+async function setKnockout(env, body) {
+  if (!env.SETTLE_SECRET || body.secret !== env.SETTLE_SECRET)
+    return j({ error: "forbidden" }, 403, env);
+  const incoming = body.knockout;
+  if (!incoming || typeof incoming !== "object" || Array.isArray(incoming))
+    return j({ error: "knockout object required" }, 400, env);
+  const cur = (await kvGet(env, "knockout:results")) || {};
+  let written = 0, keptManual = 0;
+  for (const [id, rec] of Object.entries(incoming)) {
+    const ex = cur[id];
+    if (ex && ex.src === "manual" && ex.status === "confirmed") { keptManual++; continue; }
+    cur[id] = rec;
+    written++;
+  }
+  await kvPut(env, "knockout:results", cur);
+  return j({ ok: true, store: "knockout:results", written, keptManual }, 200, env);
+}
+
 export default {
   // Cloudflare Cron Trigger (reliable, unlike GitHub's throttled scheduler):
   // every 5 min it asks the GitHub Action to refresh data. No-op without the
@@ -666,6 +692,7 @@ export default {
         if (path === "/rename") return await renameLeague(env, body);
         if (path === "/pick") return await makePick(env, body);
         if (path === "/settle") return await settle(env, body);
+        if (path === "/knockout") return await setKnockout(env, body);
         if (path === "/export") return await exportAll(env, body);
         if (path === "/migrate-codes") return await migrateCodes(env, body);
       }

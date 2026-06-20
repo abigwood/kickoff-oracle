@@ -629,6 +629,197 @@ def fetch_espn_results():
     return out
 
 
+# ---------------------------------------------------------------------------
+# PHASE 0 — KNOCKOUT RESULT CAPTURE (ADDITIVE). Pulls the 90-MINUTE score
+# (ESPN summary linescores[0]+[1]) and the ADVANCER (ESPN `winner` flag) for
+# finished knockout matches, behind fail-closed gates G1-G7. Feeds the SEPARATE
+# knockout:results store ONLY. Nothing here touches results:ft, fetch_espn_results,
+# ping_settle, the group pipeline, or scoring — those stay byte-identical.
+# ---------------------------------------------------------------------------
+ESPN_SUMMARY = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary"
+_KO_DECIDED = {"STATUS_FULL_TIME": "FT", "STATUS_FINAL_AET": "AET", "STATUS_FINAL_PEN": "PEN"}
+
+
+def _ko_now_ms():
+    return int(datetime.now(timezone.utc).timestamp() * 1000)
+
+
+def _espn_finished_index():
+    """{(canon_home, canon_away): event_id} for ESPN events in state 'post'. {} on error."""
+    idx = {}
+    try:
+        req = urllib.request.Request(ESPN_SCOREBOARD, headers={"User-Agent": SRC_UA})
+        data = json.loads(urllib.request.urlopen(req, timeout=20).read())
+        for ev in data.get("events", []):
+            comp = (ev.get("competitions") or [{}])[0]
+            if ((comp.get("status") or {}).get("type") or {}).get("state") != "post":
+                continue
+            cs = comp.get("competitors") or []
+            home = next((c for c in cs if c.get("homeAway") == "home"), None)
+            away = next((c for c in cs if c.get("homeAway") == "away"), None)
+            hn = ((home or {}).get("team") or {}).get("displayName")
+            an = ((away or {}).get("team") or {}).get("displayName")
+            if hn and an and ev.get("id"):
+                idx[(_canon(hn), _canon(an))] = ev["id"]
+    except Exception as e:
+        print(f"espn knockout index skipped: {e}")
+    return idx
+
+
+def _team_90(comp):
+    """90-minute goals for one competitor = linescores[0]+[1] (the two halves).
+    Returns None if those two periods are missing/non-integer/out of range, which
+    deliberately rejects the `-1` junk ESPN can put in EXTRA-TIME periods (we never
+    read periods beyond the first two)."""
+    ls = comp.get("linescores") or []
+    if len(ls) < 2:
+        return None
+    try:
+        a = int(ls[0].get("displayValue"))
+        b = int(ls[1].get("displayValue"))
+    except (TypeError, ValueError, AttributeError):
+        return None
+    if not (0 <= a <= 20 and 0 <= b <= 20):
+        return None
+    return a + b
+
+
+def fetch_espn_knockout(matches):
+    """Capture (90-min score, advancer, how-decided) for finished KNOCKOUT matches
+    from ESPN, behind fail-closed gates G1-G7. Returns {str(id): record}. Fully
+    defensive: any per-match problem FLAGS that match (never auto-scores bad data)
+    and never raises. Returns {} when no knockout match is finished (the case today,
+    since R32+ are all upcoming with placeholder teams)."""
+    ko = [m for m in matches
+          if m.get("stage") and m["stage"] != "Group"                      # G7: knockout only
+          and m.get("status") == "FT" and m.get("score1") is not None       # finished
+          and not re.search(r"[\d/]", m["team1"])                           # real teams, not 2A / 1E placeholders
+          and not re.search(r"[\d/]", m["team2"])]
+    if not ko:
+        return {}
+    idx = _espn_finished_index()
+    out = {}
+    for m in ko:
+        mid = str(m["id"])
+        base = {"src": "espn", "ts": _ko_now_ms()}
+
+        def flag(reason, raw=None):
+            rec = {**base, "status": "flagged", "reasons": [reason]}
+            if raw is not None:
+                rec["raw"] = raw
+            out[mid] = rec
+
+        # G1: resolve exactly one finished ESPN event (either team orientation)
+        k = (_canon(m["team1"]), _canon(m["team2"]))
+        kr = (k[1], k[0])
+        flipped = False
+        ev_id = idx.get(k)
+        if ev_id is None and kr in idx:
+            ev_id, flipped = idx[kr], True
+        if ev_id is None:
+            flag("G1: no finished ESPN event for fixture")
+            continue
+        try:
+            req = urllib.request.Request(
+                f"{ESPN_SUMMARY}?event={urllib.parse.quote(str(ev_id))}",
+                headers={"User-Agent": SRC_UA})
+            summ = json.loads(urllib.request.urlopen(req, timeout=20).read())
+        except Exception as e:
+            flag(f"G1: ESPN summary fetch failed: {e}")
+            continue
+        comp = (summ.get("header", {}).get("competitions") or [{}])[0]
+        cs = comp.get("competitors") or []
+        home = next((c for c in cs if c.get("homeAway") == "home"), None)
+        away = next((c for c in cs if c.get("homeAway") == "away"), None)
+        if not home or not away:
+            flag("G2: ESPN competitors missing")
+            continue
+        # G2/G3: 90-min score from the two half-periods, per competitor
+        h90, a90 = _team_90(home), _team_90(away)
+        if h90 is None or a90 is None:
+            flag("G2/G3: malformed or out-of-range 90-min linescores")
+            continue
+        # map ESPN home/away -> OUR team1/team2 order
+        t1c, t2c = (away, home) if flipped else (home, away)
+        ninety = [a90, h90] if flipped else [h90, a90]
+        # G4: how decided
+        stname = ((comp.get("status") or {}).get("type") or {}).get("name")
+        decided = _KO_DECIDED.get(stname)
+        if decided is None:
+            flag(f"G4: unexpected ESPN status {stname!r}")
+            continue
+        # final (AET) score in OUR order, for display/audit + the G6 invariant
+        try:
+            final = [int(t1c.get("score")), int(t2c.get("score"))]
+        except (TypeError, ValueError):
+            final = None
+        # G6 (cross-check): the 90-min tally can never exceed the AET final score.
+        # Robust invariant chosen over fragile keyEvents goal-parsing; never false-flags.
+        if final is not None and (ninety[0] > final[0] or ninety[1] > final[1]):
+            flag("G6: 90-min exceeds final score (linescore inconsistent)",
+                 {"ninety": ninety, "final": final})
+            continue
+        w1, w2 = bool(t1c.get("winner")), bool(t2c.get("winner"))
+        adv, shootout = None, None
+        # G5: advancer determinacy
+        if decided == "FT":
+            if ninety[0] == ninety[1]:
+                flag("G5: status FT but 90-min is a draw", {"ninety": ninety})
+                continue
+            adv = 1 if ninety[0] > ninety[1] else 2
+            if not ((adv == 1 and w1 and not w2) or (adv == 2 and w2 and not w1)):
+                flag("G5: winner flag disagrees with 90-min result",
+                     {"ninety": ninety, "w1": w1, "w2": w2})
+                continue
+        else:  # AET or PEN
+            if w1 == w2:  # zero or two winner flags
+                flag("G5: not exactly one winner flag", {"w1": w1, "w2": w2})
+                continue
+            adv = 1 if w1 else 2
+            if decided == "PEN":
+                try:
+                    s1, s2 = int(t1c.get("shootoutScore")), int(t2c.get("shootoutScore"))
+                except (TypeError, ValueError):
+                    flag("G5: PEN but no shootoutScore")
+                    continue
+                if (adv == 1 and not s1 > s2) or (adv == 2 and not s2 > s1):
+                    flag("G5: winner flag disagrees with shootout score",
+                         {"adv": adv, "shootout": [s1, s2]})
+                    continue
+                shootout = [s1, s2]
+        out[mid] = {**base, "ninety": ninety, "decided": decided, "adv": adv,
+                    "final": final, "shootout": shootout, "status": "confirmed", "reasons": []}
+    return out
+
+
+def ping_knockout(matches):
+    """Push knockout:results records to the Worker's isolated /knockout endpoint.
+    Same env gating as ping_settle; no-op locally and when nothing is captured.
+    Does NOT touch /settle or results:ft. Logs flagged games for the Action run."""
+    api = os.environ.get("WINDOW_API")
+    secret = os.environ.get("SETTLE_SECRET")
+    if not api or not secret:
+        return
+    records = fetch_espn_knockout(matches)
+    if not records:
+        return
+    for mid, rec in records.items():
+        if rec.get("status") == "flagged":
+            print(f"KNOCKOUT FLAGGED: match {mid} reasons={rec.get('reasons')} "
+                  f"-> needs manual confirm (wrangler edit of knockout:results)")
+    try:
+        req = urllib.request.Request(
+            api.rstrip("/") + "/knockout",
+            data=json.dumps({"secret": secret, "knockout": records}).encode(),
+            headers={"content-type": "application/json", "User-Agent": "KickOffOracle-Build/1.0"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=15) as r:
+            print("knockout pinged:", r.read().decode()[:160])
+    except Exception as e:
+        print("knockout ping skipped:", e)
+
+
 def fallback_score(m, ko, now, espn, bdl, wiki):
     """openfootball had no score for this match. ESPN carries a definitive FT
     flag, so it's trusted the moment it reports the match finished; BALLDONTLIE,
@@ -845,6 +1036,7 @@ def main():
     (OUT.parent / "matches.js").write_text("window.WC_DATA = " + payload + ";")
     print(f"Wrote {len(matches)} matches, {len(tables)} groups -> {OUT}")
     ping_settle(matches)
+    ping_knockout(matches)   # PHASE 0 (additive): capture knockout 90-min + advancer into the separate store
 
 
 def ping_settle(matches):
