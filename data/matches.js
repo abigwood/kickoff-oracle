@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-20T23:00:17.495638+01:00",
+ "updated": "2026-06-20T23:05:16.474386+01:00",
  "build": "v63-2026-06-20",
  "matches": [
   {
@@ -966,7 +966,29 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 2,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Franck Kessié",
+     "minute": "30",
+     "team": "Ivory Coast",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Deniz Undav",
+     "minute": "68",
+     "team": "Germany",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Deniz Undav",
+     "minute": "90+4",
+     "team": "Germany",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -1039,7 +1061,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 27,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 31,
@@ -1427,13 +1455,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 23,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 41,
@@ -1799,7 +1821,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 20,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 53,
@@ -2232,13 +2260,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 67,
@@ -2429,7 +2451,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 73,
@@ -2735,13 +2763,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 23,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 85,
@@ -2839,7 +2861,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 34,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
+   }
   },
   {
    "id": 89,
@@ -3784,6 +3812,12 @@ window.WC_DATA = {
  },
  "scorers": [
   {
+   "name": "Deniz Undav",
+   "team": "Germany",
+   "flag": "🇩🇪",
+   "goals": 3
+  },
+  {
    "name": "Jonathan David",
    "team": "Canada",
    "flag": "🇨🇦",
@@ -3925,12 +3959,6 @@ window.WC_DATA = {
    "name": "Anthony Elanga",
    "team": "Sweden",
    "flag": "🇸🇪",
-   "goals": 1
-  },
-  {
-   "name": "Aymen Hussein",
-   "team": "Iraq",
-   "flag": "🇮🇶",
    "goals": 1
   }
  ],
