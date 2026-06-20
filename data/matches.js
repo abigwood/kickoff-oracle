@@ -1,9 +1,5 @@
 window.WC_DATA = {
-<<<<<<< Updated upstream
- "updated": "2026-06-20T20:00:22.988579+01:00",
-=======
- "updated": "2026-06-20T20:04:16.025062+01:00",
->>>>>>> Stashed changes
+ "updated": "2026-06-20T20:05:09.225655+01:00",
  "build": "v62-2026-06-20",
  "matches": [
   {
@@ -1188,9 +1184,6 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 5,
    "score2": 1,
-<<<<<<< Updated upstream
-   "goals": [],
-=======
    "goals": [
     {
      "name": "Brian Brobbey",
@@ -1223,7 +1216,6 @@ window.WC_DATA = {
      "team": "Netherlands"
     }
    ],
->>>>>>> Stashed changes
    "status": "FT"
   },
   {
@@ -2055,7 +2047,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 61,
@@ -2618,7 +2616,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 17,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 80,
