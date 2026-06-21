@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-21T07:05:16.819960+01:00",
+ "updated": "2026-06-21T07:10:17.337616+01:00",
  "build": "v63-2026-06-20",
  "matches": [
   {
@@ -1260,7 +1260,36 @@
    "channel": "BBC One",
    "score1": 0,
    "score2": 4,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Daichi Kamada",
+     "minute": "4",
+     "team": "Japan",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ayase Ueda",
+     "minute": "31",
+     "team": "Japan",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Junya Ito",
+     "minute": "69",
+     "team": "Japan",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ayase Ueda",
+     "minute": "83",
+     "team": "Japan",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2877,7 +2906,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 28,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 90,
@@ -3826,6 +3861,12 @@
    "goals": 3
   },
   {
+   "name": "Ayase Ueda",
+   "team": "Japan",
+   "flag": "🇯🇵",
+   "goals": 2
+  },
+  {
    "name": "Brian Brobbey",
    "team": "Netherlands",
    "flag": "🇳🇱",
@@ -3847,6 +3888,12 @@
    "name": "Cyle Larin",
    "team": "Canada",
    "flag": "🇨🇦",
+   "goals": 2
+  },
+  {
+   "name": "Daichi Kamada",
+   "team": "Japan",
+   "flag": "🇯🇵",
    "goals": 2
   },
   {
@@ -3943,18 +3990,6 @@
    "name": "Ali Olwan",
    "team": "Jordan",
    "flag": "🇯🇴",
-   "goals": 1
-  },
-  {
-   "name": "Amad Diallo",
-   "team": "Ivory Coast",
-   "flag": "🇨🇮",
-   "goals": 1
-  },
-  {
-   "name": "Anthony Elanga",
-   "team": "Sweden",
-   "flag": "🇸🇪",
    "goals": 1
   }
  ],
