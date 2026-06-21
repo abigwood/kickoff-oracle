@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-21T19:05:17.764151+01:00",
+ "updated": "2026-06-21T19:10:16.693279+01:00",
  "build": "v63-2026-06-20",
  "matches": [
   {
@@ -1475,13 +1475,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 23,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 41,
@@ -1527,7 +1521,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 15,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 43,
@@ -1603,7 +1603,36 @@
    "channel": "BBC One",
    "score1": 4,
    "score2": 0,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Lamine Yamal",
+     "minute": "10",
+     "team": "Spain",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Mikel Oyarzabal",
+     "minute": "21",
+     "team": "Spain",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Mikel Oyarzabal",
+     "minute": "24",
+     "team": "Spain",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Hassan Al-Tambakti",
+     "minute": "49",
+     "team": "Spain",
+     "og": true,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2222,13 +2251,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 18,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 65,
@@ -2523,7 +2546,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 30,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 75,
@@ -2725,13 +2754,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 16,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 83,
@@ -3011,7 +3034,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 37,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 94,
@@ -3946,6 +3975,12 @@
    "goals": 2
   },
   {
+   "name": "Mikel Oyarzabal",
+   "team": "Spain",
+   "flag": "🇪🇸",
+   "goals": 2
+  },
+  {
    "name": "Vinícius Júnior",
    "team": "Brazil",
    "flag": "🇧🇷",
@@ -3979,12 +4014,6 @@
    "name": "Alexander Isak",
    "team": "Sweden",
    "flag": "🇸🇪",
-   "goals": 1
-  },
-  {
-   "name": "Ali Olwan",
-   "team": "Jordan",
-   "flag": "🇯🇴",
    "goals": 1
   }
  ],
