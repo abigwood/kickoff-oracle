@@ -278,14 +278,17 @@ def simulate(matches, elo, base_tables):
                 assigned[i] = qual_thirds[pick]
 
         def resolve(label, idx):
+            if label in ELO:  # already a resolved real team (group finished) — use it directly
+                return label
             if label.startswith("W"):
                 return winners.get(int(label[1:]))
             if label.startswith("L"):  # third-place match
                 return losers.get(int(label[1:]))
             if "/" in label:
                 return assigned.get(idx)
-            g = label[1]
-            return firsts[g] if label[0] == "1" else seconds[g]
+            g = label[1] if len(label) > 1 else ""
+            # .get() so an unexpected/unparseable label yields None (match skipped below) — never KeyError
+            return firsts.get(g) if label[0] == "1" else seconds.get(g)
 
         losers = {}
         for i, m in enumerate(ko_ms):
@@ -1013,10 +1016,17 @@ def main():
     played_all = [m for m in matches if m["score1"] is not None]
     elo_now = elo_update(played_all)
     base = {g: {r["team"]: dict(r) for r in rows} for g, rows in tables.items()}
-    predictions = simulate(matches, elo_now, base)
-    mprobs = {str(m["id"]): match_probs(elo_now, m)
-              for m in matches
-              if m["status"] == "UPCOMING" and m["team1"] in ELO and m["team2"] in ELO}
+    # The Oracle predictions are COSMETIC (win-% sim). They must never take down the
+    # essential data refresh + settle pipeline — so isolate them like highlights:
+    # on any failure, log and continue with empty predictions.
+    try:
+        predictions = simulate(matches, elo_now, base)
+        mprobs = {str(m["id"]): match_probs(elo_now, m)
+                  for m in matches
+                  if m["status"] == "UPCOMING" and m["team1"] in ELO and m["team2"] in ELO}
+    except Exception as e:
+        print(f"predictions skipped (non-critical): {e}")
+        predictions, mprobs = [], {}
 
     # merge YouTube highlight IDs found by find_highlights.py
     hl_file = OUT.parent / "highlights.json"
