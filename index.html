@@ -168,7 +168,6 @@ select.pill{appearance:none;-webkit-appearance:none}
 .gtable td{padding:7px 2px;text-align:center;font-variant-numeric:tabular-nums;border-top:1px solid var(--line)}
 .gtable td.t{text-align:left;padding-left:14px;font-weight:600;white-space:nowrap}
 .gtable tr.q td{box-shadow:inset 3px 0 0 var(--win)}
-.gtable tr.maybe td{box-shadow:inset 3px 0 0 var(--bbc)}
 .gtable td.pts{font-weight:800}
 
 /* bracket */
@@ -181,19 +180,6 @@ select.pill{appearance:none;-webkit-appearance:none}
 .bmatch .row{display:flex;justify-content:space-between;gap:8px;padding:2px 0;font-weight:600}
 .bmatch .row .sc{font-variant-numeric:tabular-nums;color:var(--dim)}
 .bmatch .sub{font-size:.66rem;color:var(--faint);margin-top:4px;display:flex;justify-content:space-between}
-.bracket-head{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
-        padding:13px 14px;margin-bottom:12px}
-.bracket-head h3{font-family:"Archivo";font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
-.bracket-head p{font-size:.76rem;line-height:1.45;color:var(--dim)}
-.qual-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}
-.qual-pill{background:var(--raise);border:1px solid var(--line);border-radius:8px;padding:7px 8px;font-size:.72rem;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis}
-.qual-pill .seed{display:block;color:var(--faint);font-family:"Archivo";font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
-.qual-pill.third{border-color:rgba(255,210,48,.45)}
-.bmatch.projected{border-color:rgba(255,210,48,.38)}
-.bmatch .seed{display:block;color:var(--faint);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1px}
-.bmatch .row.projected span:first-child{color:var(--bbc)}
-.bmatch .row.placeholder span:first-child{color:var(--faint)}
-.bmatch .row.placeholder{font-weight:500}
 
 /* england view */
 .routecard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
@@ -300,7 +286,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v64-2026-06-22";   // build marker (bumped each shell deploy)
+window.__BUILD = "v63-2026-06-20";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -1299,94 +1285,30 @@ function viewFixtures(){
 }
 
 function viewGroups(){
-  const projected = projectedQualifiers();
-  const thirdTeams = new Set(projected.thirds.map(s=>s.team));
   return Object.entries(DATA.groups).map(([g,rows])=>`
     <div class="gtable"><h3>GROUP ${g}</h3><table>
       <tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr>
-      ${rows.map((r,i)=>`<tr class="${i<2?"q":(i===2&&thirdTeams.has(r.team)?"maybe":"")}">
+      ${rows.map((r,i)=>`<tr class="${i<2?"q":""}">
         <td class="t">${r.flag} ${r.team}</td><td>${r.p}</td><td>${r.w}</td>
         <td>${r.d}</td><td>${r.l}</td><td>${r.gd>0?"+":""}${r.gd}</td><td class="pts">${r.pts}</td></tr>`).join("")}
     </table></div>`).join("")
-    + `<p class="note">Green = top two. Yellow = currently inside the eight best third-placed teams.</p>`;
-}
-
-function rowSort(a,b){
-  return (b.pts-a.pts) || (b.gd-a.gd) || ((b.gf||0)-(a.gf||0)) || ((a.team||"").localeCompare(b.team||""));
-}
-function projectedQualifiers(){
-  const groups = Object.entries(DATA.groups||{}).sort(([a],[b])=>a.localeCompare(b));
-  const winners = {}, runners = {}, thirdByGroup = {}, thirds = [];
-  groups.forEach(([g,rows])=>{
-    const ranked = [...rows].sort(rowSort);
-    if (ranked[0]) winners[g] = {...ranked[0], seed:`1${g}`, group:g};
-    if (ranked[1]) runners[g] = {...ranked[1], seed:`2${g}`, group:g};
-    if (ranked[2]) {
-      thirdByGroup[g] = {...ranked[2], seed:`3${g}`, group:g};
-      thirds.push(thirdByGroup[g]);
-    }
-  });
-  const thirdQualifiers = thirds.sort(rowSort).slice(0,8);
-  return {winners, runners, thirdByGroup, thirds:thirdQualifiers, thirdGroups:new Set(thirdQualifiers.map(r=>r.group))};
-}
-function slotLabel(slot){
-  if (!slot) return "";
-  if (/^[12][A-L]$/.test(slot)) return slot[0]==="1" ? `Winner Group ${slot[1]}` : `Runner-up Group ${slot[1]}`;
-  if (/^3[A-L](?:\/[A-L])+$/.test(slot)) return `Best third from ${slot.slice(1).split("/").join(", ")}`;
-  if (/^[WL]\d+$/.test(slot)) return slot[0]==="W" ? `Winner Match ${slot.slice(1)}` : `Loser Match ${slot.slice(1)}`;
-  return "Confirmed";
-}
-function resolveSlot(slot, projected, usedThirds){
-  if (/^1[A-L]$/.test(slot)) return projected.winners[slot[1]] || null;
-  if (/^2[A-L]$/.test(slot)) return projected.runners[slot[1]] || null;
-  if (/^3[A-L](?:\/[A-L])+$/.test(slot)){
-    const eligible = new Set(slot.slice(1).split("/"));
-    const pick = projected.thirds.find(r=>eligible.has(r.group) && !usedThirds.has(r.group));
-    if (pick) usedThirds.add(pick.group);
-    return pick || null;
-  }
-  return null;
-}
-function projectedBracketMatch(m, projected, usedThirds){
-  const asTeam = slot => {
-    const resolved = resolveSlot(slot, projected, usedThirds);
-    if (resolved) return {name:resolved.team, flag:resolved.flag, seed:resolved.seed, projected:true};
-    if (/^[123][A-L](?:\/[A-L])*$/.test(slot)) return {name:slot, flag:"", seed:slotLabel(slot), placeholder:true};
-    return {name:slot, flag:slot==="⚽"?"⚽":"", seed:slotLabel(slot), projected:false};
-  };
-  return [asTeam(m.team1), asTeam(m.team2)];
+    + `<p class="note">Top two qualify automatically (green bar); the eight best third-placed teams also advance.</p>`;
 }
 
 function viewBracket(){
   const order = ["Round of 32","Round of 16","Quarter-final","Semi-final","Match for third place","Final"];
-  const projected = projectedQualifiers();
-  const usedThirds = new Set();
-  const topSeeds = Object.entries(projected.winners).map(([g,r])=>`<div class="qual-pill"><span class="seed">1${g}</span>${r.flag} ${r.team}</div>`).join("");
-  const runnerSeeds = Object.entries(projected.runners).map(([g,r])=>`<div class="qual-pill"><span class="seed">2${g}</span>${r.flag} ${r.team}</div>`).join("");
-  const thirdSeeds = projected.thirds.map(r=>`<div class="qual-pill third"><span class="seed">3${r.group} · ${r.pts} pts, ${r.gd>0?"+":""}${r.gd}</span>${r.flag} ${r.team}</div>`).join("");
-  return `<div class="bracket-head">
-      <h3>As It Stands</h3>
-      <p>Projected from the live group tables: top two in every group plus the eight best third-placed teams. Yellow names in the first knockout round are projections and will change as results move.</p>
-      <div class="qual-grid">${topSeeds}${runnerSeeds}${thirdSeeds}</div>
-    </div>
-    <div class="bracket">` + order.map(r=>{
+  return `<div class="bracket">` + order.map(r=>{
     const ms = DATA.matches.filter(m=>m.round===r).sort((a,b)=>a.ukKickoff.localeCompare(b.ukKickoff));
     if(!ms.length) return "";
     return `<div class="bcol"><h3>${r}</h3>` + ms.map(m=>`
-      ${(()=>{
-        const [a,b] = r==="Round of 32" ? projectedBracketMatch(m, projected, usedThirds) : [
-          {name:m.team1, flag:m.flag1!=="⚽"?m.flag1:"", seed:slotLabel(m.team1), placeholder:/^[WL]\d+$/.test(m.team1)},
-          {name:m.team2, flag:m.flag2!=="⚽"?m.flag2:"", seed:slotLabel(m.team2), placeholder:/^[WL]\d+$/.test(m.team2)}
-        ];
-        return `<div class="bmatch ${(a.projected||b.projected)?"projected":""}">
-        <div class="row ${a.projected?"projected":(a.placeholder?"placeholder":"")}"><span><span class="seed">${a.seed}</span>${a.flag?a.flag+" ":""}${a.name}</span><span class="sc">${m.score1??""}</span></div>
-        <div class="row ${b.projected?"projected":(b.placeholder?"placeholder":"")}"><span><span class="seed">${b.seed}</span>${b.flag?b.flag+" ":""}${b.name}</span><span class="sc">${m.score2??""}</span></div>
+      <div class="bmatch">
+        <div class="row"><span>${m.flag1!=="⚽"?m.flag1+" ":""}${m.team1}</span><span class="sc">${m.score1??""}</span></div>
+        <div class="row"><span>${m.flag2!=="⚽"?m.flag2+" ":""}${m.team2}</span><span class="sc">${m.score2??""}</span></div>
         <div class="sub"><span>${fmtDay(m.ukDate).replace(/ \d+ .+$/,"")} ${m.ukDate.slice(8)}/${m.ukDate.slice(5,7)} · ${m.ukTime}</span>
         <span class="chip ${chipClass(m.channel)}" style="padding:2px 7px;font-size:.6rem">${m.channel}</span></div>
-      </div>`;
-      })()}`).join("") + `</div>`;
+      </div>`).join("") + `</div>`;
   }).join("") + `</div>
-  <p class="note">Third-place pairings are assigned from the eligible slot groups in current table order. Official FIFA third-place mapping can still move once the final mix of qualifying groups is locked.</p>`;
+  <p class="note">Placeholders like 1A / 2B / 3C-D-F mean group winner, runner-up or best third-placed team. Names drop in automatically as groups finish. Knockout channels are confirmed by BBC/ITV after each draw.</p>`;
 }
 
 function viewEngland(){
