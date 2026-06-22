@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-22T01:05:17.057918+01:00",
+ "updated": "2026-06-22T01:10:16.840124+01:00",
  "build": "v63-2026-06-20",
  "matches": [
   {
@@ -1654,7 +1654,36 @@
    "channel": "BBC One",
    "score1": 2,
    "score2": 2,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Kevin Pina",
+     "minute": "21",
+     "team": "Cape Verde",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Maxi Araújo",
+     "minute": "44",
+     "team": "Uruguay",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Agustín Cano",
+     "minute": "45+6",
+     "team": "Uruguay",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Hélio Varela",
+     "minute": "61",
+     "team": "Cape Verde",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -1675,7 +1704,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 31,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 48,
@@ -1695,13 +1730,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 49,
@@ -3977,6 +4006,12 @@
    "goals": 2
   },
   {
+   "name": "Maxi Araújo",
+   "team": "Uruguay",
+   "flag": "🇺🇾",
+   "goals": 2
+  },
+  {
    "name": "Mikel Oyarzabal",
    "team": "Spain",
    "flag": "🇪🇸",
@@ -4007,15 +4042,9 @@
    "goals": 1
   },
   {
-   "name": "Alex Freeman",
-   "team": "USA",
-   "flag": "🇺🇸",
-   "goals": 1
-  },
-  {
-   "name": "Alexander Isak",
-   "team": "Sweden",
-   "flag": "🇸🇪",
+   "name": "Agustín Cano",
+   "team": "Uruguay",
+   "flag": "🇺🇾",
    "goals": 1
   }
  ],
