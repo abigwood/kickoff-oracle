@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-23T20:05:21.948052+01:00",
+ "updated": "2026-06-23T20:10:22.392664+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -1520,13 +1520,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 12,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 42,
@@ -1988,7 +1982,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 26,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 54,
@@ -2343,7 +2343,43 @@
    "channel": "ITV1",
    "score1": 5,
    "score2": 0,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Cristiano Ronaldo",
+     "minute": "6",
+     "team": "Portugal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Nuno Mendes",
+     "minute": "17",
+     "team": "Portugal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Cristiano Ronaldo",
+     "minute": "39",
+     "team": "Portugal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Abduvohid Nematov",
+     "minute": "60",
+     "team": "Portugal",
+     "og": true,
+     "pen": false
+    },
+    {
+     "name": "Rafael Leão",
+     "minute": "87",
+     "team": "Portugal",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2717,13 +2753,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 34,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 77,
@@ -2847,7 +2877,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 28,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 82,
@@ -3049,13 +3085,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 36,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 90,
@@ -4052,6 +4082,12 @@
    "goals": 2
   },
   {
+   "name": "Cristiano Ronaldo",
+   "team": "Portugal",
+   "flag": "🇵🇹",
+   "goals": 2
+  },
+  {
    "name": "Crysencio Summerville",
    "team": "Netherlands",
    "flag": "🇳🇱",
@@ -4145,12 +4181,6 @@
    "name": "Abbosbek Fayzullaev",
    "team": "Uzbekistan",
    "flag": "🇺🇿",
-   "goals": 1
-  },
-  {
-   "name": "Abdulelah Al-Amri",
-   "team": "Saudi Arabia",
-   "flag": "🇸🇦",
    "goals": 1
   }
  ],
