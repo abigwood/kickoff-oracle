@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-23T04:35:19.198802+01:00",
+ "updated": "2026-06-23T04:40:17.121547+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -1057,7 +1057,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 28,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 31,
@@ -1331,13 +1337,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 21,
-    "code": 96,
-    "icon": "⛈️",
-    "desc": "Thunderstorm with hail"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 37,
@@ -2215,7 +2215,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 61,
@@ -2324,9 +2330,9 @@ window.WC_DATA = {
    "status": "UPCOMING",
    "weather": {
     "temp": 33,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
    }
   },
   {
@@ -2373,13 +2379,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 32,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 66,
@@ -2674,7 +2674,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 76,
@@ -2824,13 +2830,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 36,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 82,
@@ -2980,7 +2980,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 30,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
+   }
   },
   {
    "id": 88,
@@ -3130,13 +3136,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 39,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 94,
