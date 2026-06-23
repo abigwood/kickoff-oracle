@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-23T02:25:19.235978+01:00",
+ "updated": "2026-06-23T02:30:18.809309+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -1057,7 +1057,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 28,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 31,
@@ -1749,13 +1755,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 53,
-    "icon": "🌦️",
-    "desc": "Drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 49,
@@ -1881,7 +1881,29 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 3,
    "score2": 0,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Kylian Mbappé",
+     "minute": "14",
+     "team": "France",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Kylian Mbappé",
+     "minute": "54",
+     "team": "France",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ousmane Dembélé",
+     "minute": "66",
+     "team": "France",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2273,7 +2295,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 64,
@@ -2568,13 +2596,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 22,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 74,
@@ -2672,7 +2694,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 27,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 78,
@@ -2952,7 +2980,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 38,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 89,
@@ -2972,13 +3006,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 35,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 90,
@@ -3933,6 +3961,12 @@ window.WC_DATA = {
    "goals": 5
   },
   {
+   "name": "Kylian Mbappé",
+   "team": "France",
+   "flag": "🇫🇷",
+   "goals": 4
+  },
+  {
    "name": "Deniz Undav",
    "team": "Germany",
    "flag": "🇩🇪",
@@ -4020,12 +4054,6 @@ window.WC_DATA = {
    "name": "Kai Havertz",
    "team": "Germany",
    "flag": "🇩🇪",
-   "goals": 2
-  },
-  {
-   "name": "Kylian Mbappé",
-   "team": "France",
-   "flag": "🇫🇷",
    "goals": 2
   },
   {
