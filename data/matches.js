@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-23T03:00:18.358029+01:00",
+ "updated": "2026-06-23T03:05:15.975638+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -411,10 +411,10 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 22,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
+    "temp": 25,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -437,7 +437,7 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 25,
+    "temp": 27,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -600,10 +600,10 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 33,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
+    "temp": 28,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
    }
   },
   {
@@ -626,10 +626,10 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 33,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
+    "temp": 30,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
    }
   },
   {
@@ -1057,7 +1057,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 28,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 31,
@@ -1749,13 +1755,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 53,
-    "icon": "🌦️",
-    "desc": "Drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 49,
@@ -1924,7 +1924,43 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 3,
    "score2": 2,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Marcus Holmgren Pedersen",
+     "minute": "43",
+     "team": "Norway",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Erling Haaland",
+     "minute": "48",
+     "team": "Norway",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ismaïla Sarr",
+     "minute": "53",
+     "team": "Senegal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Erling Haaland",
+     "minute": "58",
+     "team": "Norway",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ismaïla Sarr",
+     "minute": "90+3",
+     "team": "Senegal",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2290,7 +2326,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 32,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 64,
@@ -2483,10 +2525,10 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 19,
-    "code": 53,
-    "icon": "🌦️",
-    "desc": "Drizzle"
+    "temp": 20,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -2509,7 +2551,7 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 22,
+    "temp": 23,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -2637,13 +2679,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 76,
@@ -2689,7 +2725,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 27,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 78,
@@ -3950,6 +3992,12 @@ window.WC_DATA = {
    "goals": 5
   },
   {
+   "name": "Erling Haaland",
+   "team": "Norway",
+   "flag": "🇳🇴",
+   "goals": 4
+  },
+  {
    "name": "Kylian Mbappé",
    "team": "France",
    "flag": "🇫🇷",
@@ -4010,12 +4058,6 @@ window.WC_DATA = {
    "goals": 2
   },
   {
-   "name": "Erling Haaland",
-   "team": "Norway",
-   "flag": "🇳🇴",
-   "goals": 2
-  },
-  {
    "name": "Folarin Balogun",
    "team": "USA",
    "flag": "🇺🇸",
@@ -4031,6 +4073,12 @@ window.WC_DATA = {
    "name": "Ismael Saibari",
    "team": "Morocco",
    "flag": "🇲🇦",
+   "goals": 2
+  },
+  {
+   "name": "Ismaïla Sarr",
+   "team": "Senegal",
+   "flag": "🇸🇳",
    "goals": 2
   },
   {
@@ -4085,12 +4133,6 @@ window.WC_DATA = {
    "name": "Abdulelah Al-Amri",
    "team": "Saudi Arabia",
    "flag": "🇸🇦",
-   "goals": 1
-  },
-  {
-   "name": "Agustín Cano",
-   "team": "Uruguay",
-   "flag": "🇺🇾",
    "goals": 1
   }
  ],
