@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-24T01:55:17.794221+01:00",
+ "updated": "2026-06-24T02:00:18.963165+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -2592,7 +2592,15 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 0,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Ante Budimir",
+     "minute": "54",
+     "team": "Croatia",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2893,13 +2901,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 13,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 83,
@@ -2945,7 +2947,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 21,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 85,
@@ -3199,13 +3207,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 95,
