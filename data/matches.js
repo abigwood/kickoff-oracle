@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-24T05:00:18.839912+01:00",
+ "updated": "2026-06-24T05:05:17.356708+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -1311,7 +1311,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 34,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 36,
@@ -1723,13 +1729,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 31,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 48,
@@ -2400,7 +2400,15 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 1,
    "score2": 0,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Daniel Muñoz",
+     "minute": "76",
+     "team": "Colombia",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2616,7 +2624,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 27,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 72,
@@ -2792,13 +2806,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 34,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 79,
@@ -2922,7 +2930,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 32,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 84,
@@ -3176,13 +3190,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 40,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 94,
@@ -3254,7 +3262,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 20,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 97,
@@ -4093,6 +4107,12 @@ window.WC_DATA = {
    "goals": 2
   },
   {
+   "name": "Daniel Muñoz",
+   "team": "Colombia",
+   "flag": "🇨🇴",
+   "goals": 2
+  },
+  {
    "name": "Elijah Just",
    "team": "New Zealand",
    "flag": "🇳🇿",
@@ -4163,12 +4183,6 @@ window.WC_DATA = {
    "team": "Sweden",
    "flag": "🇸🇪",
    "goals": 2
-  },
-  {
-   "name": "Abbosbek Fayzullaev",
-   "team": "Uzbekistan",
-   "flag": "🇺🇿",
-   "goals": 1
   }
  ],
  "predictions": {
