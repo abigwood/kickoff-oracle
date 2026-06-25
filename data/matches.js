@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-25T01:05:17.293231+01:00",
+ "updated": "2026-06-25T01:10:16.852928+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -638,7 +638,29 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 0,
    "score2": 3,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Vinícius Júnior",
+     "minute": "7",
+     "team": "Brazil",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Vinícius Júnior",
+     "minute": "45+3",
+     "team": "Brazil",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Matheus Cunha",
+     "minute": "60",
+     "team": "Brazil",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -658,7 +680,50 @@ window.WC_DATA = {
    "channel": "BBC Two",
    "score1": 4,
    "score2": 2,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Yassine Bounou",
+     "minute": "10",
+     "team": "Haiti",
+     "og": true,
+     "pen": false
+    },
+    {
+     "name": "Achraf Hakimi",
+     "minute": "39",
+     "team": "Morocco",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Wilson Isidor",
+     "minute": "43",
+     "team": "Haiti",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ismael Saibari",
+     "minute": "45+1",
+     "team": "Morocco",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Soufiane Rahimi",
+     "minute": "78",
+     "team": "Morocco",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Gessime Yassine",
+     "minute": "89",
+     "team": "Morocco",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2241,13 +2306,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 27,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 60,
@@ -2686,7 +2745,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 22,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 73,
@@ -2966,13 +3031,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 29,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 84,
@@ -3148,7 +3207,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 35,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 91,
@@ -4095,9 +4160,21 @@ window.WC_DATA = {
    "goals": 4
   },
   {
+   "name": "Vinícius Júnior",
+   "team": "Brazil",
+   "flag": "🇧🇷",
+   "goals": 4
+  },
+  {
    "name": "Deniz Undav",
    "team": "Germany",
    "flag": "🇩🇪",
+   "goals": 3
+  },
+  {
+   "name": "Ismael Saibari",
+   "team": "Morocco",
+   "flag": "🇲🇦",
    "goals": 3
   },
   {
@@ -4110,6 +4187,12 @@ window.WC_DATA = {
    "name": "Jonathan David",
    "team": "Canada",
    "flag": "🇨🇦",
+   "goals": 3
+  },
+  {
+   "name": "Matheus Cunha",
+   "team": "Brazil",
+   "flag": "🇧🇷",
    "goals": 3
   },
   {
@@ -4185,12 +4268,6 @@ window.WC_DATA = {
    "goals": 2
   },
   {
-   "name": "Ismael Saibari",
-   "team": "Morocco",
-   "flag": "🇲🇦",
-   "goals": 2
-  },
-  {
    "name": "Ismaïla Sarr",
    "team": "Senegal",
    "flag": "🇸🇳",
@@ -4203,12 +4280,6 @@ window.WC_DATA = {
    "goals": 2
   },
   {
-   "name": "Matheus Cunha",
-   "team": "Brazil",
-   "flag": "🇧🇷",
-   "goals": 2
-  },
-  {
    "name": "Maxi Araújo",
    "team": "Uruguay",
    "flag": "🇺🇾",
@@ -4218,12 +4289,6 @@ window.WC_DATA = {
    "name": "Mikel Oyarzabal",
    "team": "Spain",
    "flag": "🇪🇸",
-   "goals": 2
-  },
-  {
-   "name": "Rubén Vargas",
-   "team": "Switzerland",
-   "flag": "🇨🇭",
    "goals": 2
   }
  ],
