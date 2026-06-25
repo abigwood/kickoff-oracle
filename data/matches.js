@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-25T04:00:19.108140+01:00",
+ "updated": "2026-06-25T04:05:17.861181+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -163,7 +163,29 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 0,
    "score2": 3,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Mateo Chávez",
+     "minute": "55",
+     "team": "Mexico",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Julián Quiñones",
+     "minute": "61",
+     "team": "Mexico",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Álvaro Fidalgo",
+     "minute": "90+4",
+     "team": "Mexico",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -183,7 +205,15 @@ window.WC_DATA = {
    "channel": "BBC Two",
    "score1": 1,
    "score2": 0,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Thapelo Maseko",
+     "minute": "63",
+     "team": "South Africa",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2839,7 +2869,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 34,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
+   }
   },
   {
    "id": 77,
@@ -2885,13 +2921,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 34,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 79,
@@ -3119,7 +3149,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 29,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
+   }
   },
   {
    "id": 88,
@@ -3165,13 +3201,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 36,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 90,
@@ -4258,6 +4288,12 @@ window.WC_DATA = {
    "goals": 2
   },
   {
+   "name": "Julián Quiñones",
+   "team": "Mexico",
+   "flag": "🇲🇽",
+   "goals": 2
+  },
+  {
    "name": "Kai Havertz",
    "team": "Germany",
    "flag": "🇩🇪",
@@ -4267,12 +4303,6 @@ window.WC_DATA = {
    "name": "Maxi Araújo",
    "team": "Uruguay",
    "flag": "🇺🇾",
-   "goals": 2
-  },
-  {
-   "name": "Mikel Oyarzabal",
-   "team": "Spain",
-   "flag": "🇪🇸",
    "goals": 2
   }
  ],
