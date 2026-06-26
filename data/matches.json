@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-26T21:05:19.696415+01:00",
+ "updated": "2026-06-26T21:10:18.142697+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -1960,7 +1960,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 20,
+    "temp": 21,
     "code": 53,
     "icon": "🌦️",
     "desc": "Drizzle"
@@ -3038,7 +3038,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 17,
+    "temp": 16,
     "code": 51,
     "icon": "🌦️",
     "desc": "Light drizzle"
@@ -3114,13 +3114,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 16,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 83,
@@ -3140,7 +3134,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 34,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
+   }
   },
   {
    "id": 84,
@@ -3370,7 +3370,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 18,
+    "temp": 17,
     "code": 95,
     "icon": "⛈️",
     "desc": "Thunderstorm"
@@ -3394,13 +3394,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 39,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 94,
@@ -3550,7 +3544,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 35,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 100,
