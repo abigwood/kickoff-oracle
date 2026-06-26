@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-26T01:35:16.217242+01:00",
+ "updated": "2026-06-26T01:40:17.139359+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -1901,9 +1901,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 21,
-    "code": 53,
+    "code": 51,
     "icon": "🌦️",
-    "desc": "Drizzle"
+    "desc": "Light drizzle"
    }
   },
   {
@@ -2979,9 +2979,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 16,
-    "code": 51,
+    "code": 53,
     "icon": "🌦️",
-    "desc": "Light drizzle"
+    "desc": "Drizzle"
    }
   },
   {
@@ -3132,13 +3132,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 12,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 86,
@@ -3158,7 +3152,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 32,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 87,
