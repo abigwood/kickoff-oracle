@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-26T22:05:17.100927+01:00",
+ "updated": "2026-06-26T22:10:18.902409+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -2246,7 +2246,43 @@ window.WC_DATA = {
    "channel": "ITV4",
    "score1": 5,
    "score2": 0,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Habib Diarra",
+     "minute": "4",
+     "team": "Senegal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ismaïla Sarr",
+     "minute": "56",
+     "team": "Senegal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Pape Gueye",
+     "minute": "59",
+     "team": "Senegal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Pape Gueye",
+     "minute": "71",
+     "team": "Senegal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Iliman Ndiaye",
+     "minute": "82",
+     "team": "Senegal",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2910,13 +2946,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 22,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 74,
@@ -3014,7 +3044,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 78,
@@ -3242,13 +3278,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 32,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 87,
@@ -3424,7 +3454,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 39,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 94,
@@ -3522,13 +3558,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 26,
-    "code": 96,
-    "icon": "⛈️",
-    "desc": "Thunderstorm with hail"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 98,
@@ -4335,6 +4365,12 @@ window.WC_DATA = {
    "goals": 3
   },
   {
+   "name": "Ismaïla Sarr",
+   "team": "Senegal",
+   "flag": "🇸🇳",
+   "goals": 3
+  },
+  {
    "name": "Johan Manzambi",
    "team": "Switzerland",
    "flag": "🇨🇭",
@@ -4422,12 +4458,6 @@ window.WC_DATA = {
    "name": "Harry Kane",
    "team": "England",
    "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-   "goals": 2
-  },
-  {
-   "name": "Ismaïla Sarr",
-   "team": "Senegal",
-   "flag": "🇸🇳",
    "goals": 2
   },
   {
