@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-26T05:05:16.411271+01:00",
+ "updated": "2026-06-26T05:10:19.067626+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -923,7 +923,43 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 3,
    "score2": 2,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Auston Trusty",
+     "minute": "3",
+     "team": "USA",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Arda Güler",
+     "minute": "10",
+     "team": "Turkey",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Baris Alper Yilmaz",
+     "minute": "31",
+     "team": "Turkey",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Sebastian Berhalter",
+     "minute": "49",
+     "team": "USA",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Kaan Ayhan",
+     "minute": "90+8",
+     "team": "Turkey",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2900,13 +2936,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 76,
@@ -2978,7 +3008,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 79,
@@ -3258,13 +3294,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 34,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 90,
