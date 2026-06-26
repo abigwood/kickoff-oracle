@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-26T02:00:17.725793+01:00",
+ "updated": "2026-06-26T02:05:18.668751+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -1453,7 +1453,22 @@ window.WC_DATA = {
    "channel": "BBC Two",
    "score1": 1,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Daizen Maeda",
+     "minute": "56",
+     "team": "Japan",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Anthony Elanga",
+     "minute": "62",
+     "team": "Sweden",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2375,9 +2390,9 @@ window.WC_DATA = {
    "status": "UPCOMING",
    "weather": {
     "temp": 26,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
    }
   },
   {
@@ -2622,7 +2637,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 30,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 67,
@@ -2837,13 +2858,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 74,
@@ -2918,9 +2933,9 @@ window.WC_DATA = {
    "status": "UPCOMING",
    "weather": {
     "temp": 33,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
    }
   },
   {
@@ -3149,7 +3164,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 12,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 86,
@@ -3195,13 +3216,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 29,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 88,
@@ -3481,7 +3496,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 26,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 99,
@@ -4268,6 +4289,12 @@ window.WC_DATA = {
    "goals": 3
   },
   {
+   "name": "Anthony Elanga",
+   "team": "Sweden",
+   "flag": "🇸🇪",
+   "goals": 2
+  },
+  {
    "name": "Ayase Ueda",
    "team": "Japan",
    "flag": "🇯🇵",
@@ -4349,12 +4376,6 @@ window.WC_DATA = {
    "name": "Kai Havertz",
    "team": "Germany",
    "flag": "🇩🇪",
-   "goals": 2
-  },
-  {
-   "name": "Maxi Araújo",
-   "team": "Uruguay",
-   "flag": "🇺🇾",
    "goals": 2
   }
  ],
