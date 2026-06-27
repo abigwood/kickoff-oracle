@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-27T23:55:16.210740+01:00",
+ "updated": "2026-06-28T00:00:19.380110+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -2939,16 +2939,25 @@
    "ukDate": "2026-06-27",
    "ukTime": "22:00",
    "channel": "ITV1",
-   "score1": null,
-   "score2": null,
-   "goals": [],
-   "status": "LIVE",
-   "weather": {
-    "temp": 21,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "score1": 0,
+   "score2": 2,
+   "goals": [
+    {
+     "name": "Jude Bellingham",
+     "minute": "62",
+     "team": "England",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Harry Kane",
+     "minute": "67",
+     "team": "England",
+     "og": false,
+     "pen": false
+    }
+   ],
+   "status": "FT"
   },
   {
    "id": 72,
@@ -2965,16 +2974,10 @@
    "ukDate": "2026-06-27",
    "ukTime": "22:00",
    "channel": "ITV4",
-   "score1": null,
-   "score2": null,
+   "score1": 2,
+   "score2": 1,
    "goals": [],
-   "status": "LIVE",
-   "weather": {
-    "temp": 22,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "FT"
   },
   {
    "id": 73,
@@ -3150,13 +3153,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 17,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 80,
@@ -3202,7 +3199,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 27,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 82,
@@ -3430,13 +3433,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 35,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 91,
@@ -3612,7 +3609,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 24,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 98,
@@ -4328,49 +4331,49 @@
    {
     "team": "England",
     "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    "p": 2,
-    "w": 1,
+    "p": 3,
+    "w": 2,
     "d": 1,
     "l": 0,
-    "gf": 4,
+    "gf": 6,
     "ga": 2,
-    "gd": 2,
-    "pts": 4
-   },
-   {
-    "team": "Ghana",
-    "flag": "🇬🇭",
-    "p": 2,
-    "w": 1,
-    "d": 1,
-    "l": 0,
-    "gf": 1,
-    "ga": 0,
-    "gd": 1,
-    "pts": 4
+    "gd": 4,
+    "pts": 7
    },
    {
     "team": "Croatia",
     "flag": "🇭🇷",
-    "p": 2,
-    "w": 1,
+    "p": 3,
+    "w": 2,
     "d": 0,
     "l": 1,
-    "gf": 3,
-    "ga": 4,
-    "gd": -1,
-    "pts": 3
+    "gf": 5,
+    "ga": 5,
+    "gd": 0,
+    "pts": 6
+   },
+   {
+    "team": "Ghana",
+    "flag": "🇬🇭",
+    "p": 3,
+    "w": 1,
+    "d": 1,
+    "l": 1,
+    "gf": 2,
+    "ga": 2,
+    "gd": 0,
+    "pts": 4
    },
    {
     "team": "Panama",
     "flag": "🇵🇦",
-    "p": 2,
+    "p": 3,
     "w": 0,
     "d": 0,
-    "l": 2,
+    "l": 3,
     "gf": 0,
-    "ga": 2,
-    "gd": -2,
+    "ga": 4,
+    "gd": -4,
     "pts": 0
    }
   ]
@@ -4422,6 +4425,12 @@
    "name": "Elijah Just",
    "team": "New Zealand",
    "flag": "🇳🇿",
+   "goals": 3
+  },
+  {
+   "name": "Harry Kane",
+   "team": "England",
+   "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
    "goals": 3
   },
   {
@@ -4515,15 +4524,9 @@
    "goals": 2
   },
   {
-   "name": "Harry Kane",
+   "name": "Jude Bellingham",
    "team": "England",
    "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-   "goals": 2
-  },
-  {
-   "name": "Julián Quiñones",
-   "team": "Mexico",
-   "flag": "🇲🇽",
    "goals": 2
   }
  ],
@@ -4534,161 +4537,171 @@
     "team": "Argentina",
     "flag": "🇦🇷",
     "elo": 2137,
-    "win": 29.4,
-    "final": 53.0,
-    "sf": 70.5,
-    "qf": 91.7,
-    "r16": 97.6
+    "win": 28.4,
+    "final": 51.1,
+    "sf": 69.5,
+    "qf": 91.3,
+    "r16": 97.4
    },
    {
     "team": "Spain",
     "flag": "🇪🇸",
     "elo": 2158,
-    "win": 27.6,
-    "final": 43.3,
-    "sf": 66.2,
-    "qf": 74.1,
-    "r16": 93.3
+    "win": 27.5,
+    "final": 43.1,
+    "sf": 65.8,
+    "qf": 73.8,
+    "r16": 93.4
    },
    {
     "team": "France",
     "flag": "🇫🇷",
     "elo": 2124,
     "win": 20.2,
-    "final": 34.7,
-    "sf": 62.5,
-    "qf": 80.3,
-    "r16": 93.6
+    "final": 34.2,
+    "sf": 61.2,
+    "qf": 79.5,
+    "r16": 93.7
    },
    {
     "team": "England",
     "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    "elo": 2049,
-    "win": 6.2,
-    "final": 15.2,
-    "sf": 35.9,
-    "qf": 53.1,
-    "r16": 77.8
+    "elo": 2054,
+    "win": 7.5,
+    "final": 17.3,
+    "sf": 39.0,
+    "qf": 58.3,
+    "r16": 80.8
    },
    {
     "team": "Colombia",
     "flag": "🇨🇴",
     "elo": 2013,
-    "win": 3.8,
-    "final": 10.6,
-    "sf": 19.4,
-    "qf": 47.5,
-    "r16": 80.3
+    "win": 4.0,
+    "final": 11.1,
+    "sf": 20.5,
+    "qf": 50.4,
+    "r16": 83.8
    },
    {
     "team": "Netherlands",
     "flag": "🇳🇱",
     "elo": 1995,
-    "win": 3.6,
-    "final": 8.3,
-    "sf": 22.7,
-    "qf": 60.8,
-    "r16": 68.2
+    "win": 3.2,
+    "final": 8.6,
+    "sf": 23.5,
+    "qf": 61.5,
+    "r16": 68.9
    },
    {
     "team": "Brazil",
     "flag": "🇧🇷",
     "elo": 1991,
-    "win": 2.6,
-    "final": 8.2,
+    "win": 2.9,
+    "final": 7.9,
     "sf": 22.8,
-    "qf": 42.4,
-    "r16": 64.2
+    "qf": 44.4,
+    "r16": 66.0
    },
    {
     "team": "Portugal",
     "flag": "🇵🇹",
     "elo": 1966,
     "win": 1.7,
-    "final": 5.2,
-    "sf": 12.3,
-    "qf": 27.7,
-    "r16": 70.8
+    "final": 4.9,
+    "sf": 11.8,
+    "qf": 26.8,
+    "r16": 66.7
    },
    {
     "team": "Norway",
     "flag": "🇳🇴",
     "elo": 1925,
-    "win": 1.1,
-    "final": 3.8,
-    "sf": 15.0,
-    "qf": 33.0,
-    "r16": 74.9
+    "win": 0.9,
+    "final": 3.5,
+    "sf": 13.4,
+    "qf": 32.5,
+    "r16": 74.0
    },
    {
     "team": "Switzerland",
     "flag": "🇨🇭",
     "elo": 1928,
-    "win": 0.9,
-    "final": 3.4,
-    "sf": 8.1,
-    "qf": 33.1,
-    "r16": 78.1
-   },
-   {
-    "team": "Germany",
-    "flag": "🇩🇪",
-    "elo": 1900,
     "win": 0.6,
-    "final": 1.8,
-    "sf": 7.5,
-    "qf": 16.3,
-    "r16": 79.8
+    "final": 3.4,
+    "sf": 8.0,
+    "qf": 33.0,
+    "r16": 77.8
    },
    {
     "team": "USA",
     "flag": "🇺🇸",
     "elo": 1807,
-    "win": 0.5,
-    "final": 2.4,
-    "sf": 8.9,
-    "qf": 46.1,
-    "r16": 73.2
+    "win": 0.6,
+    "final": 2.7,
+    "sf": 8.8,
+    "qf": 44.6,
+    "r16": 72.0
+   },
+   {
+    "team": "Germany",
+    "flag": "🇩🇪",
+    "elo": 1900,
+    "win": 0.4,
+    "final": 1.9,
+    "sf": 7.8,
+    "qf": 17.0,
+    "r16": 80.0
+   },
+   {
+    "team": "Croatia",
+    "flag": "🇭🇷",
+    "elo": 1924,
+    "win": 0.4,
+    "final": 1.6,
+    "sf": 5.0,
+    "qf": 8.1,
+    "r16": 39.8
+   },
+   {
+    "team": "Mexico",
+    "flag": "🇲🇽",
+    "elo": 1860,
+    "win": 0.4,
+    "final": 1.6,
+    "sf": 8.0,
+    "qf": 21.1,
+    "r16": 56.9
    },
    {
     "team": "Ecuador",
     "flag": "🇪🇨",
     "elo": 1897,
     "win": 0.3,
-    "final": 1.8,
-    "sf": 6.5,
-    "qf": 14.9,
-    "r16": 43.2
+    "final": 1.3,
+    "sf": 5.5,
+    "qf": 12.9,
+    "r16": 43.1
+   },
+   {
+    "team": "Belgium",
+    "flag": "🇧🇪",
+    "elo": 1845,
+    "win": 0.3,
+    "final": 1.0,
+    "sf": 5.1,
+    "qf": 32.6,
+    "r16": 67.8
    },
    {
     "team": "Japan",
     "flag": "🇯🇵",
     "elo": 1897,
-    "win": 0.3,
-    "final": 1.8,
-    "sf": 7.6,
-    "qf": 19.2,
-    "r16": 35.8
-   },
-   {
-    "team": "Mexico",
-    "flag": "🇲🇽",
-    "elo": 1860,
-    "win": 0.3,
-    "final": 1.4,
-    "sf": 8.5,
-    "qf": 23.1,
-    "r16": 56.8
-   },
-   {
-    "team": "Croatia",
-    "flag": "🇭🇷",
-    "elo": 1910,
     "win": 0.2,
-    "final": 1.3,
-    "sf": 4.5,
-    "qf": 10.4,
-    "r16": 35.1
+    "final": 1.9,
+    "sf": 7.3,
+    "qf": 17.8,
+    "r16": 34.0
    },
    {
     "team": "Morocco",
@@ -4696,19 +4709,9 @@
     "elo": 1878,
     "win": 0.2,
     "final": 1.1,
-    "sf": 5.7,
-    "qf": 24.2,
-    "r16": 31.8
-   },
-   {
-    "team": "Belgium",
-    "flag": "🇧🇪",
-    "elo": 1845,
-    "win": 0.2,
-    "final": 1.1,
-    "sf": 4.8,
-    "qf": 31.5,
-    "r16": 66.9
+    "sf": 5.5,
+    "qf": 24.4,
+    "r16": 31.1
    },
    {
     "team": "Senegal",
@@ -4716,39 +4719,39 @@
     "elo": 1848,
     "win": 0.1,
     "final": 0.5,
-    "sf": 2.7,
-    "qf": 8.3,
-    "r16": 22.7
+    "sf": 2.8,
+    "qf": 7.8,
+    "r16": 19.2
+   },
+   {
+    "team": "Australia",
+    "flag": "🇦🇺",
+    "elo": 1763,
+    "win": 0.0,
+    "final": 0.2,
+    "sf": 1.2,
+    "qf": 4.5,
+    "r16": 51.6
+   },
+   {
+    "team": "Iran",
+    "flag": "🇮🇷",
+    "elo": 1749,
+    "win": 0.0,
+    "final": 0.2,
+    "sf": 0.4,
+    "qf": 4.5,
+    "r16": 20.8
    },
    {
     "team": "Austria",
     "flag": "🇦🇹",
     "elo": 1806,
-    "win": 0.1,
-    "final": 0.3,
-    "sf": 1.1,
-    "qf": 3.9,
-    "r16": 10.3
-   },
-   {
-    "team": "Ivory Coast",
-    "flag": "🇨🇮",
-    "elo": 1764,
-    "win": 0.1,
+    "win": 0.0,
     "final": 0.1,
-    "sf": 1.2,
-    "qf": 5.3,
-    "r16": 25.1
-   },
-   {
-    "team": "Paraguay",
-    "flag": "🇵🇾",
-    "elo": 1749,
-    "win": 0.1,
-    "final": 0.1,
-    "sf": 0.5,
-    "qf": 2.2,
-    "r16": 6.4
+    "sf": 0.8,
+    "qf": 3.1,
+    "r16": 10.2
    },
    {
     "team": "Sweden",
@@ -4756,19 +4759,19 @@
     "elo": 1777,
     "win": 0.0,
     "final": 0.1,
-    "sf": 1.4,
-    "qf": 14.1,
-    "r16": 33.2
+    "sf": 1.6,
+    "qf": 14.8,
+    "r16": 34.4
    },
    {
-    "team": "Australia",
-    "flag": "🇦🇺",
-    "elo": 1763,
+    "team": "Ivory Coast",
+    "flag": "🇨🇮",
+    "elo": 1764,
     "win": 0.0,
     "final": 0.1,
-    "sf": 0.8,
-    "qf": 4.2,
-    "r16": 53.3
+    "sf": 1.1,
+    "qf": 5.3,
+    "r16": 25.9
    },
    {
     "team": "Egypt",
@@ -4776,19 +4779,19 @@
     "elo": 1751,
     "win": 0.0,
     "final": 0.1,
-    "sf": 0.7,
-    "qf": 3.6,
-    "r16": 46.7
+    "sf": 0.6,
+    "qf": 3.2,
+    "r16": 48.4
    },
    {
-    "team": "Iran",
-    "flag": "🇮🇷",
+    "team": "Paraguay",
+    "flag": "🇵🇾",
     "elo": 1749,
     "win": 0.0,
     "final": 0.1,
-    "sf": 0.3,
-    "qf": 3.4,
-    "r16": 20.2
+    "sf": 0.6,
+    "qf": 2.2,
+    "r16": 6.3
    },
    {
     "team": "Algeria",
@@ -4796,9 +4799,9 @@
     "elo": 1745,
     "win": 0.0,
     "final": 0.1,
-    "sf": 0.4,
-    "qf": 3.1,
-    "r16": 10.3
+    "sf": 0.6,
+    "qf": 3.0,
+    "r16": 9.6
    },
    {
     "team": "Canada",
@@ -4806,9 +4809,9 @@
     "elo": 1725,
     "win": 0.0,
     "final": 0.1,
-    "sf": 0.7,
-    "qf": 10.6,
-    "r16": 63.3
+    "sf": 1.1,
+    "qf": 10.5,
+    "r16": 63.9
    },
    {
     "team": "Uruguay",
@@ -4836,19 +4839,9 @@
     "elo": 1708,
     "win": 0.0,
     "final": 0.0,
-    "sf": 0.0,
-    "qf": 0.5,
-    "r16": 8.9
-   },
-   {
-    "team": "Ghana",
-    "flag": "🇬🇭",
-    "elo": 1701,
-    "win": 0.0,
-    "final": 0.0,
     "sf": 0.1,
-    "qf": 2.2,
-    "r16": 12.6
+    "qf": 0.7,
+    "r16": 7.0
    },
    {
     "team": "Bosnia & Herzegovina",
@@ -4856,9 +4849,19 @@
     "elo": 1688,
     "win": 0.0,
     "final": 0.0,
-    "sf": 0.2,
-    "qf": 3.1,
-    "r16": 19.5
+    "sf": 0.3,
+    "qf": 2.5,
+    "r16": 19.2
+   },
+   {
+    "team": "Ghana",
+    "flag": "🇬🇭",
+    "elo": 1687,
+    "win": 0.0,
+    "final": 0.0,
+    "sf": 0.1,
+    "qf": 2.4,
+    "r16": 10.9
    },
    {
     "team": "Scotland",
@@ -4887,8 +4890,8 @@
     "win": 0.0,
     "final": 0.0,
     "sf": 0.2,
-    "qf": 4.3,
-    "r16": 36.7
+    "qf": 3.5,
+    "r16": 36.1
    },
    {
     "team": "Saudi Arabia",
@@ -4908,7 +4911,7 @@
     "final": 0.0,
     "sf": 0.1,
     "qf": 0.9,
-    "r16": 7.0
+    "r16": 6.7
    },
    {
     "team": "Tunisia",
@@ -4927,8 +4930,8 @@
     "win": 0.0,
     "final": 0.0,
     "sf": 0.1,
-    "qf": 0.6,
-    "r16": 2.3
+    "qf": 1.0,
+    "r16": 2.6
    },
    {
     "team": "Uzbekistan",
@@ -4943,7 +4946,7 @@
    {
     "team": "Panama",
     "flag": "🇵🇦",
-    "elo": 1575,
+    "elo": 1570,
     "win": 0.0,
     "final": 0.0,
     "sf": 0.0,
