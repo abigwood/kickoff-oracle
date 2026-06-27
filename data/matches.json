@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-27T12:45:17.831771+01:00",
+ "updated": "2026-06-27T12:50:16.667436+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -2750,9 +2750,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 30,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
    }
   },
   {
@@ -2776,9 +2776,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 32,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
    }
   },
   {
@@ -3022,7 +3022,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 29,
+    "temp": 28,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -3100,7 +3100,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 27,
+    "temp": 29,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -3124,7 +3124,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 79,
@@ -3144,13 +3150,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 17,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 80,
@@ -3172,7 +3172,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 32,
+    "temp": 33,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -3198,7 +3198,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 25,
+    "temp": 27,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -3302,7 +3302,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 17,
+    "temp": 16,
     "code": 1,
     "icon": "🌤️",
     "desc": "Mainly clear"
@@ -3354,7 +3354,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 29,
+    "temp": 28,
     "code": 95,
     "icon": "⛈️",
     "desc": "Thunderstorm"
@@ -3380,7 +3380,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 34,
+    "temp": 32,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -3406,7 +3406,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 26,
+    "temp": 38,
     "code": 1,
     "icon": "🌤️",
     "desc": "Mainly clear"
@@ -3458,7 +3458,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 32,
+    "temp": 29,
     "code": 51,
     "icon": "🌦️",
     "desc": "Light drizzle"
@@ -3482,7 +3482,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 17,
+    "code": 53,
+    "icon": "🌦️",
+    "desc": "Drizzle"
+   }
   },
   {
    "id": 93,
@@ -3504,7 +3510,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 38,
+    "temp": 35,
     "code": 1,
     "icon": "🌤️",
     "desc": "Mainly clear"
@@ -3528,13 +3534,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 24,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 95,
@@ -3556,7 +3556,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 35,
+    "temp": 34,
     "code": 1,
     "icon": "🌤️",
     "desc": "Mainly clear"
@@ -3582,7 +3582,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 20,
+    "temp": 22,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -3608,7 +3608,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 33,
+    "temp": 17,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -3634,7 +3634,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 27,
+    "temp": 26,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -3660,7 +3660,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 34,
+    "temp": 35,
     "code": 95,
     "icon": "⛈️",
     "desc": "Thunderstorm"
@@ -3686,7 +3686,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 24,
+    "temp": 27,
     "code": 1,
     "icon": "🌤️",
     "desc": "Mainly clear"
