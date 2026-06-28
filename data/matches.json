@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-28T05:00:16.662209+01:00",
+ "updated": "2026-06-28T05:05:17.121803+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -2522,7 +2522,50 @@
    "channel": "BBC Two",
    "score1": 3,
    "score2": 3,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Marko Arnautovic",
+     "minute": "28",
+     "team": "Austria",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Rafik Belghali",
+     "minute": "45",
+     "team": "Algeria",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Marcel Sabitzer",
+     "minute": "55",
+     "team": "Austria",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Riyad Mahrez",
+     "minute": "60",
+     "team": "Algeria",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Riyad Mahrez",
+     "minute": "90+3",
+     "team": "Algeria",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Sasa Kalajdzic",
+     "minute": "90+6",
+     "team": "Austria",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -2542,7 +2585,36 @@
    "channel": "BBC One",
    "score1": 1,
    "score2": 3,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Giovani Lo Celso",
+     "minute": "19",
+     "team": "Argentina",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Lautaro Martínez",
+     "minute": "31",
+     "team": "Argentina",
+     "og": false,
+     "pen": true
+    },
+    {
+     "name": "Mousa Al-Tamari",
+     "minute": "55",
+     "team": "Jordan",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Lionel Messi",
+     "minute": "80",
+     "team": "Argentina",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -3340,7 +3412,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 17,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 86,
@@ -3412,13 +3490,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 36,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 89,
@@ -4420,7 +4492,7 @@
    "name": "Lionel Messi",
    "team": "Argentina",
    "flag": "🇦🇷",
-   "goals": 5
+   "goals": 6
   },
   {
    "name": "Erling Haaland",
