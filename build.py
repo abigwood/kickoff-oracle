@@ -120,8 +120,23 @@ GROUP_CHANNELS = {
 }
 
 KNOCKOUT_CHANNELS = {
-    # Fill in as BBC/ITV announce picks after each draw, e.g.:
-    # "2026-06-29 21:30": "BBC One",
+    # Round of 32 confirmed by BBC/ITV after the group stage draw.
+    "2026-06-28 20:00": "ITV1",
+    "2026-06-29 18:00": "ITV1",
+    "2026-06-29 21:30": "BBC One",
+    "2026-06-30 02:00": "ITV1",
+    "2026-06-30 18:00": "BBC One",
+    "2026-06-30 22:00": "ITV1",
+    "2026-07-01 02:00": "ITV1",
+    "2026-07-01 17:00": "BBC One",
+    "2026-07-01 21:00": "ITV1",
+    "2026-07-02 01:00": "BBC One",
+    "2026-07-02 20:00": "BBC One",
+    "2026-07-03 00:00": "BBC One",
+    "2026-07-03 04:00": "BBC One",
+    "2026-07-03 19:00": "BBC One",
+    "2026-07-03 23:00": "ITV1",
+    "2026-07-04 02:30": "ITV1",
     "2026-07-19 20:00": "BBC & ITV",   # the final is shown on both, as is custom
 }
 
