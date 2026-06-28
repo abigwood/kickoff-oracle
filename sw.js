@@ -4,7 +4,7 @@
      and league tables are never stale; offline falls back to the last response
      tagged so the app can show an "offline" note.
    Bump VERSION on each deploy to roll the caches. */
-const VERSION = "v67-2026-06-28";
+const VERSION = "v68-2026-06-28";
 const SHELL = VERSION + "-shell";
 const RUNTIME = VERSION + "-runtime";
 const API_HOST = "kickoff-oracle-window.abigwood.workers.dev";

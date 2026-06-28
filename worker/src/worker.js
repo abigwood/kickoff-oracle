@@ -515,7 +515,7 @@ function knockoutReveal(m, koResults) {
   if (kr && kr.status === "confirmed" && Array.isArray(kr.ninety))
     return { ...m, ko: true, ninety: kr.ninety, adv: kr.adv == null ? null : kr.adv,
              decided: kr.decided || null, shootout: Array.isArray(kr.shootout) ? kr.shootout : null }; // Phase 3 display passthrough
-  return { ...m, score1: null, score2: null };
+  return { ...m, ko: true, score1: null, score2: null };
 }
 
 async function getPicks(env, url) {

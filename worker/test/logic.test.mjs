@@ -201,6 +201,20 @@ test("buildReveals before settlement: shut window, no score yet → settled:fals
   assert.equal(rv.match, "X v Y");
 });
 
+test("buildReveals before knockout settlement includes draw-pick advancer for display only", () => {
+  const members = [{ uid: "a", nick: "A" }];
+  const koMs = Date.parse("2026-06-28T20:00:00+01:00");
+  const matches = [{ id: 73, team1: "South Africa", team2: "Canada", ukKickoff: "2026-06-28T20:00:00+01:00", status: "LIVE", score1: null, score2: null, ko: true }];
+  const picks = { 73: { a: { s1: 1, s2: 1, adv: 2, ts: koMs - 1000 } } };
+  const [rv] = buildReveals(members, matches, picks, koMs + 45 * 60 * 1000);
+  assert.equal(rv.settled, false, "live knockout reveal is not scored before confirmation");
+  assert.equal(rv.score1, null);
+  assert.equal(rv.score2, null);
+  assert.equal(rv.picks[0].adv, 2, "chosen advancer is passed through for the export card flag");
+  assert.equal(rv.picks[0].pts, 0);
+  assert.equal(rv.picks[0].settled, false);
+});
+
 test("makeCode — 6 chars, unambiguous alphabet, deterministic given bytes", () => {
   const code = makeCode((n) => new Uint8Array(n).fill(0));
   assert.equal(code.length, 6);

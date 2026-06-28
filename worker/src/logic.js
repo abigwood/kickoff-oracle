@@ -147,9 +147,11 @@ export function buildReveals(members, matches, picksByMatch, nowMs) {
     if (!eligibleMembers.length) continue;
     const picks = picksByMatch[m.id] || {};
     if (!eligibleMembers.some((mem) => picks[mem.uid])) continue; // nobody engaged → no reveal
-    // Knockout (m.ko, enriched with the confirmed 90-min score + advancer) settles on
-    // that record; an unconfirmed knockout has its result nulled upstream → unsettled.
-    const settled = m.ko ? true : (m.score1 != null && m.score2 != null);
+    // Knockout (m.ko) only settles once the trusted 90-min record is present.
+    // Live knockout reveals still pass through the user's chosen advancer for
+    // display, but score no points until the result is confirmed.
+    const koConfirmed = !!m.ko && Array.isArray(m.ninety);
+    const settled = m.ko ? koConfirmed : (m.score1 != null && m.score2 != null);
     // reveal the WHOLE league: everyone's pick, plus who fell asleep (no pick).
     const memberPicks = eligibleMembers.map((mem) => {
       const raw = picks[mem.uid];
@@ -157,7 +159,7 @@ export function buildReveals(members, matches, picksByMatch, nowMs) {
       if (!p)
         return { uid: mem.uid, nick: nickOf[mem.uid] || "?", asleep: true, s1: null, s2: null, hit: false, exact: false, pts: 0, settled };
       // group → scorePick verbatim; knockout → scoreKnockout on the 90-min score + advancer
-      const res = m.ko
+      const res = koConfirmed
         ? scoreKnockout(p, { s1: m.ninety[0], s2: m.ninety[1], ko: true, adv: m.adv })
         : scorePick(p, { s1: m.score1, s2: m.score2 });
       return { uid: mem.uid, nick: nickOf[mem.uid] || "?", s1: p.s1, s2: p.s2, hit: res.hit, exact: res.exact, pts: res.pts, settled: res.settled, ...(m.ko && p.adv != null ? { adv: p.adv } : {}) }; // Phase 3: each pick's called advancer (knockout only)
@@ -168,8 +170,8 @@ export function buildReveals(members, matches, picksByMatch, nowMs) {
       team1: m.team1,
       team2: m.team2,
       settled,                                  // true once the match has a final score
-      score1: settled ? (m.ko ? m.ninety[0] : m.score1) : null,
-      score2: settled ? (m.ko ? m.ninety[1] : m.score2) : null,
+      score1: settled ? (koConfirmed ? m.ninety[0] : m.score1) : null,
+      score2: settled ? (koConfirmed ? m.ninety[1] : m.score2) : null,
       ko: m.ukKickoff,
       picks: memberPicks,
       // Phase 3 read-only display passthrough — knockout reveals only; group reveals are byte-identical
