@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-28T02:35:19.356415+01:00",
+ "updated": "2026-06-28T02:40:16.742964+01:00",
  "build": "v65-2026-06-22",
  "matches": [
   {
@@ -2766,7 +2766,36 @@ window.WC_DATA = {
    "channel": "BBC Two",
    "score1": 3,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Eldor Shomurodov",
+     "minute": "10",
+     "team": "Uzbekistan",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Yoane Wissa",
+     "minute": "68",
+     "team": "DR Congo",
+     "og": false,
+     "pen": true
+    },
+    {
+     "name": "Fiston Mayele",
+     "minute": "78",
+     "team": "DR Congo",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Yoane Wissa",
+     "minute": "90+1",
+     "team": "DR Congo",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -3191,7 +3220,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 81,
@@ -3341,13 +3376,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 32,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 87,
@@ -3575,7 +3604,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 96,
@@ -4476,6 +4511,12 @@ window.WC_DATA = {
    "goals": 3
   },
   {
+   "name": "Yoane Wissa",
+   "team": "DR Congo",
+   "flag": "🇨🇩",
+   "goals": 3
+  },
+  {
    "name": "Anthony Elanga",
    "team": "Sweden",
    "flag": "🇸🇪",
@@ -4533,12 +4574,6 @@ window.WC_DATA = {
    "name": "Folarin Balogun",
    "team": "USA",
    "flag": "🇺🇸",
-   "goals": 2
-  },
-  {
-   "name": "Jude Bellingham",
-   "team": "England",
-   "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
    "goals": 2
   }
  ],
