@@ -300,7 +300,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v66-2026-06-28";   // build marker (bumped each shell deploy)
+window.__BUILD = "v67-2026-06-28";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -1018,11 +1018,23 @@ function koThrough(o){
   }
   return "";
 }
+function flagForTeam(team, match){
+  if (!team) return "";
+  if (match){
+    if (team === match.team1) return match.flag1 || "";
+    if (team === match.team2) return match.flag2 || "";
+  }
+  const found = (DATA.matches || []).find(m => m.team1 === team || m.team2 === team);
+  if (!found) return "";
+  return team === found.team1 ? (found.flag1 || "") : (found.flag2 || "");
+}
 const mapReveal = rv => {
   const ko = rv.decided != null;   // a knockout reveal carries the passthrough fields
+  const match = (DATA.matches || []).find(m => m.id === rv.matchId);
   return {
-    match: rv.match, ko: rv.ko,
-    team1: rv.team1, team2: rv.team2, settled: !!rv.settled, score1: rv.score1, score2: rv.score2,
+    match: rv.match, matchId: rv.matchId, ko: rv.ko,
+    team1: rv.team1, team2: rv.team2, flag1: flagForTeam(rv.team1, match), flag2: flagForTeam(rv.team2, match),
+    settled: !!rv.settled, score1: rv.score1, score2: rv.score2,
     decided: rv.decided || null, shootout: rv.shootout || null, advanced: rv.advanced == null ? null : rv.advanced,
     // header text: real result once settled, else just the fixture (picks only).
     // Group → "… · FT" byte-identical; knockout → 90-min score + (pens/AET) + who went through.
@@ -1038,6 +1050,7 @@ const mapReveal = rv => {
       pts: !p.settled ? "" : (p.pts > 0 ? "+" + p.pts + (p.exact ? " 🎯" : "") : "0"),
       // Phase 3: the team this pick called to go through (knockout draw picks only)
       call: (ko && p.adv != null && !p.asleep) ? (p.adv === 1 ? rv.team1 : p.adv === 2 ? rv.team2 : null) : null,
+      callFlag: (ko && p.adv != null && !p.asleep && p.s1 === p.s2) ? (p.adv === 1 ? flagForTeam(rv.team1, match) : p.adv === 2 ? flagForTeam(rv.team2, match) : "") : "",
     })),
   };
 };
@@ -1443,10 +1456,16 @@ async function revealCard(rv){
     const mid = py + bh/2 + 14;
     x.fillStyle = p.asleep ? "#5A6378" : "#EEF1F7";
     x.font="700 40px -apple-system,sans-serif"; x.fillText(p.nick,92,mid);
-    // Phase 3: who this pick called to go through (knockout draw picks), if the row is tall enough
-    if (p.call && bh>=88){ x.fillStyle="#8A93A8"; x.font="600 26px -apple-system,sans-serif"; x.fillText("🤝 "+p.call,92,mid+34); }
     x.font="900 44px -apple-system,sans-serif"; x.textAlign="center";
-    x.fillText(p.s + (p.exact?" 🎯":p.hit?" ✓":""), W/2+120, mid);
+    const scoreText = p.s + (p.exact?" 🎯":p.hit?" ✓":"");
+    const scoreX = W/2+120;
+    x.fillText(scoreText, scoreX, mid);
+    if (p.callFlag){
+      const scoreW = x.measureText(scoreText).width;
+      x.textAlign = "left";
+      x.font = "900 34px -apple-system,sans-serif";
+      x.fillText(p.callFlag, scoreX + scoreW/2 + 18, mid);
+    }
     x.textAlign="right"; x.fillStyle="#8A93A8"; x.font="700 36px -apple-system,sans-serif";
     x.fillText(p.pts, W-92, mid); x.textAlign="left";
     py += rowH;
