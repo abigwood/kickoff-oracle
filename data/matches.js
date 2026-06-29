@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-29T20:05:16.710395+01:00",
+ "updated": "2026-06-29T20:10:16.471870+01:00",
  "build": "v71-2026-06-29",
  "matches": [
   {
@@ -3182,7 +3182,29 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 2,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Kaishu Sano",
+     "minute": "29",
+     "team": "Japan",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Casemiro",
+     "minute": "56",
+     "team": "Brazil",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Gabriel Martinelli",
+     "minute": "90+5",
+     "team": "Brazil",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
