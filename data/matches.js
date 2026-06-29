@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-30T00:30:18.077460+01:00",
+ "updated": "2026-06-30T00:35:16.497091+01:00",
  "build": "v71-2026-06-29",
  "matches": [
   {
@@ -3130,7 +3130,22 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 1,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Julio Enciso",
+     "minute": "42",
+     "team": "Paraguay",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Kai Havertz",
+     "minute": "54",
+     "team": "Germany",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -3505,7 +3520,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 36,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 89,
@@ -3577,13 +3598,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 38,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 92,
@@ -3837,7 +3852,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 43,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 102,
@@ -4582,6 +4603,12 @@ window.WC_DATA = {
    "goals": 3
   },
   {
+   "name": "Kai Havertz",
+   "team": "Germany",
+   "flag": "🇩🇪",
+   "goals": 3
+  },
+  {
    "name": "Matheus Cunha",
    "team": "Brazil",
    "flag": "🇧🇷",
@@ -4645,12 +4672,6 @@ window.WC_DATA = {
    "name": "Ermin Mahmic",
    "team": "Bosnia & Herzegovina",
    "flag": "🇧🇦",
-   "goals": 2
-  },
-  {
-   "name": "Folarin Balogun",
-   "team": "USA",
-   "flag": "🇺🇸",
    "goals": 2
   }
  ],
