@@ -300,7 +300,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v70-2026-06-29";   // build marker (bumped each shell deploy)
+window.__BUILD = "v71-2026-06-29";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -1894,12 +1894,18 @@ if ("serviceWorker" in navigator) {
     return false;
   }
 
+  function updateTargetBuild() {
+    const server = window.__SERVER_BUILD || "";
+    const local = window.__BUILD || "";
+    return buildNum(server) > buildNum(local) ? server : local;
+  }
+
   function safeReload(force) {
     if (reloaded) return;                                                          // one-shot per page instance
     if (document.querySelector('[data-lock][disabled]')) { pendingReload = true; return; } // never during a save
     if (!force && (document.hidden || pickInProgress())) { pendingReload = true; showUpdateBanner(); return; }
-    const target = window.__SERVER_BUILD || window.__BUILD || "";
-    if (target && sessionStorage.getItem("ko_applied") === target) return;        // loop guard across reloads
+    const target = updateTargetBuild();
+    if (!force && target && sessionStorage.getItem("ko_applied") === target) return; // loop guard across reloads
     if (target) sessionStorage.setItem("ko_applied", target);
     reloaded = true;
     location.reload();
@@ -1949,13 +1955,21 @@ if ("serviceWorker" in navigator) {
       + 'padding:6px 12px;font-weight:800">Tap to update</button>';
     document.body.appendChild(bar);
     document.getElementById("ko-update-go").onclick = async () => {
-      bar.querySelector("button").textContent = "Updating…";
+      const btn = bar.querySelector("button");
+      btn.textContent = "Updating…";
+      btn.disabled = true;
       try {
         const reg = window.__swReg || await navigator.serviceWorker.getRegistration();
         if (reg && reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
         else if (reg) await reg.update();
       } catch {}
       safeReload(true);   // explicit user choice → apply now (still waits out any in-flight save)
+      setTimeout(() => {
+        if (!reloaded) {
+          btn.disabled = false;
+          btn.textContent = "Try again";
+        }
+      }, 5000);
     };
   };
   window.maybeShowUpdateBanner = function () {
