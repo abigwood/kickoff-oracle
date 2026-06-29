@@ -31,6 +31,7 @@ import {
 } from "./logic.js";
 
 const MATCHES_TTL_MS = 5 * 60 * 1000; // in-memory matches.json cache
+const STANDINGS_LOGIC_VERSION = "ko-normal-time-ft-v1";
 
 // ---- module-scope matches cache (per warm isolate) ----
 let _matches = null;
@@ -129,6 +130,31 @@ async function getResults(env) {
   return (await kvGet(env, "results:ft")) || {};
 }
 
+function knockoutActual(m, koResults) {
+  if (!(m.stage && m.stage !== "Group")) return null;
+  const kr = koResults[String(m.id)];
+  if (kr && kr.status === "confirmed" && Array.isArray(kr.ninety)) {
+    return {
+      ninety: kr.ninety,
+      adv: kr.adv == null ? null : kr.adv,
+      decided: kr.decided || null,
+      shootout: Array.isArray(kr.shootout) ? kr.shootout : null,
+    };
+  }
+  // If a knockout tie is decided inside 90 minutes, the FT match score is also
+  // the scoring score and the advancer is unambiguous. Drawn 90-minute KOs still
+  // require a confirmed knockout record for AET/pens.
+  if (m.status === "FT" && m.score1 != null && m.score2 != null && m.score1 !== m.score2) {
+    return {
+      ninety: [m.score1, m.score2],
+      adv: m.score1 > m.score2 ? 1 : 2,
+      decided: "FT",
+      shootout: null,
+    };
+  }
+  return null;
+}
+
 // Match list (metadata from Pages) with the freshest FT scores overlaid.
 async function scoredMatches(env) {
   const matches = await getMatches(env);
@@ -154,11 +180,11 @@ async function recomputeLeague(env, code) {
       const koMs = Date.parse(m.ukKickoff);
       if (m.stage && m.stage !== "Group") {
         // KNOCKOUT: score the CONFIRMED 90-min record only. A flagged/absent record →
-        // null → excluded (never scored off the group results:ft final). No knockout is
-        // FT today, so this branch is inert and the group ft list is byte-identical.
-        const kr = koResults[String(m.id)];
-        if (kr && kr.status === "confirmed" && Array.isArray(kr.ninety))
-          return { id: m.id, s1: kr.ninety[0], s2: kr.ninety[1], koMs, ko: true, adv: kr.adv == null ? null : kr.adv };
+        // null → excluded unless the tie was decided in normal time, where the
+        // trusted FT result safely provides both the 90-min score and advancer.
+        const actual = knockoutActual(m, koResults);
+        if (actual)
+          return { id: m.id, s1: actual.ninety[0], s2: actual.ninety[1], koMs, ko: true, adv: actual.adv };
         return null;
       }
       return { id: m.id, s1: m.score1, s2: m.score2, koMs };
@@ -177,7 +203,7 @@ async function recomputeLeague(env, code) {
   });
   // Stamp the cache with the results "version" it was built from, so a stale
   // table (built before a newer result settled) is detected and rebuilt on read.
-  const rv = normResults(await getResults(env));
+  const rv = `${STANDINGS_LOGIC_VERSION}:${normResults(await getResults(env))}`;
   await kvPut(env, `table:${code}`, { rows, ts: Date.now(), rv });
   return rows;
 }
@@ -188,7 +214,7 @@ async function recomputeLeague(env, code) {
 // One extra KV read on the hit path; still no write unless actually stale.
 async function standings(env, code) {
   const cached = await kvGet(env, `table:${code}`);
-  const rv = normResults(await getResults(env));
+  const rv = `${STANDINGS_LOGIC_VERSION}:${normResults(await getResults(env))}`;
   if (cached && cached.rv === rv) return cached.rows;
   return await recomputeLeague(env, code);
 }
@@ -511,10 +537,10 @@ async function makePick(env, body) {
 // confirmed — never auto-scored off the group results:ft final.
 function knockoutReveal(m, koResults) {
   if (!(m.stage && m.stage !== "Group")) return m;
-  const kr = koResults[String(m.id)];
-  if (kr && kr.status === "confirmed" && Array.isArray(kr.ninety))
-    return { ...m, ko: true, ninety: kr.ninety, adv: kr.adv == null ? null : kr.adv,
-             decided: kr.decided || null, shootout: Array.isArray(kr.shootout) ? kr.shootout : null }; // Phase 3 display passthrough
+  const actual = knockoutActual(m, koResults);
+  if (actual)
+    return { ...m, ko: true, ninety: actual.ninety, adv: actual.adv,
+             decided: actual.decided, shootout: actual.shootout }; // Phase 3 display passthrough
   return { ...m, ko: true, score1: null, score2: null };
 }
 
@@ -680,6 +706,8 @@ async function setKnockout(env, body) {
     written++;
   }
   await kvPut(env, "knockout:results", cur);
+  const list = await env.KV.list({ prefix: "league:" });
+  await Promise.all(list.keys.map((k) => env.KV.delete(`table:${k.name.slice("league:".length)}`)));
   return j({ ok: true, store: "knockout:results", written, keptManual }, 200, env);
 }
 

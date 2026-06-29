@@ -50,7 +50,7 @@ function makeEnv() {
 async function call(env, method, path, { body, now, failFetch } = {}) {
   __resetCaches(); // fresh matches snapshot per call — no cross-test cache leakage
   const realNow = Date.now;
-  if (now != null) Date.now = () => now;
+  Date.now = () => (now != null ? now : koMs - 3 * 24 * 60 * MIN);
   // reset module matches cache by stubbing fetch fresh each call
   const realFetch = globalThis.fetch;
   globalThis.fetch = failFetch
@@ -297,6 +297,36 @@ test("fast settle: scores from pushed results (no Pages wait) and is frugal on n
   assert.equal(s3.json.changed, true);
   const t2 = (await call(env, "GET", `/table?code=${code}`, { now: koMs + 10 * MIN })).json.table;
   assert.equal(t2.find((r) => r.uid === "adam").pts, 0, "2–1 pick vs 1–1 result → 0; table updated");
+});
+
+test("normal-time knockout FT scores settle reveal points without a separate advancer record", async () => {
+  const env = makeEnv();
+  const ko = "2026-06-28T20:00:00+01:00";
+  const koTime = Date.parse(ko);
+  MATCHES.matches[0] = {
+    id: 73,
+    stage: "R32",
+    team1: "South Africa",
+    team2: "Canada",
+    ukKickoff: ko,
+    status: "UPCOMING",
+    score1: null,
+    score2: null,
+  };
+  const code = (await call(env, "POST", "/league", { body: { uid: "biggers", nickname: "Biggers", name: "KO" } })).json.code;
+  await call(env, "POST", "/join", { body: { uid: "woody", nickname: "Woody", code } });
+  await call(env, "POST", "/pick", { body: { uid: "biggers", matchId: 73, s1: 1, s2: 1, adv: 2 }, now: koTime - MIN });
+  await call(env, "POST", "/pick", { body: { uid: "woody", matchId: 73, s1: 0, s2: 1 }, now: koTime - MIN });
+  await call(env, "POST", "/settle", { body: { secret: "s3cr3t", results: { "73": [0, 1] } } });
+
+  const state = (await call(env, "GET", `/state?code=${code}`, { now: koTime + 120 * MIN })).json;
+  const reveal = state.reveals.find((rv) => rv.matchId === 73);
+  assert.equal(reveal.settled, true);
+  assert.deepEqual([reveal.score1, reveal.score2, reveal.advanced, reveal.decided], [0, 1, 2, "FT"]);
+  assert.equal(reveal.picks.find((p) => p.nick === "Biggers").pts, 0, "draw pick loses when the KO tie is won in 90");
+  assert.equal(reveal.picks.find((p) => p.nick === "Woody").pts, 5, "exact 0-1 gets the green +5 reveal treatment");
+  assert.equal(state.table.find((r) => r.nick === "Woody").pts, 5);
+  MATCHES.matches[0] = { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null };
 });
 
 test("recovery code: minted on join, /me returns it, /restore adopts the identity on a 2nd device", async () => {

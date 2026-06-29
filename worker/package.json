@@ -5,7 +5,7 @@
   "type": "module",
   "description": "THE WINDOW — Cloudflare Worker backend for KickOff Oracle's prediction league.",
   "scripts": {
-    "test": "node --test",
+    "test": "node --test --test-concurrency=1",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"
   }
