@@ -300,7 +300,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v68-2026-06-28";   // build marker (bumped each shell deploy)
+window.__BUILD = "v69-2026-06-29";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -1169,7 +1169,7 @@ function windowWidget(m){
         <button class="advbtn${p.adv===2?" on":""}" data-adv="2">${m.flag2||""} ${m.team2}</button>
       </div>
     </div>` : "";
-  const advTag = (isKO && has && draw && p.adv) ? ` · ${p.adv===1?m.team1:m.team2} through` : "";
+  const advTag = (isKO && has && draw && p.adv) ? ` · 🤝 ${p.adv===1?(m.flag1||""):(m.flag2||"")}` : "";
   return `<div class="window" data-wid="${m.id}" data-ko="${m.ukKickoff}"><div class="wlbl">${head}</div>
     ${has?`<div class="locked" style="margin-bottom:8px">🔒 Your pick: ${m.team1} ${p.s1}–${p.s2} ${m.team2}${advTag}<br>
       <span style="color:var(--dim);font-weight:400;font-size:.68rem">Change it anytime before kick-off · hidden from your mates until KO</span></div>`:""}
@@ -1243,7 +1243,7 @@ function viewLeague(){
     ${shownReveals.map((rv,ri)=>`<div class="gtable"><h3>🪟 REVEAL — ${rv.header || rv.match}</h3>
       <div class="reveal" style="padding:12px 14px">
         ${rv.picks.map(p=>`<span class="rpick ${p.hit?"hit":""} ${p.oracle?"oracle":""}">
-          ${p.nick}: <b class="${p.asleep?"asleep":""}">${p.s}</b> ${p.exact?"🎯":""} <span style="color:var(--faint)">${p.pts}</span>${p.call?`<span class="rcall">🤝 ${p.call}</span>`:""}</span>`).join("")}
+          ${p.nick}: <b class="${p.asleep?"asleep":""}">${p.s}</b>${p.callFlag?`<span class="rcall">🤝 ${p.callFlag}</span>`:""} ${p.exact?"🎯":""} <span style="color:var(--faint)">${p.pts}</span></span>`).join("")}
       </div>
       <button class="sharecard" data-card="${ri}" style="margin:0 14px 14px;width:calc(100% - 28px)">📤 Share reveal card to the group chat</button>
       </div>`).join("")}
@@ -1457,15 +1457,9 @@ async function revealCard(rv){
     x.fillStyle = p.asleep ? "#5A6378" : "#EEF1F7";
     x.font="700 40px -apple-system,sans-serif"; x.fillText(p.nick,92,mid);
     x.font="900 44px -apple-system,sans-serif"; x.textAlign="center";
-    const scoreText = p.s + (p.exact?" 🎯":p.hit?" ✓":"");
+    const scoreText = p.s + (p.callFlag?` 🤝 ${p.callFlag}`:"") + (p.exact?" 🎯":p.hit?" ✓":"");
     const scoreX = W/2+120;
     x.fillText(scoreText, scoreX, mid);
-    if (p.callFlag){
-      const scoreW = x.measureText(scoreText).width;
-      x.textAlign = "left";
-      x.font = "900 34px -apple-system,sans-serif";
-      x.fillText(p.callFlag, scoreX + scoreW/2 + 18, mid);
-    }
     x.textAlign="right"; x.fillStyle="#8A93A8"; x.font="700 36px -apple-system,sans-serif";
     x.fillText(p.pts, W-92, mid); x.textAlign="left";
     py += rowH;
