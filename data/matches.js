@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-29T17:55:17.061485+01:00",
+ "updated": "2026-06-29T18:00:18.801059+01:00",
  "build": "v71-2026-06-29",
  "matches": [
   {
@@ -3183,7 +3183,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
+   "status": "LIVE",
    "weather": {
     "temp": 34,
     "code": 95,
@@ -3391,13 +3391,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 22,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 85,
@@ -3573,7 +3567,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 37,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 92,
@@ -3749,13 +3749,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 24,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 99,
@@ -5145,11 +5139,6 @@ window.WC_DATA = {
    0.531,
    0.238,
    0.231
-  ],
-  "76": [
-   0.498,
-   0.245,
-   0.257
   ],
   "77": [
    0.816,
