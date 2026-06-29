@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-29T01:20:16.318088+01:00",
+ "updated": "2026-06-29T01:25:17.051297+01:00",
  "build": "v68-2026-06-28",
  "matches": [
   {
@@ -3495,13 +3495,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 35,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 89,
@@ -3651,7 +3645,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 17,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 95,
