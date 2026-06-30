@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-30T08:05:26.123401+01:00",
+ "updated": "2026-06-30T08:10:26.784441+01:00",
  "build": "v74-2026-06-30",
  "matches": [
   {
@@ -3147,13 +3147,7 @@
     }
    ],
    "status": "FT",
-   "youtube": "YJAUoA6wKJc",
-   "decided": "PEN",
-   "advanced": 2,
-   "shootout": [
-    3,
-    4
-   ]
+   "youtube": "YJAUoA6wKJc"
   },
   {
    "id": 75,
@@ -3189,13 +3183,7 @@
     }
    ],
    "status": "FT",
-   "youtube": "SR1vjyqXLwU",
-   "decided": "PEN",
-   "advanced": 2,
-   "shootout": [
-    2,
-    3
-   ]
+   "youtube": "SR1vjyqXLwU"
   },
   {
    "id": 76,
@@ -3238,9 +3226,7 @@
     }
    ],
    "status": "FT",
-   "youtube": "VwOyu09Pj54",
-   "decided": "FT",
-   "advanced": 1
+   "youtube": "VwOyu09Pj54"
   },
   {
    "id": 77,
@@ -3598,13 +3584,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 91,
@@ -3650,7 +3630,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 20,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 93,
