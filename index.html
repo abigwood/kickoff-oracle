@@ -306,7 +306,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v75-2026-06-30";   // build marker (bumped each shell deploy)
+window.__BUILD = "v76-2026-06-30";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -1604,7 +1604,7 @@ let nextUpcomingId = null;                       // set by viewToday() = soonest
 //      left alone until the user navigates away and back.
 let jumpToNextPending = true;                    // first load lands on Today → jump once
 function pickBusy(){                             // a pick is mid-edit — don't yank the view
-  if (document.querySelector('[data-lock][disabled]')) return true;           // save in flight
+  if (document.querySelector('[data-lock][data-saving="1"]')) return true;    // save in flight
   const ae = document.activeElement;
   if (ae && ae.matches && ae.matches('input, textarea, [contenteditable]')) return true;
   for (const w of document.querySelectorAll('.window[data-wid]')){
@@ -1805,11 +1805,11 @@ document.addEventListener("click",async e=>{
       }
       if (API){
         const btn = e.target.closest("[data-lock]"); const label = btn.textContent;
-        btn.disabled = true; btn.textContent = "Saving…";
+        btn.disabled = true; btn.dataset.saving = "1"; btn.textContent = "Saving…";
         // server-side check is authoritative — rejects at/after KO and placeholder teams
         const { status, j } = await api("/pick", { uid:uid(), nickname:myNick()||"Anon", matchId:+id, s1, s2, ...(adv?{adv}:{}) });
         if (status!==200){
-          btn.disabled = false; btn.textContent = label;
+          btn.disabled = false; delete btn.dataset.saving; btn.textContent = label;
           alert(j.error==="window has shut" ? "Too late — picks shut at kick-off." :
                 j.error==="teams not confirmed yet" ? "Both teams aren't confirmed yet — you can pick once they're known." :
                 (j.error || "Couldn't save that. Try again."));
@@ -1953,7 +1953,7 @@ if ("serviceWorker" in navigator) {
   // GUARD: never yank a user mid-pick. "In progress" = a /pick save in flight, an open
   // window whose stepper differs from the saved pick, or a focused text input.
   function pickInProgress() {
-    if (document.querySelector('[data-lock][disabled]')) return true;            // save in flight
+    if (document.querySelector('[data-lock][data-saving="1"]')) return true;     // save in flight
     const ae = document.activeElement;
     if (ae && ae.matches && ae.matches('input, textarea, [contenteditable]')) return true;
     for (const w of document.querySelectorAll('.window[data-wid]')) {
@@ -1975,7 +1975,7 @@ if ("serviceWorker" in navigator) {
 
   function safeReload(force) {
     if (reloaded) return;                                                          // one-shot per page instance
-    if (document.querySelector('[data-lock][disabled]')) { pendingReload = true; return; } // never during a save
+    if (document.querySelector('[data-lock][data-saving="1"]')) { pendingReload = true; return; } // never during a save
     if (!force && (document.hidden || pickInProgress())) { pendingReload = true; showUpdateBanner(); return; }
     const target = updateTargetBuild();
     if (!force && target && sessionStorage.getItem("ko_applied") === target) return; // loop guard across reloads
@@ -2038,6 +2038,14 @@ if ("serviceWorker" in navigator) {
       } catch {}
       safeReload(true);   // explicit user choice → apply now (still waits out any in-flight save)
       setTimeout(() => {
+        const server = window.__SERVER_BUILD || "";
+        const current = window.__BUILD || "";
+        const hasNewerData = server && buildNum(server) > buildNum(current);
+        const isStillPending = pendingReload || hasNewerData;
+        if (!reloaded && !isStillPending) {
+          bar.remove();
+          return;
+        }
         if (!reloaded) {
           btn.disabled = false;
           btn.textContent = "Try again";
