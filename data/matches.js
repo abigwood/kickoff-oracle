@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-30T07:45:28.271686+01:00",
+ "updated": "2026-06-30T07:50:25.225316+01:00",
  "build": "v74-2026-06-30",
  "matches": [
   {
@@ -3418,9 +3418,9 @@ window.WC_DATA = {
    "status": "UPCOMING",
    "weather": {
     "temp": 34,
-    "code": 95,
+    "code": 96,
     "icon": "⛈️",
-    "desc": "Thunderstorm"
+    "desc": "Thunderstorm with hail"
    }
   },
   {
@@ -3545,7 +3545,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 35,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 89,
@@ -3669,13 +3675,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 35,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 94,
@@ -3903,7 +3903,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 36,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
+   }
   },
   {
    "id": 103,
