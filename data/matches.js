@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-30T23:55:57.245464+01:00",
+ "updated": "2026-07-01T00:00:57.949161+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3261,7 +3261,29 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 3,
    "score2": 0,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Kylian Mbappé",
+     "minute": "45",
+     "team": "France",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Bradley Barcola",
+     "minute": "53",
+     "team": "France",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Kylian Mbappé",
+     "minute": "74",
+     "team": "France",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 1
@@ -3719,7 +3741,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 22,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 95,
@@ -3739,13 +3767,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 32,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 96,
@@ -4574,6 +4596,12 @@ window.WC_DATA = {
  },
  "scorers": [
   {
+   "name": "Kylian Mbappé",
+   "team": "France",
+   "flag": "🇫🇷",
+   "goals": 6
+  },
+  {
    "name": "Lionel Messi",
    "team": "Argentina",
    "flag": "🇦🇷",
@@ -4584,12 +4612,6 @@ window.WC_DATA = {
    "team": "Norway",
    "flag": "🇳🇴",
    "goals": 5
-  },
-  {
-   "name": "Kylian Mbappé",
-   "team": "France",
-   "flag": "🇫🇷",
-   "goals": 4
   },
   {
    "name": "Ousmane Dembélé",
@@ -4694,6 +4716,12 @@ window.WC_DATA = {
    "goals": 2
   },
   {
+   "name": "Bradley Barcola",
+   "team": "France",
+   "flag": "🇫🇷",
+   "goals": 2
+  },
+  {
    "name": "Cristiano Ronaldo",
    "team": "Portugal",
    "flag": "🇵🇹",
@@ -4715,12 +4743,6 @@ window.WC_DATA = {
    "name": "Daichi Kamada",
    "team": "Japan",
    "flag": "🇯🇵",
-   "goals": 2
-  },
-  {
-   "name": "Daniel Muñoz",
-   "team": "Colombia",
-   "flag": "🇨🇴",
    "goals": 2
   }
  ],
