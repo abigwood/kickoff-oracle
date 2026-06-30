@@ -303,7 +303,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v73-2026-06-30";   // build marker (bumped each shell deploy)
+window.__BUILD = "v74-2026-06-30";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -1403,7 +1403,7 @@ function projectedBracketMatch(m, projected, usedThirds){
     if (resolved) return {name:resolved.team, flag:resolved.flag, seed:resolved.seed, projected:!(/^[WL]\d+$/.test(slot))};
     if (/^[123][A-L](?:\/[A-L])*$/.test(slot)) return {name:slot, flag:"", seed:slotLabel(slot), placeholder:true};
     if (/^[WL]\d+$/.test(slot)) return {name:slot, flag:"", seed:slotLabel(slot), placeholder:true};
-    return {name:slot, flag:slot==="⚽"?"⚽":"", seed:slotLabel(slot), projected:false};
+    return {name:slot, flag:slot==="⚽"?"⚽":flagForTeam(slot), seed:slotLabel(slot), projected:false};
   };
   return [asTeam(m.team1), asTeam(m.team2)];
 }
