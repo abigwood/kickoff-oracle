@@ -1054,10 +1054,41 @@ def main():
                 m["youtube"] = hl[str(m["id"])]
 
     add_weather(matches)
+    prior_ko = {}
+    try:
+        if OUT.exists():
+            old = json.loads(OUT.read_text())
+            for om in old.get("matches", []):
+                if not (om.get("stage") and om.get("stage") != "Group"):
+                    continue
+                if om.get("score1") is None or om.get("score2") is None:
+                    continue
+                if om.get("advanced") not in (1, 2):
+                    continue
+                prior_ko[str(om.get("id"))] = {
+                    "score": [om.get("score1"), om.get("score2")],
+                    "decided": om.get("decided"),
+                    "adv": om.get("advanced"),
+                    "shootout": om.get("shootout"),
+                }
+    except Exception as e:
+        print(f"prior knockout metadata skipped: {e}")
+
     ko_records = fetch_espn_knockout(matches)
     for m in matches:
         rec = ko_records.get(str(m.get("id")))
         if not rec or rec.get("status") != "confirmed":
+            if m.get("stage") and m.get("stage") != "Group" and m.get("status") == "FT" and m.get("score1") is not None and m.get("score2") is not None:
+                if m["score1"] != m["score2"]:
+                    m["decided"] = "FT"
+                    m["advanced"] = 1 if m["score1"] > m["score2"] else 2
+                else:
+                    old = prior_ko.get(str(m.get("id")))
+                    if old and old.get("score") == [m.get("score1"), m.get("score2")] and old.get("decided") in ("AET", "PEN"):
+                        m["decided"] = old.get("decided")
+                        m["advanced"] = old.get("adv")
+                        if old.get("shootout") is not None:
+                            m["shootout"] = old.get("shootout")
             continue
         ninety = rec.get("ninety") or []
         if len(ninety) == 2:
