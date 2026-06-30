@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-30T20:00:59.915318+01:00",
+ "updated": "2026-06-30T20:05:58.472456+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3287,7 +3287,29 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 1,
    "score2": 2,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Antonio Nusa",
+     "minute": "39",
+     "team": "Norway",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Amad Diallo",
+     "minute": "74",
+     "team": "Ivory Coast",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Erling Haaland",
+     "minute": "86",
+     "team": "Norway",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 2
@@ -3570,7 +3592,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 39,
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
+   }
   },
   {
    "id": 90,
@@ -3720,13 +3748,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 32,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 96,
@@ -3827,9 +3849,9 @@ window.WC_DATA = {
    "status": "UPCOMING",
    "weather": {
     "temp": 34,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
    }
   },
   {
@@ -3876,7 +3898,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 29,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 102,
@@ -4558,7 +4586,7 @@ window.WC_DATA = {
    "name": "Erling Haaland",
    "team": "Norway",
    "flag": "🇳🇴",
-   "goals": 4
+   "goals": 5
   },
   {
    "name": "Kylian Mbappé",
@@ -4651,6 +4679,12 @@ window.WC_DATA = {
    "goals": 3
   },
   {
+   "name": "Amad Diallo",
+   "team": "Ivory Coast",
+   "flag": "🇨🇮",
+   "goals": 2
+  },
+  {
    "name": "Anthony Elanga",
    "team": "Sweden",
    "flag": "🇸🇪",
@@ -4690,12 +4724,6 @@ window.WC_DATA = {
    "name": "Daniel Muñoz",
    "team": "Colombia",
    "flag": "🇨🇴",
-   "goals": 2
-  },
-  {
-   "name": "Ermin Mahmic",
-   "team": "Bosnia & Herzegovina",
-   "flag": "🇧🇦",
    "goals": 2
   }
  ],
