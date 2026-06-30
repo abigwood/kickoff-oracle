@@ -299,6 +299,40 @@ test("fast settle: scores from pushed results (no Pages wait) and is frugal on n
   assert.equal(t2.find((r) => r.uid === "adam").pts, 0, "2–1 pick vs 1–1 result → 0; table updated");
 });
 
+test("movement arrows compare against the immediately previous scored match even with no intervening table view", async () => {
+  const env = makeEnv();
+  const ko2 = new Date(koMs + 60 * MIN).toISOString();
+  MATCHES.matches = [
+    { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null },
+    { id: 51, team1: "Netherlands", team2: "Morocco", ukKickoff: ko2, status: "UPCOMING", score1: null, score2: null },
+  ];
+  const code = (await call(env, "POST", "/league", { body: { uid: "adam", nickname: "Adam", name: "MOVES" } })).json.code;
+  await call(env, "POST", "/join", { body: { uid: "craigo", nickname: "Craigo", code } });
+  await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 50, s1: 0, s2: 0 }, now: koMs - 30 * MIN });
+  await call(env, "POST", "/pick", { body: { uid: "craigo", matchId: 50, s1: 1, s2: 0 }, now: koMs - 30 * MIN });
+  await call(env, "POST", "/pick", { body: { uid: "adam", matchId: 51, s1: 2, s2: 2 }, now: koMs - 30 * MIN });
+  await call(env, "POST", "/pick", { body: { uid: "craigo", matchId: 51, s1: 3, s2: 0 }, now: koMs - 30 * MIN });
+
+  // Seed an old table cache before any results, then settle match 50 and do NOT
+  // open the league. The next result must still compare against after-match-50,
+  // not this stale zero-point table.
+  await call(env, "GET", `/table?code=${code}`, { now: koMs - 10 * MIN });
+  await call(env, "POST", "/settle", { body: { secret: "s3cr3t", results: { "50": [1, 0] } } });
+  await call(env, "POST", "/settle", { body: { secret: "s3cr3t", results: { "50": [1, 0], "51": [1, 1] } } });
+
+  const rows = (await call(env, "GET", `/table?code=${code}`, { now: koMs + 120 * MIN })).json.table;
+  assert.deepEqual(rows.map((r) => [r.nick, r.pts, r.move]), [
+    ["Craigo", 5, "same"],
+    ["Adam", 2, "same"],
+  ]);
+  MATCHES.matches = [
+    { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null },
+    { id: 99, team1: "1A", team2: "2B", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null },
+    { id: 60, team1: "P", team2: "Q", ukKickoff: "2099-01-01T00:00:00+00:00", status: "FT", score1: null, score2: null },
+    { id: 61, team1: "R", team2: "S", ukKickoff: "not-a-real-date", status: "UPCOMING", score1: null, score2: null },
+  ];
+});
+
 test("normal-time knockout FT scores settle reveal points without a separate advancer record", async () => {
   const env = makeEnv();
   const ko = "2026-06-28T20:00:00+01:00";

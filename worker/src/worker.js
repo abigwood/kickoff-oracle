@@ -31,7 +31,7 @@ import {
 } from "./logic.js";
 
 const MATCHES_TTL_MS = 5 * 60 * 1000; // in-memory matches.json cache
-const STANDINGS_LOGIC_VERSION = "ko-normal-time-ft-v1";
+const STANDINGS_LOGIC_VERSION = "latest-result-movement-v2";
 
 // ---- module-scope matches cache (per warm isolate) ----
 let _matches = null;
@@ -192,11 +192,13 @@ async function recomputeLeague(env, code) {
     .filter(Boolean);
   const picksByMatch = await loadPicksByMatch(env, ft.map((m) => m.id));
   const rows = computeTable(members, ft, picksByMatch);
-  // POSITION-MOVEMENT ARROWS (additive): annotate each row with movement vs its
-  // index in prev:{code} (frozen at the last settle). Index-based, matching the
-  // visible table order. Reads ONLY prev:{code}; does not affect scoring/order.
-  // No prior position (just joined / first settle) → "new" → client shows a dash.
-  const prevPos = ((await kvGet(env, `prev:${code}`)) || {}).pos || {};
+  // POSITION-MOVEMENT ARROWS: compare the current table against the same table
+  // with the latest scored match removed. This derives the before/after view
+  // directly from scored matches, so it cannot go stale if nobody opened a league
+  // between two results or if KO advancer data arrives after the FT score.
+  const prevRows = ft.length > 1 ? computeTable(members, ft.slice(0, -1), picksByMatch) : [];
+  const prevPos = {};
+  prevRows.forEach((r, i) => { prevPos[r.uid] = i; });
   rows.forEach((r, i) => {
     const was = prevPos[r.uid];
     r.move = (was == null) ? "new" : (i < was ? "up" : i > was ? "down" : "same");
@@ -636,23 +638,10 @@ async function settle(env, body) {
   let n = 0;
   for (const k of list.keys) {
     const code = k.name.slice("league:".length);
-    // POSITION-MOVEMENT ARROWS (additive): snapshot the CURRENT table positions —
-    // i.e. the standings as they were BEFORE this settle's result — into prev:{code}.
-    // Only happens here, only when results actually changed (or force), so the
-    // baseline is "before the most recently settled match" and is frozen until the
-    // next settle. Reads only the derived table:{code} cache; never picks/identity.
-    const cur = await kvGet(env, `table:${code}`);
-    if (cur && Array.isArray(cur.rows)) {
-      const pos = {};
-      cur.rows.forEach((r, i) => { pos[r.uid] = i; });
-      await kvPut(env, `prev:${code}`, { pos, ts: Date.now() });
-    }
     // BUST, don't inline-recompute: recomputing every league serially here is what
     // exhausted the per-invocation budget and left leagues after the cutoff stale.
     // Deleting the cache is O(1) per league; the staleness-aware read path rebuilds
     // each league lazily on next view (and stamps it with the current results version).
-    // NB: the prev:{code} snapshot above ran BEFORE this delete, so movement arrows
-    // still measure against the standings as they were before this settle.
     await env.KV.delete(`table:${code}`);
     n++;
   }
