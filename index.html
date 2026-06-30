@@ -72,6 +72,9 @@ h2.day b{color:var(--text)}
 .team .flag{font-size:1.25rem;width:1.5rem;text-align:center}
 .team .score{margin-left:auto;font-family:"Archivo";font-weight:900;font-size:1.2rem;font-variant-numeric:tabular-nums}
 .team.winner .score{color:var(--win)}
+.ko-result{margin-top:7px;display:flex;align-items:center;justify-content:flex-end;gap:8px;
+  color:var(--win);font-family:"Archivo";font-size:.78rem;font-weight:900;letter-spacing:.01em}
+.ko-result span{color:var(--dim);font-size:.68rem;text-transform:uppercase}
 .meta{display:flex; flex-wrap:wrap; gap:6px 12px; margin-top:10px; font-size:.72rem; color:var(--dim)}
 .meta .tag{color:var(--faint)}
 .meta .tag.wx{color:var(--dim);font-variant-numeric:tabular-nums}
@@ -300,7 +303,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v71-2026-06-29";   // build marker (bumped each shell deploy)
+window.__BUILD = "v72-2026-06-30";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -715,6 +718,7 @@ function card(m){
         <div class="team ${w2?"winner":""}"><span class="flag">${m.flag2}</span>${m.team2}
           ${m.score2!=null?`<span class="score">${m.score2}</span>`:""}</div>`;
       })()}
+      ${koMatchResult(m)}
     </div>
     <div class="meta">
       ${(()=>{ const live=espnData(m); return live ? `<div class="live-clock"><span>⚽ LIVE</span><span class="min">${live.minute}</span></div>` : m.status==="LIVE" ? `<span class="badge live">LIVE</span>` : ""; })()}
@@ -742,6 +746,19 @@ function pickReminder(m){
   if (!p) return "";
   if (windowState(m)==="open") return "";   // window still open → the picker widget shows it
   return `<span class="mypick">Your pick: ${m.flag1} <b>${p.s1}–${p.s2}</b> ${m.flag2}</span>`;
+}
+function koMatchResult(m){
+  if (!(m && m.status === "FT" && m.stage && m.stage !== "Group")) return "";
+  if (m.score1 == null || m.score2 == null || m.score1 !== m.score2) return "";
+  if (!(m.decided === "AET" || m.decided === "PEN")) return "";
+  const adv = m.advanced == null ? m.adv : m.advanced;
+  const team = adv === 1 ? m.team1 : adv === 2 ? m.team2 : "";
+  if (!team) return "";
+  const flag = adv === 1 ? (m.flag1 || "") : (m.flag2 || "");
+  const detail = m.decided === "PEN" && Array.isArray(m.shootout)
+    ? `${m.shootout[0]}&ndash;${m.shootout[1]} pens`
+    : "AET";
+  return `<div class="ko-result">${flag} ${team} through <span>${detail}</span></div>`;
 }
 function matchIntel(m){
   const items = intelFor(m);
@@ -1782,6 +1799,13 @@ async function loadData(){
     isOffline = r.headers.get("X-From-Cache")==="1";   // SW gave us last saved data
     const d = await r.json();
     if (d && d.matches) { DATA = d; window.maybeShowUpdateBanner && window.maybeShowUpdateBanner(); }
+    if (API){
+      const rr = await api("/matches").catch(()=>null);
+      if (rr && rr.status === 200 && rr.j && Array.isArray(rr.j.matches)){
+        DATA = { ...DATA, ...rr.j, matches: rr.j.matches };
+        isOffline = false;
+      }
+    }
   } catch { isOffline = true; }   // total network failure → keep last data
   return DATA;
 }

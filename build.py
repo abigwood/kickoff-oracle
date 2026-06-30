@@ -822,7 +822,7 @@ def fetch_espn_knockout(matches):
     return out
 
 
-def ping_knockout(matches):
+def ping_knockout(matches, records=None):
     """Push knockout:results records to the Worker's isolated /knockout endpoint.
     Same env gating as ping_settle; no-op locally and when nothing is captured.
     Does NOT touch /settle or results:ft. Logs flagged games for the Action run."""
@@ -830,7 +830,7 @@ def ping_knockout(matches):
     secret = os.environ.get("SETTLE_SECRET")
     if not api or not secret:
         return
-    records = fetch_espn_knockout(matches)
+    records = records if records is not None else fetch_espn_knockout(matches)
     if not records:
         return
     for mid, rec in records.items():
@@ -1052,6 +1052,19 @@ def main():
                 m["youtube"] = hl[str(m["id"])]
 
     add_weather(matches)
+    ko_records = fetch_espn_knockout(matches)
+    for m in matches:
+        rec = ko_records.get(str(m.get("id")))
+        if not rec or rec.get("status") != "confirmed":
+            continue
+        ninety = rec.get("ninety") or []
+        if len(ninety) == 2:
+            m["score1"], m["score2"] = ninety
+            m["status"] = "FT"
+        m["decided"] = rec.get("decided")
+        m["advanced"] = rec.get("adv")
+        if rec.get("shootout") is not None:
+            m["shootout"] = rec.get("shootout")
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     # Surface the deployed frontend build so clients can detect they're stale
@@ -1075,7 +1088,7 @@ def main():
     (OUT.parent / "matches.js").write_text("window.WC_DATA = " + payload + ";")
     print(f"Wrote {len(matches)} matches, {len(tables)} groups -> {OUT}")
     ping_settle(matches)
-    ping_knockout(matches)   # PHASE 0 (additive): capture knockout 90-min + advancer into the separate store
+    ping_knockout(matches, ko_records)   # PHASE 0 (additive): capture knockout 90-min + advancer into the separate store
 
 
 def ping_settle(matches):

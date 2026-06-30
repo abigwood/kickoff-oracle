@@ -544,6 +544,24 @@ function knockoutReveal(m, koResults) {
   return { ...m, ko: true, score1: null, score2: null };
 }
 
+async function getPublicMatches(env) {
+  const koResults = (await kvGet(env, "knockout:results")) || {};
+  const matches = (await scoredMatches(env)).map((m) => {
+    const actual = knockoutActual(m, koResults);
+    if (!actual) return m;
+    return {
+      ...m,
+      status: "FT",
+      score1: actual.ninety[0],
+      score2: actual.ninety[1],
+      decided: actual.decided,
+      shootout: actual.shootout,
+      advanced: actual.adv,
+    };
+  });
+  return j({ matches }, 200, env);
+}
+
 async function getPicks(env, url) {
   const code = (url.searchParams.get("code") || "").toUpperCase();
   const matchId = Number(url.searchParams.get("matchId"));
@@ -741,6 +759,7 @@ export default {
     try {
       if (request.method === "GET") {
         if (path === "/" || path === "/health") return j({ ok: true, service: "the-window" }, 200, env);
+        if (path === "/matches") return await getPublicMatches(env);
         if (path === "/picks") return await getPicks(env, url);
         if (path === "/table") return await getTable(env, url);
         if (path === "/state") return await getState(env, url);
