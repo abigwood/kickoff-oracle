@@ -363,6 +363,31 @@ test("normal-time knockout FT scores settle reveal points without a separate adv
   MATCHES.matches[0] = { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null };
 });
 
+test("/matches preserves stored AET/pens knockout advancer metadata", async () => {
+  const env = makeEnv();
+  MATCHES.matches[0] = {
+    id: 74,
+    stage: "R32",
+    team1: "Germany",
+    team2: "Paraguay",
+    ukKickoff: "2026-06-29T21:30:00+01:00",
+    status: "FT",
+    score1: 1,
+    score2: 1,
+    decided: "PEN",
+    advanced: 2,
+    shootout: [4, 5],
+  };
+
+  const response = (await call(env, "GET", "/matches")).json.matches.find((m) => m.id === 74);
+  assert.deepEqual(
+    [response.score1, response.score2, response.decided, response.advanced, response.shootout],
+    [1, 1, "PEN", 2, [4, 5]],
+    "drawn knockout metadata must not be blanked, or bracket slots regress to W74"
+  );
+  MATCHES.matches[0] = { id: 50, team1: "England", team2: "Croatia", ukKickoff: KO, status: "UPCOMING", score1: null, score2: null };
+});
+
 test("recovery code: minted on join, /me returns it, /restore adopts the identity on a 2nd device", async () => {
   const env = makeEnv();
   const created = await call(env, "POST", "/league", { body: { uid: "dev1", nickname: "Adam", name: "MATES" } });

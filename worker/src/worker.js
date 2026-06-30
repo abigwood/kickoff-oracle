@@ -141,6 +141,20 @@ function knockoutActual(m, koResults) {
       shootout: Array.isArray(kr.shootout) ? kr.shootout : null,
     };
   }
+  if (
+    m.status === "FT" &&
+    m.score1 != null &&
+    m.score2 != null &&
+    (m.advanced === 1 || m.advanced === 2) &&
+    (m.decided === "FT" || m.decided === "AET" || m.decided === "PEN")
+  ) {
+    return {
+      ninety: [m.score1, m.score2],
+      adv: m.advanced,
+      decided: m.decided,
+      shootout: Array.isArray(m.shootout) ? m.shootout : null,
+    };
+  }
   // If a knockout tie is decided inside 90 minutes, the FT match score is also
   // the scoring score and the advancer is unambiguous. Drawn 90-minute KOs still
   // require a confirmed knockout record for AET/pens.

@@ -183,6 +183,9 @@ select.pill{appearance:none;-webkit-appearance:none}
         padding:9px 11px;margin-bottom:8px;font-size:.82rem}
 .bmatch .row{display:flex;justify-content:space-between;gap:8px;padding:2px 0;font-weight:600}
 .bmatch .row .sc{font-variant-numeric:tabular-nums;color:var(--dim)}
+.bmatch .result{border-top:1px solid rgba(255,255,255,.06);margin-top:6px;padding-top:6px;
+  color:var(--win);font-size:.68rem;font-weight:800;line-height:1.35}
+.bmatch .result span{color:var(--dim);font-weight:700;text-transform:uppercase}
 .bmatch .sub{font-size:.66rem;color:var(--faint);margin-top:4px;display:flex;justify-content:space-between}
 .bracket-head{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
         padding:13px 14px;margin-bottom:12px}
@@ -303,7 +306,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v74-2026-06-30";   // build marker (bumped each shell deploy)
+window.__BUILD = "v75-2026-06-30";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -749,16 +752,23 @@ function pickReminder(m){
 }
 function koMatchResult(m){
   if (!(m && m.status === "FT" && m.stage && m.stage !== "Group")) return "";
-  if (m.score1 == null || m.score2 == null || m.score1 !== m.score2) return "";
-  if (!(m.decided === "AET" || m.decided === "PEN")) return "";
+  const summary = koDecisionSummary(m);
+  if (!summary) return "";
+  return `<div class="ko-result">${summary.flag} ${summary.team} through <span>${summary.detail}</span></div>`;
+}
+function koDecisionSummary(m){
+  if (!(m && m.status === "FT" && m.stage && m.stage !== "Group")) return null;
+  if (m.score1 == null || m.score2 == null) return null;
   const adv = m.advanced == null ? m.adv : m.advanced;
   const team = adv === 1 ? m.team1 : adv === 2 ? m.team2 : "";
   if (!team) return "";
   const flag = adv === 1 ? (m.flag1 || "") : (m.flag2 || "");
-  const detail = m.decided === "PEN" && Array.isArray(m.shootout)
-    ? `${m.shootout[0]}&ndash;${m.shootout[1]} pens`
-    : "AET";
-  return `<div class="ko-result">${flag} ${team} through <span>${detail}</span></div>`;
+  let detail = "";
+  if (m.decided === "PEN" && Array.isArray(m.shootout)) detail = `${m.shootout[0]}&ndash;${m.shootout[1]} pens`;
+  else if (m.decided === "AET") detail = "AET";
+  else if (m.score1 === m.score2) return null;
+  else detail = "FT";
+  return { flag, team, detail };
 }
 function matchIntel(m){
   const items = intelFor(m);
@@ -1407,6 +1417,11 @@ function projectedBracketMatch(m, projected, usedThirds){
   };
   return [asTeam(m.team1), asTeam(m.team2)];
 }
+function bracketResultLine(m){
+  const summary = koDecisionSummary(m);
+  if (!summary) return "";
+  return `<div class="result">${summary.flag} ${summary.team} through <span>${summary.detail}</span></div>`;
+}
 
 function viewBracket(){
   const order = ["Round of 32","Round of 16","Quarter-final","Semi-final","Match for third place","Final"];
@@ -1429,6 +1444,7 @@ function viewBracket(){
         return `<div class="bmatch ${(a.projected||b.projected)?"projected":""}">
         <div class="row ${a.projected?"projected":(a.placeholder?"placeholder":"")}"><span><span class="seed">${a.seed}</span>${a.flag?a.flag+" ":""}${a.name}</span><span class="sc">${m.score1??""}</span></div>
         <div class="row ${b.projected?"projected":(b.placeholder?"placeholder":"")}"><span><span class="seed">${b.seed}</span>${b.flag?b.flag+" ":""}${b.name}</span><span class="sc">${m.score2??""}</span></div>
+        ${bracketResultLine(m)}
         <div class="sub"><span>${fmtDay(m.ukDate).replace(/ \d+ .+$/,"")} ${m.ukDate.slice(8)}/${m.ukDate.slice(5,7)} · ${m.ukTime}</span>
         <span class="chip ${chipClass(m.channel)}" style="padding:2px 7px;font-size:.6rem">${m.channel}</span></div>
       </div>`;
@@ -1809,6 +1825,21 @@ document.addEventListener("change",e=>{
   if(e.target.id==="teamsel" && e.target.value){ teamFilter=e.target.value; render(); }
 });
 
+function mergeMatchData(baseMatches, freshMatches){
+  const baseById = new Map((baseMatches || []).map(m => [String(m.id), m]));
+  return (freshMatches || []).map(fresh => {
+    const base = baseById.get(String(fresh.id));
+    if (!base) return fresh;
+    const merged = { ...base, ...fresh };
+    if (merged.stage && merged.stage !== "Group"){
+      if (fresh.advanced == null && base.advanced != null) merged.advanced = base.advanced;
+      if (!fresh.decided && base.decided) merged.decided = base.decided;
+      if (!Array.isArray(fresh.shootout) && Array.isArray(base.shootout)) merged.shootout = base.shootout;
+    }
+    return merged;
+  });
+}
+
 /* refresh data when hosted. Detects offline two ways: a thrown fetch, or the
    service worker serving its cached fallback (tagged X-From-Cache). */
 async function loadData(){
@@ -1820,7 +1851,7 @@ async function loadData(){
     if (API){
       const rr = await api("/matches").catch(()=>null);
       if (rr && rr.status === 200 && rr.j && Array.isArray(rr.j.matches)){
-        DATA = { ...DATA, ...rr.j, matches: rr.j.matches };
+        DATA = { ...DATA, ...rr.j, matches: mergeMatchData(DATA.matches, rr.j.matches) };
         isOffline = false;
       }
     }
