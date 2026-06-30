@@ -303,7 +303,7 @@ h3 .lact{padding:2px 6px;font-size:.72rem;vertical-align:middle}
 <script src="data/matches.js"></script>
 <script>
 "use strict";
-window.__BUILD = "v72-2026-06-30";   // build marker (bumped each shell deploy)
+window.__BUILD = "v73-2026-06-30";   // build marker (bumped each shell deploy)
 let DATA = window.WC_DATA || {matches:[],groups:{}};
 let tab = "today", teamFilter = "All", tickTimer = null, isOffline = false;
 const $ = s => document.querySelector(s);
@@ -1366,9 +1366,29 @@ function slotLabel(slot){
   if (/^[WL]\d+$/.test(slot)) return slot[0]==="W" ? `Winner Match ${slot.slice(1)}` : `Loser Match ${slot.slice(1)}`;
   return "Confirmed";
 }
+function knockoutSide(m, wantWinner=true){
+  if (!m || m.status !== "FT") return null;
+  let side = null;
+  if (m.advanced === 1 || m.advanced === 2) side = m.advanced;
+  else if (m.score1 != null && m.score2 != null && m.score1 !== m.score2) side = m.score1 > m.score2 ? 1 : 2;
+  if (!side) return null;
+  if (!wantWinner) side = side === 1 ? 2 : 1;
+  return side;
+}
+function resolveKnockoutSlot(slot){
+  const m = DATA.matches.find(x => String(x.id) === String(slot).slice(1));
+  const side = knockoutSide(m, slot[0] === "W");
+  if (!m || !side) return null;
+  return {
+    team: side === 1 ? m.team1 : m.team2,
+    flag: side === 1 ? m.flag1 : m.flag2,
+    seed: "Confirmed",
+  };
+}
 function resolveSlot(slot, projected, usedThirds){
   if (/^1[A-L]$/.test(slot)) return projected.winners[slot[1]] || null;
   if (/^2[A-L]$/.test(slot)) return projected.runners[slot[1]] || null;
+  if (/^[WL]\d+$/.test(slot)) return resolveKnockoutSlot(slot);
   if (/^3[A-L](?:\/[A-L])+$/.test(slot)){
     const eligible = new Set(slot.slice(1).split("/"));
     const pick = projected.thirds.find(r=>eligible.has(r.group) && !usedThirds.has(r.group));
@@ -1380,8 +1400,9 @@ function resolveSlot(slot, projected, usedThirds){
 function projectedBracketMatch(m, projected, usedThirds){
   const asTeam = slot => {
     const resolved = resolveSlot(slot, projected, usedThirds);
-    if (resolved) return {name:resolved.team, flag:resolved.flag, seed:resolved.seed, projected:true};
+    if (resolved) return {name:resolved.team, flag:resolved.flag, seed:resolved.seed, projected:!(/^[WL]\d+$/.test(slot))};
     if (/^[123][A-L](?:\/[A-L])*$/.test(slot)) return {name:slot, flag:"", seed:slotLabel(slot), placeholder:true};
+    if (/^[WL]\d+$/.test(slot)) return {name:slot, flag:"", seed:slotLabel(slot), placeholder:true};
     return {name:slot, flag:slot==="⚽"?"⚽":"", seed:slotLabel(slot), projected:false};
   };
   return [asTeam(m.team1), asTeam(m.team2)];
@@ -1404,10 +1425,7 @@ function viewBracket(){
     if(!ms.length) return "";
     return `<div class="bcol"><h3>${r}</h3>` + ms.map(m=>`
       ${(()=>{
-        const [a,b] = r==="Round of 32" ? projectedBracketMatch(m, projected, usedThirds) : [
-          {name:m.team1, flag:m.flag1!=="⚽"?m.flag1:"", seed:slotLabel(m.team1), placeholder:/^[WL]\d+$/.test(m.team1)},
-          {name:m.team2, flag:m.flag2!=="⚽"?m.flag2:"", seed:slotLabel(m.team2), placeholder:/^[WL]\d+$/.test(m.team2)}
-        ];
+        const [a,b] = projectedBracketMatch(m, projected, usedThirds);
         return `<div class="bmatch ${(a.projected||b.projected)?"projected":""}">
         <div class="row ${a.projected?"projected":(a.placeholder?"placeholder":"")}"><span><span class="seed">${a.seed}</span>${a.flag?a.flag+" ":""}${a.name}</span><span class="sc">${m.score1??""}</span></div>
         <div class="row ${b.projected?"projected":(b.placeholder?"placeholder":"")}"><span><span class="seed">${b.seed}</span>${b.flag?b.flag+" ":""}${b.name}</span><span class="sc">${m.score2??""}</span></div>

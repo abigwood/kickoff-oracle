@@ -322,7 +322,9 @@ def simulate(matches, elo, base_tables):
                 reach[t1]["sf"] += 1; reach[t2]["sf"] += 1
             elif m["round"] == "Final":
                 reach[t1]["final"] += 1; reach[t2]["final"] += 1
-            if m["score1"] is not None and m["score1"] != m["score2"]:
+            if m.get("advanced") in (1, 2) and m.get("score1") is not None:
+                s1, s2 = (1, 0) if m["advanced"] == 1 else (0, 1)
+            elif m["score1"] is not None and m["score1"] != m["score2"]:
                 s1, s2 = m["score1"], m["score2"]
             else:
                 s1, s2 = sim_match(t1, t2, m["ground"])
