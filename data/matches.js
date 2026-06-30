@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-06-30T04:55:19.321540+01:00",
+ "updated": "2026-06-30T05:00:18.576248+01:00",
  "build": "v71-2026-06-29",
  "matches": [
   {
@@ -3166,7 +3166,22 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 1,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Cody Gakpo",
+     "minute": "72",
+     "team": "Netherlands",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Issa Diop",
+     "minute": "90+1",
+     "team": "Morocco",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT"
   },
   {
@@ -3490,7 +3505,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 28,
+    "code": 95,
+    "icon": "⛈️",
+    "desc": "Thunderstorm"
+   }
   },
   {
    "id": 88,
@@ -3614,13 +3635,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 20,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 93,
@@ -3796,7 +3811,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 34,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 100,
@@ -4551,6 +4572,12 @@ window.WC_DATA = {
    "goals": 3
   },
   {
+   "name": "Cody Gakpo",
+   "team": "Netherlands",
+   "flag": "🇳🇱",
+   "goals": 3
+  },
+  {
    "name": "Deniz Undav",
    "team": "Germany",
    "flag": "🇩🇪",
@@ -4620,12 +4647,6 @@ window.WC_DATA = {
    "name": "Ayase Ueda",
    "team": "Japan",
    "flag": "🇯🇵",
-   "goals": 2
-  },
-  {
-   "name": "Cody Gakpo",
-   "team": "Netherlands",
-   "flag": "🇳🇱",
    "goals": 2
   },
   {
