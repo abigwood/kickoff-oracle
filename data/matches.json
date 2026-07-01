@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-01T23:50:18.785642+01:00",
+ "updated": "2026-07-01T23:55:15.810771+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3458,16 +3458,48 @@
    "ukDate": "2026-07-01",
    "ukTime": "21:00",
    "channel": "ITV1",
-   "score1": null,
-   "score2": null,
-   "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 16,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
-   }
+   "score1": 2,
+   "score2": 2,
+   "goals": [
+    {
+     "name": "Habib Diarra",
+     "minute": "25",
+     "team": "Senegal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ismaïla Sarr",
+     "minute": "51",
+     "team": "Senegal",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Romelu Lukaku",
+     "minute": "86",
+     "team": "Belgium",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Youri Tielemans",
+     "minute": "89",
+     "team": "Belgium",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Youri Tielemans",
+     "minute": "120+5",
+     "team": "Belgium",
+     "og": false,
+     "pen": true
+    }
+   ],
+   "status": "FT",
+   "decided": "AET",
+   "advanced": 1
   },
   {
    "id": 83,
@@ -3721,7 +3753,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 18,
+    "code": 53,
+    "icon": "🌦️",
+    "desc": "Drizzle"
+   }
   },
   {
    "id": 93,
@@ -3949,13 +3987,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 39,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 102,
@@ -4652,6 +4684,12 @@
    "goals": 5
   },
   {
+   "name": "Ismaïla Sarr",
+   "team": "Senegal",
+   "flag": "🇸🇳",
+   "goals": 4
+  },
+  {
    "name": "Ousmane Dembélé",
    "team": "France",
    "flag": "🇫🇷",
@@ -4691,12 +4729,6 @@
    "name": "Ismael Saibari",
    "team": "Morocco",
    "flag": "🇲🇦",
-   "goals": 3
-  },
-  {
-   "name": "Ismaïla Sarr",
-   "team": "Senegal",
-   "flag": "🇸🇳",
    "goals": 3
   },
   {
@@ -4785,40 +4817,40 @@
     "team": "France",
     "flag": "🇫🇷",
     "elo": 2137,
-    "win": 28.9,
-    "final": 47.8,
-    "sf": 82.4,
-    "qf": 94.1,
+    "win": 28.8,
+    "final": 47.9,
+    "sf": 82.5,
+    "qf": 94.0,
     "r16": 100.0
    },
    {
     "team": "Argentina",
     "flag": "🇦🇷",
     "elo": 2140,
-    "win": 26.6,
-    "final": 49.6,
-    "sf": 69.0,
+    "win": 26.8,
+    "final": 49.8,
+    "sf": 69.2,
     "qf": 92.2,
-    "r16": 97.5
+    "r16": 97.6
    },
    {
     "team": "Spain",
     "flag": "🇪🇸",
     "elo": 2158,
-    "win": 25.3,
-    "final": 39.6,
-    "sf": 66.0,
-    "qf": 74.6,
-    "r16": 92.4
+    "win": 25.0,
+    "final": 39.5,
+    "sf": 66.1,
+    "qf": 74.7,
+    "r16": 92.3
    },
    {
     "team": "England",
     "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     "elo": 2060,
     "win": 6.5,
-    "final": 17.2,
-    "sf": 39.9,
-    "qf": 63.0,
+    "final": 17.1,
+    "sf": 40.0,
+    "qf": 63.2,
     "r16": 100.0
    },
    {
@@ -4826,40 +4858,50 @@
     "flag": "🇧🇷",
     "elo": 2013,
     "win": 4.1,
-    "final": 12.2,
-    "sf": 32.1,
-    "qf": 61.2,
+    "final": 12.4,
+    "sf": 32.5,
+    "qf": 62.0,
     "r16": 100.0
    },
    {
     "team": "Colombia",
     "flag": "🇨🇴",
     "elo": 2009,
-    "win": 3.2,
-    "final": 10.7,
-    "sf": 21.2,
-    "qf": 63.0,
+    "win": 3.5,
+    "final": 10.8,
+    "sf": 21.3,
+    "qf": 62.9,
     "r16": 91.2
    },
    {
     "team": "Norway",
     "flag": "🇳🇴",
     "elo": 1942,
-    "win": 1.0,
-    "final": 4.2,
-    "sf": 14.8,
-    "qf": 38.8,
+    "win": 1.1,
+    "final": 4.1,
+    "sf": 14.5,
+    "qf": 38.0,
     "r16": 100.0
    },
    {
     "team": "Portugal",
     "flag": "🇵🇹",
     "elo": 1970,
-    "win": 1.0,
+    "win": 0.9,
     "final": 3.4,
     "sf": 10.1,
-    "qf": 14.8,
-    "r16": 57.2
+    "qf": 14.7,
+    "r16": 57.3
+   },
+   {
+    "team": "Switzerland",
+    "flag": "🇨🇭",
+    "elo": 1928,
+    "win": 0.7,
+    "final": 2.7,
+    "sf": 7.4,
+    "qf": 31.3,
+    "r16": 76.4
    },
    {
     "team": "Croatia",
@@ -4869,7 +4911,7 @@
     "final": 1.4,
     "sf": 5.1,
     "qf": 8.2,
-    "r16": 42.8
+    "r16": 42.7
    },
    {
     "team": "Morocco",
@@ -4877,8 +4919,8 @@
     "elo": 1888,
     "win": 0.6,
     "final": 3.5,
-    "sf": 12.9,
-    "qf": 71.5,
+    "sf": 12.5,
+    "qf": 71.4,
     "r16": 100.0
    },
    {
@@ -4886,20 +4928,10 @@
     "flag": "🇲🇽",
     "elo": 1897,
     "win": 0.6,
-    "final": 2.9,
-    "sf": 13.3,
-    "qf": 37.0,
-    "r16": 100.0
-   },
-   {
-    "team": "Switzerland",
-    "flag": "🇨🇭",
-    "elo": 1928,
-    "win": 0.6,
     "final": 2.8,
-    "sf": 7.8,
-    "qf": 31.3,
-    "r16": 76.7
+    "sf": 12.9,
+    "qf": 36.8,
+    "r16": 100.0
    },
    {
     "team": "USA",
@@ -4908,17 +4940,17 @@
     "win": 0.6,
     "final": 2.1,
     "sf": 9.3,
-    "qf": 44.1,
-    "r16": 79.2
+    "qf": 44.5,
+    "r16": 79.5
    },
    {
     "team": "Senegal",
     "flag": "🇸🇳",
     "elo": 1848,
     "win": 0.1,
-    "final": 0.8,
-    "sf": 4.3,
-    "qf": 26.1,
+    "final": 0.9,
+    "sf": 4.2,
+    "qf": 25.8,
     "r16": 50.0
    },
    {
@@ -4926,19 +4958,19 @@
     "flag": "🇧🇪",
     "elo": 1845,
     "win": 0.1,
-    "final": 0.6,
-    "sf": 3.9,
-    "qf": 24.7,
+    "final": 0.5,
+    "sf": 3.8,
+    "qf": 24.9,
     "r16": 50.0
    },
    {
     "team": "Paraguay",
     "flag": "🇵🇾",
     "elo": 1762,
-    "win": 0.1,
+    "win": 0.0,
     "final": 0.3,
-    "sf": 2.1,
-    "qf": 5.9,
+    "sf": 2.2,
+    "qf": 6.0,
     "r16": 100.0
    },
    {
@@ -4947,9 +4979,9 @@
     "elo": 1801,
     "win": 0.0,
     "final": 0.2,
-    "sf": 1.1,
+    "sf": 1.2,
     "qf": 2.4,
-    "r16": 7.6
+    "r16": 7.7
    },
    {
     "team": "Canada",
@@ -4957,7 +4989,7 @@
     "elo": 1747,
     "win": 0.0,
     "final": 0.2,
-    "sf": 2.6,
+    "sf": 2.8,
     "qf": 28.6,
     "r16": 100.0
    },
@@ -4967,7 +4999,7 @@
     "elo": 1763,
     "win": 0.0,
     "final": 0.1,
-    "sf": 0.8,
+    "sf": 0.9,
     "qf": 4.2,
     "r16": 52.0
    },
@@ -4979,7 +5011,7 @@
     "final": 0.1,
     "sf": 0.3,
     "qf": 3.8,
-    "r16": 23.3
+    "r16": 23.6
    },
    {
     "team": "Egypt",
@@ -4998,8 +5030,8 @@
     "win": 0.0,
     "final": 0.1,
     "sf": 0.3,
-    "qf": 5.2,
-    "r16": 20.8
+    "qf": 4.9,
+    "r16": 20.6
    },
    {
     "team": "Netherlands",
@@ -5179,7 +5211,7 @@
     "final": 0.0,
     "sf": 0.1,
     "qf": 0.6,
-    "r16": 2.5
+    "r16": 2.4
    },
    {
     "team": "Panama",
@@ -5268,11 +5300,6 @@
    0.667,
    0.194,
    0.139
-  ],
-  "82": [
-   0.367,
-   0.258,
-   0.375
   ],
   "83": [
    0.432,
