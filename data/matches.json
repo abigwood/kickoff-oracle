@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-02T00:40:18.231057+01:00",
+ "updated": "2026-07-02T00:45:16.095270+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3498,6 +3498,7 @@
     }
    ],
    "status": "FT",
+   "youtube": "4N_bpnuZD-A",
    "decided": "AET",
    "advanced": 1
   },
@@ -3600,9 +3601,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 32,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
+    "code": 96,
+    "icon": "⛈️",
+    "desc": "Thunderstorm with hail"
    }
   },
   {
@@ -3730,9 +3731,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 31,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
