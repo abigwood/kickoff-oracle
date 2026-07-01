@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-01T07:30:58.151170+01:00",
+ "updated": "2026-07-01T07:35:58.715215+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3506,7 +3506,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 18,
+    "temp": 15,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -3610,7 +3610,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 39,
+    "temp": 37,
     "code": 1,
     "icon": "🌤️",
     "desc": "Mainly clear"
@@ -3660,13 +3660,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 51,
-    "icon": "🌦️",
-    "desc": "Light drizzle"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 92,
@@ -3740,7 +3734,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 25,
+    "temp": 29,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -3792,7 +3786,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 14,
+    "temp": 15,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -3816,7 +3810,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 32,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 98,
@@ -3864,7 +3864,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 36,
+    "temp": 34,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -3890,7 +3890,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 29,
+    "temp": 28,
     "code": 51,
     "icon": "🌦️",
     "desc": "Light drizzle"
@@ -3916,7 +3916,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 34,
+    "temp": 40,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -3940,13 +3940,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 103,
