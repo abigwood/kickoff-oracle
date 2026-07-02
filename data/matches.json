@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-02T19:55:18.288503+01:00",
+ "updated": "2026-07-02T20:00:17.265911+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3558,7 +3558,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
+   "status": "LIVE",
    "weather": {
     "temp": 22,
     "code": 2,
@@ -3870,13 +3870,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 15,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 97,
@@ -3922,7 +3916,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 26,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 99,
@@ -5313,11 +5313,6 @@
    0.432,
    0.255,
    0.313
-  ],
-  "84": [
-   0.825,
-   0.118,
-   0.057
   ],
   "85": [
    0.612,
