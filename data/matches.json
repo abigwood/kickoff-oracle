@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-02T22:00:18.267709+01:00",
+ "updated": "2026-07-02T22:05:17.915225+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3557,7 +3557,29 @@
    "channel": "BBC One",
    "score1": 3,
    "score2": 0,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Mikel Oyarzabal",
+     "minute": "36",
+     "team": "Spain",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Pedro Porro",
+     "minute": "66",
+     "team": "Spain",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Mikel Oyarzabal",
+     "minute": "89",
+     "team": "Spain",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 1
@@ -3762,7 +3784,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 18,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
+   }
   },
   {
    "id": 93,
@@ -3990,13 +4018,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 40,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 102,
@@ -4699,6 +4721,12 @@
    "goals": 4
   },
   {
+   "name": "Mikel Oyarzabal",
+   "team": "Spain",
+   "flag": "🇪🇸",
+   "goals": 4
+  },
+  {
    "name": "Ousmane Dembélé",
    "team": "France",
    "flag": "🇫🇷",
@@ -4810,12 +4838,6 @@
    "name": "Cristiano Ronaldo",
    "team": "Portugal",
    "flag": "🇵🇹",
-   "goals": 2
-  },
-  {
-   "name": "Crysencio Summerville",
-   "team": "Netherlands",
-   "flag": "🇳🇱",
    "goals": 2
   }
  ],
