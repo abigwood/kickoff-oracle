@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-03T12:45:19.637458+01:00",
+ "updated": "2026-07-03T12:50:18.534647+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3661,7 +3661,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 29,
+    "temp": 31,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -3791,7 +3791,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 24,
+    "temp": 32,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -3895,7 +3895,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 32,
+    "temp": 31,
     "code": 53,
     "icon": "🌦️",
     "desc": "Drizzle"
@@ -3921,7 +3921,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 18,
+    "temp": 19,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -3947,7 +3947,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 31,
+    "temp": 32,
     "code": 2,
     "icon": "⛅",
     "desc": "Partly cloudy"
@@ -3971,7 +3971,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 26,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 99,
@@ -3991,13 +3997,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 34,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 100,
@@ -4019,7 +4019,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 30,
+    "temp": 32,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -4045,7 +4045,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 42,
+    "temp": 39,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -4071,7 +4071,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 32,
+    "temp": 41,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
