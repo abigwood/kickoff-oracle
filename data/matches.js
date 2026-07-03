@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-03T22:45:18.454152+01:00",
+ "updated": "2026-07-03T22:50:19.214658+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3727,6 +3727,7 @@ window.WC_DATA = {
     }
    ],
    "status": "FT",
+   "youtube": "_YVWHgJDALY",
    "decided": "PEN",
    "advanced": 2,
    "shootout": [
@@ -3934,7 +3935,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 21,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 97,
@@ -3980,13 +3987,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 27,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 99,
