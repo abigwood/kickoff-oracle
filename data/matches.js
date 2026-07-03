@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-03T02:10:17.864100+01:00",
+ "updated": "2026-07-03T02:15:16.050347+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3531,7 +3531,29 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 2,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Ivan Perisic",
+     "minute": "53",
+     "team": "Croatia",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Cristiano Ronaldo",
+     "minute": "68",
+     "team": "Portugal",
+     "og": false,
+     "pen": true
+    },
+    {
+     "name": "Gonçalo Ramos",
+     "minute": "90+4",
+     "team": "Portugal",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 1
@@ -3858,7 +3880,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 32,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 96,
@@ -3982,13 +4010,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 32,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 101,
@@ -4747,6 +4769,12 @@ window.WC_DATA = {
    "goals": 3
   },
   {
+   "name": "Cristiano Ronaldo",
+   "team": "Portugal",
+   "flag": "🇵🇹",
+   "goals": 3
+  },
+  {
    "name": "Deniz Undav",
    "team": "Germany",
    "flag": "🇩🇪",
@@ -4828,12 +4856,6 @@ window.WC_DATA = {
    "name": "Bradley Barcola",
    "team": "France",
    "flag": "🇫🇷",
-   "goals": 2
-  },
-  {
-   "name": "Cristiano Ronaldo",
-   "team": "Portugal",
-   "flag": "🇵🇹",
    "goals": 2
   }
  ],
