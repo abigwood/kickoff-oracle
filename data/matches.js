@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-04T01:09:11.857667+01:00",
+ "updated": "2026-07-04T01:15:26.757521+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3659,7 +3659,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "LIVE"
+   "status": "UPCOMING"
   },
   {
    "id": 87,
@@ -5284,6 +5284,11 @@ window.WC_DATA = {
   ]
  },
  "matchProbs": {
+  "86": [
+   0.909,
+   0.068,
+   0.023
+  ],
   "87": [
    0.79,
    0.137,
