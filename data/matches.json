@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-04T15:45:45.732446+01:00",
+ "updated": "2026-07-04T15:50:47.521940+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3696,6 +3696,7 @@
     }
    ],
    "status": "FT",
+   "youtube": "8FYlR_xkujI",
    "decided": "AET",
    "advanced": 1
   },
@@ -3726,6 +3727,7 @@
     }
    ],
    "status": "FT",
+   "youtube": "w2R0cyMevNM",
    "decided": "FT",
    "advanced": 1
   },
@@ -4101,13 +4103,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 43,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 102,
@@ -4179,7 +4175,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 32,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   }
  ],
  "groups": {
