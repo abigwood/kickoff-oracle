@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-04T20:05:47.518770+01:00",
+ "updated": "2026-07-04T20:10:48.403806+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -3816,7 +3816,29 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 0,
    "score2": 3,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Azzedine Ounahi",
+     "minute": "50",
+     "team": "Morocco",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Azzedine Ounahi",
+     "minute": "82",
+     "team": "Morocco",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Soufiane Rahimi",
+     "minute": "90+8",
+     "team": "Morocco",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 2
@@ -4047,13 +4069,7 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 33,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 100,
@@ -4099,7 +4115,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   },
   {
    "id": 102,
@@ -4928,9 +4950,9 @@ window.WC_DATA = {
    "goals": 2
   },
   {
-   "name": "Bradley Barcola",
-   "team": "France",
-   "flag": "🇫🇷",
+   "name": "Azzedine Ounahi",
+   "team": "Morocco",
+   "flag": "🇲🇦",
    "goals": 2
   }
  ],
