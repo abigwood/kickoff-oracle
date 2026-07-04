@@ -137,6 +137,8 @@ KNOCKOUT_CHANNELS = {
     "2026-07-03 19:00": "BBC One",
     "2026-07-03 23:00": "ITV1",
     "2026-07-04 02:30": "ITV1",
+    "2026-07-04 18:00": "ITV1",
+    "2026-07-04 22:00": "BBC One",
     "2026-07-19 20:00": "BBC & ITV",   # the final is shown on both, as is custom
 }
 

@@ -1,6 +1,6 @@
 window.WC_DATA = {
- "updated": "2026-07-04T16:55:46.184601+01:00",
- "build": "v76-2026-06-30",
+ "updated": "2026-07-04T16:57:10.187036+01:00",
+ "build": "v77-2026-07-04",
  "matches": [
   {
    "id": 1,
@@ -3787,7 +3787,7 @@ window.WC_DATA = {
    "ukKickoff": "2026-07-04T22:00:00+01:00",
    "ukDate": "2026-07-04",
    "ukTime": "22:00",
-   "channel": "TBC",
+   "channel": "BBC One",
    "score1": null,
    "score2": null,
    "goals": [],
@@ -3813,7 +3813,7 @@ window.WC_DATA = {
    "ukKickoff": "2026-07-04T18:00:00+01:00",
    "ukDate": "2026-07-04",
    "ukTime": "18:00",
-   "channel": "TBC",
+   "channel": "ITV1",
    "score1": null,
    "score2": null,
    "goals": [],
