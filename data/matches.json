@@ -1,6 +1,6 @@
 {
- "updated": "2026-07-04T17:00:47.861219+01:00",
- "build": "v77-2026-07-04",
+ "updated": "2026-07-04T17:05:00.645194+01:00",
+ "build": "v78-2026-07-04",
  "matches": [
   {
    "id": 1,
@@ -3839,7 +3839,7 @@
    "ukKickoff": "2026-07-05T21:00:00+01:00",
    "ukDate": "2026-07-05",
    "ukTime": "21:00",
-   "channel": "TBC",
+   "channel": "ITV1",
    "score1": null,
    "score2": null,
    "goals": [],
@@ -3865,7 +3865,7 @@
    "ukKickoff": "2026-07-06T01:00:00+01:00",
    "ukDate": "2026-07-06",
    "ukTime": "01:00",
-   "channel": "TBC",
+   "channel": "BBC One",
    "score1": null,
    "score2": null,
    "goals": [],
@@ -3891,7 +3891,7 @@
    "ukKickoff": "2026-07-06T20:00:00+01:00",
    "ukDate": "2026-07-06",
    "ukTime": "20:00",
-   "channel": "TBC",
+   "channel": "BBC One",
    "score1": null,
    "score2": null,
    "goals": [],
@@ -3917,7 +3917,7 @@
    "ukKickoff": "2026-07-07T01:00:00+01:00",
    "ukDate": "2026-07-07",
    "ukTime": "01:00",
-   "channel": "TBC",
+   "channel": "BBC One",
    "score1": null,
    "score2": null,
    "goals": [],
@@ -3943,7 +3943,7 @@
    "ukKickoff": "2026-07-07T17:00:00+01:00",
    "ukDate": "2026-07-07",
    "ukTime": "17:00",
-   "channel": "TBC",
+   "channel": "ITV1",
    "score1": null,
    "score2": null,
    "goals": [],
@@ -3969,7 +3969,7 @@
    "ukKickoff": "2026-07-07T21:00:00+01:00",
    "ukDate": "2026-07-07",
    "ukTime": "21:00",
-   "channel": "TBC",
+   "channel": "ITV1",
    "score1": null,
    "score2": null,
    "goals": [],
@@ -4103,7 +4103,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 43,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 102,
