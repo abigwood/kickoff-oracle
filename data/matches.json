@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-04T06:30:17.509995+01:00",
+ "updated": "2026-07-04T06:35:16.533620+01:00",
  "build": "v76-2026-06-30",
  "matches": [
   {
@@ -3896,9 +3896,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 39,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -3922,9 +3922,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 27,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -3948,9 +3948,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 33,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
    }
   },
   {
@@ -4000,9 +4000,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 28,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
    }
   },
   {
@@ -4049,7 +4049,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 35,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 100,
@@ -4072,9 +4078,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 27,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
    }
   },
   {
@@ -4098,9 +4104,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 39,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "code": 2,
+    "icon": "⛅",
+    "desc": "Partly cloudy"
    }
   },
   {
@@ -4124,9 +4130,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 34,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -4150,9 +4156,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 33,
-    "code": 1,
-    "icon": "🌤️",
-    "desc": "Mainly clear"
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
    }
   },
   {
