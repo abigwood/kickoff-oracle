@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-05T12:45:45.129755+01:00",
+ "updated": "2026-07-05T12:50:48.218744+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -3973,7 +3973,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 31,
+    "temp": 32,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -3999,7 +3999,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 20,
+    "temp": 21,
     "code": 2,
     "icon": "⛅",
     "desc": "Partly cloudy"
@@ -4025,7 +4025,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 27,
+    "temp": 32,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -4077,7 +4077,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 34,
+    "temp": 35,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -4103,7 +4103,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 26,
+    "temp": 28,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -4155,7 +4155,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 34,
+    "temp": 38,
     "code": 2,
     "icon": "⛅",
     "desc": "Partly cloudy"
@@ -4179,13 +4179,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 34,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 104,
@@ -4207,7 +4201,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 31,
+    "temp": 21,
     "code": 51,
     "icon": "🌦️",
     "desc": "Light drizzle"
