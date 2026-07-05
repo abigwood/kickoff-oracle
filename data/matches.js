@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-05T19:50:46.644369+01:00",
+ "updated": "2026-07-05T19:55:45.909069+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -4011,10 +4011,10 @@ window.WC_DATA = {
    "stageOrder": 6,
    "round": "Quarter-final",
    "group": "",
-   "team1": "W89",
-   "team2": "W90",
-   "flag1": "⚽",
-   "flag2": "⚽",
+   "team1": "France",
+   "team2": "Morocco",
+   "flag1": "🇫🇷",
+   "flag2": "🇲🇦",
    "ground": "Boston (Foxborough)",
    "ukKickoff": "2026-07-09T21:00:00+01:00",
    "ukDate": "2026-07-09",
@@ -5483,6 +5483,11 @@ window.WC_DATA = {
    0.29,
    0.252,
    0.459
+  ],
+  "97": [
+   0.673,
+   0.191,
+   0.135
   ]
  }
 };
