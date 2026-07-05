@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-05T23:05:47.079392+01:00",
+ "updated": "2026-07-05T23:10:48.418337+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -3866,7 +3866,29 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 1,
    "score2": 2,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Erling Haaland",
+     "minute": "79",
+     "team": "Norway",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Erling Haaland",
+     "minute": "90",
+     "team": "Norway",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Neymar",
+     "minute": "90+10",
+     "team": "Brazil",
+     "og": false,
+     "pen": true
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 2
@@ -4149,7 +4171,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 33,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   },
   {
    "id": 103,
@@ -4808,6 +4836,12 @@ window.WC_DATA = {
  },
  "scorers": [
   {
+   "name": "Erling Haaland",
+   "team": "Norway",
+   "flag": "🇳🇴",
+   "goals": 7
+  },
+  {
    "name": "Kylian Mbappé",
    "team": "France",
    "flag": "🇫🇷",
@@ -4818,12 +4852,6 @@ window.WC_DATA = {
    "team": "Argentina",
    "flag": "🇦🇷",
    "goals": 7
-  },
-  {
-   "name": "Erling Haaland",
-   "team": "Norway",
-   "flag": "🇳🇴",
-   "goals": 5
   },
   {
    "name": "Harry Kane",
