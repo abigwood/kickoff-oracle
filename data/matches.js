@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-05T01:55:47.452800+01:00",
+ "updated": "2026-07-05T02:00:46.186815+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -4101,7 +4101,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 22,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
+   }
   },
   {
    "id": 101,
