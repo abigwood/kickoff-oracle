@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-06T14:55:50.686000+01:00",
+ "updated": "2026-07-06T15:00:47.614609+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -4257,7 +4257,13 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 34,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
+   }
   }
  ],
  "groups": {
