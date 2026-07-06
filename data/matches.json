@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-06T04:10:47.420077+01:00",
+ "updated": "2026-07-06T04:15:48.209941+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -3911,7 +3911,43 @@
    "channel": "BBC One",
    "score1": 2,
    "score2": 3,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Jude Bellingham",
+     "minute": "36",
+     "team": "England",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Jude Bellingham",
+     "minute": "38",
+     "team": "England",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Julián Quiñones",
+     "minute": "42",
+     "team": "Mexico",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Harry Kane",
+     "minute": "60",
+     "team": "England",
+     "og": false,
+     "pen": true
+    },
+    {
+     "name": "Raúl Jiménez",
+     "minute": "69",
+     "team": "Mexico",
+     "og": false,
+     "pen": true
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 2
@@ -4194,13 +4230,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 34,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "UPCOMING"
   },
   {
    "id": 104,
@@ -4854,12 +4884,24 @@
    "name": "Harry Kane",
    "team": "England",
    "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-   "goals": 5
+   "goals": 6
   },
   {
    "name": "Ismaïla Sarr",
    "team": "Senegal",
    "flag": "🇸🇳",
+   "goals": 4
+  },
+  {
+   "name": "Jude Bellingham",
+   "team": "England",
+   "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+   "goals": 4
+  },
+  {
+   "name": "Julián Quiñones",
+   "team": "Mexico",
+   "flag": "🇲🇽",
    "goals": 4
   },
   {
@@ -4935,12 +4977,6 @@
    "goals": 3
   },
   {
-   "name": "Julián Quiñones",
-   "team": "Mexico",
-   "flag": "🇲🇽",
-   "goals": 3
-  },
-  {
    "name": "Kai Havertz",
    "team": "Germany",
    "flag": "🇩🇪",
@@ -4950,6 +4986,12 @@
    "name": "Matheus Cunha",
    "team": "Brazil",
    "flag": "🇧🇷",
+   "goals": 3
+  },
+  {
+   "name": "Raúl Jiménez",
+   "team": "Mexico",
+   "flag": "🇲🇽",
    "goals": 3
   },
   {
@@ -4968,18 +5010,6 @@
    "name": "Anthony Elanga",
    "team": "Sweden",
    "flag": "🇸🇪",
-   "goals": 2
-  },
-  {
-   "name": "Ayase Ueda",
-   "team": "Japan",
-   "flag": "🇯🇵",
-   "goals": 2
-  },
-  {
-   "name": "Azzedine Ounahi",
-   "team": "Morocco",
-   "flag": "🇲🇦",
    "goals": 2
   }
  ],
