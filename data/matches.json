@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-06T02:15:47.248302+01:00",
+ "updated": "2026-07-06T02:20:48.453432+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -3914,7 +3914,7 @@
    "goals": [],
    "status": "LIVE",
    "weather": {
-    "temp": 18,
+    "temp": 17,
     "code": 55,
     "icon": "🌧️",
     "desc": "Heavy drizzle"
