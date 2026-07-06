@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-06T22:05:49.319550+01:00",
+ "updated": "2026-07-06T22:10:49.567536+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -3970,7 +3970,15 @@ window.WC_DATA = {
    "channel": "BBC One",
    "score1": 0,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Mikel Merino",
+     "minute": "90+1",
+     "team": "Spain",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 2
@@ -4253,7 +4261,13 @@ window.WC_DATA = {
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "UPCOMING"
+   "status": "UPCOMING",
+   "weather": {
+    "temp": 31,
+    "code": 0,
+    "icon": "☀️",
+    "desc": "Clear"
+   }
   }
  ],
  "groups": {
