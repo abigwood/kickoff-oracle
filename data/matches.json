@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-07T23:55:41.705489+01:00",
+ "updated": "2026-07-08T00:00:41.155170+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -4120,7 +4120,13 @@
    "score1": 0,
    "score2": 0,
    "goals": [],
-   "status": "FT"
+   "status": "FT",
+   "decided": "PEN",
+   "advanced": 1,
+   "shootout": [
+    4,
+    3
+   ]
   },
   {
    "id": 97,
