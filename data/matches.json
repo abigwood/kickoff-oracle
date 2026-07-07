@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-07T19:10:39.900321+01:00",
+ "updated": "2026-07-07T19:15:38.999406+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -4060,7 +4060,43 @@
    "channel": "ITV1",
    "score1": 3,
    "score2": 2,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Yasser Ibrahim",
+     "minute": "15",
+     "team": "Egypt",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Mostafa Zico",
+     "minute": "67",
+     "team": "Egypt",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Cristian Romero",
+     "minute": "79",
+     "team": "Argentina",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Lionel Messi",
+     "minute": "83",
+     "team": "Argentina",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Enzo Fernández",
+     "minute": "90+2",
+     "team": "Argentina",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 1
@@ -4904,6 +4940,12 @@
  },
  "scorers": [
   {
+   "name": "Lionel Messi",
+   "team": "Argentina",
+   "flag": "🇦🇷",
+   "goals": 8
+  },
+  {
    "name": "Erling Haaland",
    "team": "Norway",
    "flag": "🇳🇴",
@@ -4913,12 +4955,6 @@
    "name": "Kylian Mbappé",
    "team": "France",
    "flag": "🇫🇷",
-   "goals": 7
-  },
-  {
-   "name": "Lionel Messi",
-   "team": "Argentina",
-   "flag": "🇦🇷",
    "goals": 7
   },
   {
