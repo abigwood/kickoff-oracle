@@ -1,6 +1,6 @@
 window.WC_DATA = {
- "updated": "2026-07-08T18:00:41.407866+01:00",
- "build": "v78-2026-07-04",
+ "updated": "2026-07-08T18:05:38.068616+01:00",
+ "build": "v79-2026-07-08",
  "matches": [
   {
    "id": 1,
@@ -3149,13 +3149,7 @@ window.WC_DATA = {
     }
    ],
    "status": "FT",
-   "youtube": "YJAUoA6wKJc",
-   "decided": "PEN",
-   "advanced": 2,
-   "shootout": [
-    4,
-    5
-   ]
+   "youtube": "YJAUoA6wKJc"
   },
   {
    "id": 75,
@@ -3191,13 +3185,7 @@ window.WC_DATA = {
     }
    ],
    "status": "FT",
-   "youtube": "SR1vjyqXLwU",
-   "decided": "PEN",
-   "advanced": 2,
-   "shootout": [
-    2,
-    3
-   ]
+   "youtube": "SR1vjyqXLwU"
   },
   {
    "id": 76,
@@ -3510,9 +3498,7 @@ window.WC_DATA = {
     }
    ],
    "status": "FT",
-   "youtube": "4N_bpnuZD-A",
-   "decided": "AET",
-   "advanced": 1
+   "youtube": "4N_bpnuZD-A"
   },
   {
    "id": 83,
@@ -3696,9 +3682,7 @@ window.WC_DATA = {
     }
    ],
    "status": "FT",
-   "youtube": "8FYlR_xkujI",
-   "decided": "AET",
-   "advanced": 1
+   "youtube": "8FYlR_xkujI"
   },
   {
    "id": 87,
@@ -3765,13 +3749,7 @@ window.WC_DATA = {
     }
    ],
    "status": "FT",
-   "youtube": "_YVWHgJDALY",
-   "decided": "PEN",
-   "advanced": 2,
-   "shootout": [
-    2,
-    4
-   ]
+   "youtube": "_YVWHgJDALY"
   },
   {
    "id": 89,
@@ -4121,13 +4099,7 @@ window.WC_DATA = {
    "score2": 0,
    "goals": [],
    "status": "FT",
-   "youtube": "EHOfXgRFup8",
-   "decided": "PEN",
-   "advanced": 1,
-   "shootout": [
-    4,
-    3
-   ]
+   "youtube": "EHOfXgRFup8"
   },
   {
    "id": 97,
@@ -4143,7 +4115,7 @@ window.WC_DATA = {
    "ukKickoff": "2026-07-09T21:00:00+01:00",
    "ukDate": "2026-07-09",
    "ukTime": "21:00",
-   "channel": "TBC",
+   "channel": "ITV1",
    "score1": null,
    "score2": null,
    "goals": [],
@@ -4169,7 +4141,7 @@ window.WC_DATA = {
    "ukKickoff": "2026-07-10T20:00:00+01:00",
    "ukDate": "2026-07-10",
    "ukTime": "20:00",
-   "channel": "TBC",
+   "channel": "BBC One",
    "score1": null,
    "score2": null,
    "goals": [],
@@ -4195,7 +4167,7 @@ window.WC_DATA = {
    "ukKickoff": "2026-07-11T22:00:00+01:00",
    "ukDate": "2026-07-11",
    "ukTime": "22:00",
-   "channel": "TBC",
+   "channel": "ITV1",
    "score1": null,
    "score2": null,
    "goals": [],
@@ -4221,7 +4193,7 @@ window.WC_DATA = {
    "ukKickoff": "2026-07-12T02:00:00+01:00",
    "ukDate": "2026-07-12",
    "ukTime": "02:00",
-   "channel": "TBC",
+   "channel": "ITV1",
    "score1": null,
    "score2": null,
    "goals": [],

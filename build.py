@@ -145,6 +145,11 @@ KNOCKOUT_CHANNELS = {
     "2026-07-07 01:00": "BBC One",
     "2026-07-07 17:00": "ITV1",
     "2026-07-07 21:00": "ITV1",
+    # Quarter-finals confirmed after the round of 16.
+    "2026-07-09 21:00": "ITV1",
+    "2026-07-10 20:00": "BBC One",
+    "2026-07-11 22:00": "ITV1",
+    "2026-07-12 02:00": "ITV1",
     "2026-07-19 20:00": "BBC & ITV",   # the final is shown on both, as is custom
 }
 
