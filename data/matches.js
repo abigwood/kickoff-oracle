@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-08T01:05:38.855805+01:00",
+ "updated": "2026-07-08T01:10:40.328236+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -4121,6 +4121,7 @@ window.WC_DATA = {
    "score2": 0,
    "goals": [],
    "status": "FT",
+   "youtube": "EHOfXgRFup8",
    "decided": "PEN",
    "advanced": 1,
    "shootout": [
