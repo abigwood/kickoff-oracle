@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-09T00:35:40.561645+01:00",
+ "updated": "2026-07-09T00:40:38.351110+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4175,7 +4175,7 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 27,
+    "temp": 26,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -4201,7 +4201,7 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 34,
+    "temp": 32,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -4227,7 +4227,7 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 27,
+    "temp": 25,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -4253,7 +4253,7 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 35,
+    "temp": 34,
     "code": 2,
     "icon": "⛅",
     "desc": "Partly cloudy"
@@ -4279,7 +4279,7 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 29,
+    "temp": 35,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -4305,7 +4305,7 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 34,
+    "temp": 33,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -4331,7 +4331,7 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 25,
+    "temp": 39,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
