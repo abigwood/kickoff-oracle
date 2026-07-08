@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-08T14:50:40.829823+01:00",
+ "updated": "2026-07-08T14:55:38.312965+01:00",
  "build": "v78-2026-07-04",
  "matches": [
   {
@@ -4228,9 +4228,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 25,
-    "code": 95,
-    "icon": "⛈️",
-    "desc": "Thunderstorm"
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
    }
   },
   {
