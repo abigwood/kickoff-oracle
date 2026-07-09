@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-09T23:00:59.673768+01:00",
+ "updated": "2026-07-09T23:05:57.005909+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4144,16 +4144,12 @@ window.WC_DATA = {
    "ukDate": "2026-07-09",
    "ukTime": "21:00",
    "channel": "ITV1",
-   "score1": null,
-   "score2": null,
+   "score1": 2,
+   "score2": 0,
    "goals": [],
-   "status": "LIVE",
-   "weather": {
-    "temp": 31,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "FT",
+   "decided": "FT",
+   "advanced": 1
   },
   {
    "id": 98,
@@ -5099,19 +5095,19 @@ window.WC_DATA = {
     "team": "Spain",
     "flag": "🇪🇸",
     "elo": 2186,
-    "win": 35.9,
-    "final": 54.3,
-    "sf": 87.8,
+    "win": 33.0,
+    "final": 47.9,
+    "sf": 87.4,
     "qf": 100.0,
     "r16": 100.0
    },
    {
     "team": "France",
     "flag": "🇫🇷",
-    "elo": 2143,
-    "win": 24.2,
-    "final": 39.9,
-    "sf": 82.1,
+    "elo": 2163,
+    "win": 32.2,
+    "final": 50.1,
+    "sf": 100.0,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5119,9 +5115,9 @@ window.WC_DATA = {
     "team": "Argentina",
     "flag": "🇦🇷",
     "elo": 2119,
-    "win": 20.4,
-    "final": 45.6,
-    "sf": 74.8,
+    "win": 18.4,
+    "final": 45.8,
+    "sf": 74.9,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5129,9 +5125,9 @@ window.WC_DATA = {
     "team": "England",
     "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     "elo": 2085,
-    "win": 13.6,
-    "final": 34.0,
-    "sf": 67.0,
+    "win": 12.3,
+    "final": 34.8,
+    "sf": 68.4,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5139,9 +5135,9 @@ window.WC_DATA = {
     "team": "Norway",
     "flag": "🇳🇴",
     "elo": 1978,
-    "win": 2.6,
-    "final": 11.8,
-    "sf": 33.0,
+    "win": 2.0,
+    "final": 10.5,
+    "sf": 31.6,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5149,19 +5145,9 @@ window.WC_DATA = {
     "team": "Switzerland",
     "flag": "🇨🇭",
     "elo": 1957,
-    "win": 1.9,
-    "final": 8.7,
-    "sf": 25.2,
-    "qf": 100.0,
-    "r16": 100.0
-   },
-   {
-    "team": "Morocco",
-    "flag": "🇲🇦",
-    "elo": 1920,
-    "win": 0.8,
-    "final": 3.1,
-    "sf": 17.9,
+    "win": 1.6,
+    "final": 9.0,
+    "sf": 25.1,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5169,9 +5155,9 @@ window.WC_DATA = {
     "team": "Belgium",
     "flag": "🇧🇪",
     "elo": 1910,
-    "win": 0.6,
-    "final": 2.7,
-    "sf": 12.2,
+    "win": 0.4,
+    "final": 2.0,
+    "sf": 12.6,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5213,6 +5199,16 @@ window.WC_DATA = {
     "final": 0.0,
     "sf": 0.0,
     "qf": 0.0,
+    "r16": 100.0
+   },
+   {
+    "team": "Morocco",
+    "flag": "🇲🇦",
+    "elo": 1901,
+    "win": 0.0,
+    "final": 0.0,
+    "sf": 0.0,
+    "qf": 100.0,
     "r16": 100.0
    },
    {
