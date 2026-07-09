@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-09T17:46:02.159296+01:00",
+ "updated": "2026-07-09T17:51:01.585219+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4150,9 +4150,9 @@
    "status": "UPCOMING",
    "weather": {
     "temp": 31,
-    "code": 2,
-    "icon": "⛅",
-    "desc": "Partly cloudy"
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
