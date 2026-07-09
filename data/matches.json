@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-09T23:05:57.005909+01:00",
+ "updated": "2026-07-09T23:10:57.528338+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4146,7 +4146,22 @@
    "channel": "ITV1",
    "score1": 2,
    "score2": 0,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Kylian Mbappé",
+     "minute": "60",
+     "team": "France",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ousmane Dembélé",
+     "minute": "66",
+     "team": "France",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 1
@@ -4938,6 +4953,12 @@
  },
  "scorers": [
   {
+   "name": "Kylian Mbappé",
+   "team": "France",
+   "flag": "🇫🇷",
+   "goals": 8
+  },
+  {
    "name": "Lionel Messi",
    "team": "Argentina",
    "flag": "🇦🇷",
@@ -4950,16 +4971,16 @@
    "goals": 7
   },
   {
-   "name": "Kylian Mbappé",
-   "team": "France",
-   "flag": "🇫🇷",
-   "goals": 7
-  },
-  {
    "name": "Harry Kane",
    "team": "England",
    "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
    "goals": 6
+  },
+  {
+   "name": "Ousmane Dembélé",
+   "team": "France",
+   "flag": "🇫🇷",
+   "goals": 5
   },
   {
    "name": "Ismaïla Sarr",
@@ -4983,12 +5004,6 @@
    "name": "Mikel Oyarzabal",
    "team": "Spain",
    "flag": "🇪🇸",
-   "goals": 4
-  },
-  {
-   "name": "Ousmane Dembélé",
-   "team": "France",
-   "flag": "🇫🇷",
    "goals": 4
   },
   {
