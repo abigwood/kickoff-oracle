@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-10T09:01:04.255076+01:00",
+ "updated": "2026-07-10T09:06:02.207855+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4213,10 +4213,10 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 30,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
+    "temp": 23,
+    "code": 65,
+    "icon": "🌧️",
+    "desc": "Heavy rain"
    }
   },
   {
@@ -4239,7 +4239,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 25,
+    "temp": 28,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
