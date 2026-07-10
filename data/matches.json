@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-10T22:01:01.233164+01:00",
+ "updated": "2026-07-10T22:06:01.711152+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4184,7 +4184,29 @@
    "channel": "BBC One",
    "score1": 2,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Fabián Ruiz",
+     "minute": "30",
+     "team": "Spain",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Charles De Ketelaere",
+     "minute": "41",
+     "team": "Belgium",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Mikel Merino",
+     "minute": "88",
+     "team": "Spain",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 1
@@ -5016,6 +5038,12 @@
    "goals": 3
   },
   {
+   "name": "Charles De Ketelaere",
+   "team": "Belgium",
+   "flag": "🇧🇪",
+   "goals": 3
+  },
+  {
    "name": "Cody Gakpo",
    "team": "Netherlands",
    "flag": "🇳🇱",
@@ -5092,12 +5120,6 @@
    "team": "DR Congo",
    "flag": "🇨🇩",
    "goals": 3
-  },
-  {
-   "name": "Amad Diallo",
-   "team": "Ivory Coast",
-   "flag": "🇨🇮",
-   "goals": 2
   }
  ],
  "predictions": {
