@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-10T12:26:05.953041+01:00",
+ "updated": "2026-07-10T12:31:08.314844+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4265,10 +4265,10 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 23,
-    "code": 80,
-    "icon": "🌦️",
-    "desc": "Showers"
+    "temp": 32,
+    "code": 3,
+    "icon": "☁️",
+    "desc": "Overcast"
    }
   },
   {
@@ -4291,10 +4291,10 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 33,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
+    "temp": 34,
+    "code": 1,
+    "icon": "🌤️",
+    "desc": "Mainly clear"
    }
   },
   {
@@ -4343,10 +4343,10 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 29,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
+    "temp": 25,
+    "code": 51,
+    "icon": "🌦️",
+    "desc": "Light drizzle"
    }
   }
  ],
