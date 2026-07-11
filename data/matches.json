@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-11T14:56:01.397383+01:00",
+ "updated": "2026-07-11T15:01:02.184500+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4232,7 +4232,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 29,
+    "temp": 30,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
@@ -4258,7 +4258,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 31,
+    "temp": 30,
     "code": 0,
     "icon": "☀️",
     "desc": "Clear"
@@ -4270,10 +4270,10 @@
    "stageOrder": 7,
    "round": "Semi-final",
    "group": "",
-   "team1": "W97",
-   "team2": "W98",
-   "flag1": "⚽",
-   "flag2": "⚽",
+   "team1": "France",
+   "team2": "Spain",
+   "flag1": "🇫🇷",
+   "flag2": "🇪🇸",
    "ground": "Dallas (Arlington)",
    "ukKickoff": "2026-07-14T20:00:00+01:00",
    "ukDate": "2026-07-14",
@@ -5618,6 +5618,11 @@
    0.593,
    0.221,
    0.187
+  ],
+  "101": [
+   0.328,
+   0.256,
+   0.415
   ]
  }
 }
