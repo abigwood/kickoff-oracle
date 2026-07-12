@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-12T04:46:02.892109+01:00",
+ "updated": "2026-07-12T04:51:01.722297+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4274,7 +4274,36 @@ window.WC_DATA = {
    "channel": "ITV1",
    "score1": 1,
    "score2": 1,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Alexis Mac Allister",
+     "minute": "10",
+     "team": "Argentina",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Dan Ndoye",
+     "minute": "67",
+     "team": "Switzerland",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Julián Álvarez",
+     "minute": "112",
+     "team": "Argentina",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Lautaro Martínez",
+     "minute": "120+1",
+     "team": "Argentina",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "AET",
    "advanced": 1
@@ -5145,18 +5174,8 @@ window.WC_DATA = {
     "team": "Spain",
     "flag": "🇪🇸",
     "elo": 2196,
-    "win": 33.8,
-    "final": 54.1,
-    "sf": 100.0,
-    "qf": 100.0,
-    "r16": 100.0
-   },
-   {
-    "team": "Argentina",
-    "flag": "🇦🇷",
-    "elo": 2145,
-    "win": 29.4,
-    "final": 65.3,
+    "win": 38.9,
+    "final": 55.2,
     "sf": 100.0,
     "qf": 100.0,
     "r16": 100.0
@@ -5165,9 +5184,19 @@ window.WC_DATA = {
     "team": "France",
     "flag": "🇫🇷",
     "elo": 2163,
-    "win": 26.9,
-    "final": 45.9,
+    "win": 29.4,
+    "final": 44.8,
     "sf": 100.0,
+    "qf": 100.0,
+    "r16": 100.0
+   },
+   {
+    "team": "Argentina",
+    "flag": "🇦🇷",
+    "elo": 2106,
+    "win": 15.6,
+    "final": 42.9,
+    "sf": 72.0,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5175,9 +5204,9 @@ window.WC_DATA = {
     "team": "England",
     "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     "elo": 2076,
-    "win": 7.9,
-    "final": 25.2,
-    "sf": 63.7,
+    "win": 10.7,
+    "final": 32.4,
+    "sf": 63.4,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5185,9 +5214,19 @@ window.WC_DATA = {
     "team": "Norway",
     "flag": "🇳🇴",
     "elo": 1987,
-    "win": 2.0,
-    "final": 9.5,
-    "sf": 36.3,
+    "win": 2.9,
+    "final": 13.3,
+    "sf": 36.6,
+    "qf": 100.0,
+    "r16": 100.0
+   },
+   {
+    "team": "Switzerland",
+    "flag": "🇨🇭",
+    "elo": 1970,
+    "win": 2.5,
+    "final": 11.4,
+    "sf": 28.0,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5229,16 +5268,6 @@ window.WC_DATA = {
     "final": 0.0,
     "sf": 0.0,
     "qf": 0.0,
-    "r16": 100.0
-   },
-   {
-    "team": "Switzerland",
-    "flag": "🇨🇭",
-    "elo": 1932,
-    "win": 0.0,
-    "final": 0.0,
-    "sf": 0.0,
-    "qf": 100.0,
     "r16": 100.0
    },
    {
