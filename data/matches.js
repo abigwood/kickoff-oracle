@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-12T04:41:01.373854+01:00",
+ "updated": "2026-07-12T04:46:02.892109+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4272,16 +4272,12 @@ window.WC_DATA = {
    "ukDate": "2026-07-12",
    "ukTime": "02:00",
    "channel": "ITV1",
-   "score1": null,
-   "score2": null,
+   "score1": 1,
+   "score2": 1,
    "goals": [],
-   "status": "UPCOMING",
-   "weather": {
-    "temp": 29,
-    "code": 0,
-    "icon": "☀️",
-    "desc": "Clear"
-   }
+   "status": "FT",
+   "decided": "AET",
+   "advanced": 1
   },
   {
    "id": 101,
@@ -5149,8 +5145,18 @@ window.WC_DATA = {
     "team": "Spain",
     "flag": "🇪🇸",
     "elo": 2196,
-    "win": 38.1,
-    "final": 55.3,
+    "win": 33.8,
+    "final": 54.1,
+    "sf": 100.0,
+    "qf": 100.0,
+    "r16": 100.0
+   },
+   {
+    "team": "Argentina",
+    "flag": "🇦🇷",
+    "elo": 2145,
+    "win": 29.4,
+    "final": 65.3,
     "sf": 100.0,
     "qf": 100.0,
     "r16": 100.0
@@ -5159,19 +5165,9 @@ window.WC_DATA = {
     "team": "France",
     "flag": "🇫🇷",
     "elo": 2163,
-    "win": 28.7,
-    "final": 44.7,
+    "win": 26.9,
+    "final": 45.9,
     "sf": 100.0,
-    "qf": 100.0,
-    "r16": 100.0
-   },
-   {
-    "team": "Argentina",
-    "flag": "🇦🇷",
-    "elo": 2119,
-    "win": 18.4,
-    "final": 47.0,
-    "sf": 76.2,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5179,9 +5175,9 @@ window.WC_DATA = {
     "team": "England",
     "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     "elo": 2076,
-    "win": 10.1,
-    "final": 31.2,
-    "sf": 64.0,
+    "win": 7.9,
+    "final": 25.2,
+    "sf": 63.7,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5189,19 +5185,9 @@ window.WC_DATA = {
     "team": "Norway",
     "flag": "🇳🇴",
     "elo": 1987,
-    "win": 2.5,
-    "final": 12.8,
-    "sf": 36.0,
-    "qf": 100.0,
-    "r16": 100.0
-   },
-   {
-    "team": "Switzerland",
-    "flag": "🇨🇭",
-    "elo": 1957,
-    "win": 2.1,
-    "final": 8.9,
-    "sf": 23.8,
+    "win": 2.0,
+    "final": 9.5,
+    "sf": 36.3,
     "qf": 100.0,
     "r16": 100.0
    },
@@ -5243,6 +5229,16 @@ window.WC_DATA = {
     "final": 0.0,
     "sf": 0.0,
     "qf": 0.0,
+    "r16": 100.0
+   },
+   {
+    "team": "Switzerland",
+    "flag": "🇨🇭",
+    "elo": 1932,
+    "win": 0.0,
+    "final": 0.0,
+    "sf": 0.0,
+    "qf": 100.0,
     "r16": 100.0
    },
    {
@@ -5628,11 +5624,6 @@ window.WC_DATA = {
   ]
  },
  "matchProbs": {
-  "100": [
-   0.593,
-   0.221,
-   0.187
-  ],
   "101": [
    0.328,
    0.256,
