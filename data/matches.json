@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-13T18:31:06.124627+01:00",
+ "updated": "2026-07-13T18:36:05.173969+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4355,7 +4355,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 33,
+    "temp": 28,
     "code": 80,
     "icon": "🌦️",
     "desc": "Showers"
@@ -4407,7 +4407,7 @@
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 24,
+    "temp": 30,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
