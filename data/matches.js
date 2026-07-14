@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-14T22:00:18.458197+01:00",
+ "updated": "2026-07-14T22:05:18.097348+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4326,7 +4326,22 @@ window.WC_DATA = {
    "channel": "TBC",
    "score1": 0,
    "score2": 2,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Mikel Oyarzabal",
+     "minute": "22",
+     "team": "Spain",
+     "og": false,
+     "pen": true
+    },
+    {
+     "name": "Pedro Porro",
+     "minute": "58",
+     "team": "Spain",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 2
@@ -5044,6 +5059,12 @@ window.WC_DATA = {
    "goals": 6
   },
   {
+   "name": "Mikel Oyarzabal",
+   "team": "Spain",
+   "flag": "🇪🇸",
+   "goals": 5
+  },
+  {
    "name": "Ousmane Dembélé",
    "team": "France",
    "flag": "🇫🇷",
@@ -5059,12 +5080,6 @@ window.WC_DATA = {
    "name": "Julián Quiñones",
    "team": "Mexico",
    "flag": "🇲🇽",
-   "goals": 4
-  },
-  {
-   "name": "Mikel Oyarzabal",
-   "team": "Spain",
-   "flag": "🇪🇸",
    "goals": 4
   },
   {
