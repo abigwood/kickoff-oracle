@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-14T21:55:17.346255+01:00",
+ "updated": "2026-07-14T22:00:18.458197+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4324,16 +4324,12 @@ window.WC_DATA = {
    "ukDate": "2026-07-14",
    "ukTime": "20:00",
    "channel": "TBC",
-   "score1": null,
-   "score2": null,
+   "score1": 0,
+   "score2": 2,
    "goals": [],
-   "status": "LIVE",
-   "weather": {
-    "temp": 30,
-    "code": 53,
-    "icon": "🌦️",
-    "desc": "Drizzle"
-   }
+   "status": "FT",
+   "decided": "FT",
+   "advanced": 2
   },
   {
    "id": 102,
@@ -5174,19 +5170,9 @@ window.WC_DATA = {
    {
     "team": "Spain",
     "flag": "🇪🇸",
-    "elo": 2196,
-    "win": 37.7,
-    "final": 55.7,
-    "sf": 100.0,
-    "qf": 100.0,
-    "r16": 100.0
-   },
-   {
-    "team": "France",
-    "flag": "🇫🇷",
-    "elo": 2163,
-    "win": 27.6,
-    "final": 44.3,
+    "elo": 2237,
+    "win": 71.8,
+    "final": 100.0,
     "sf": 100.0,
     "qf": 100.0,
     "r16": 100.0
@@ -5195,8 +5181,8 @@ window.WC_DATA = {
     "team": "Argentina",
     "flag": "🇦🇷",
     "elo": 2106,
-    "win": 20.6,
-    "final": 55.8,
+    "win": 17.0,
+    "final": 55.4,
     "sf": 100.0,
     "qf": 100.0,
     "r16": 100.0
@@ -5205,8 +5191,18 @@ window.WC_DATA = {
     "team": "England",
     "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     "elo": 2076,
-    "win": 14.1,
-    "final": 44.2,
+    "win": 11.2,
+    "final": 44.6,
+    "sf": 100.0,
+    "qf": 100.0,
+    "r16": 100.0
+   },
+   {
+    "team": "France",
+    "flag": "🇫🇷",
+    "elo": 2122,
+    "win": 0.0,
+    "final": 0.0,
     "sf": 100.0,
     "qf": 100.0,
     "r16": 100.0
