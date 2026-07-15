@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-15T09:15:17.871218+01:00",
+ "updated": "2026-07-15T09:20:18.684648+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4379,9 +4379,9 @@ window.WC_DATA = {
    "stageOrder": 8,
    "round": "Match for third place",
    "group": "",
-   "team1": "L101",
+   "team1": "France",
    "team2": "L102",
-   "flag1": "⚽",
+   "flag1": "🇫🇷",
    "flag2": "⚽",
    "ground": "Miami (Miami Gardens)",
    "ukKickoff": "2026-07-18T22:00:00+01:00",
@@ -4405,9 +4405,9 @@ window.WC_DATA = {
    "stageOrder": 9,
    "round": "Final",
    "group": "",
-   "team1": "W101",
+   "team1": "Spain",
    "team2": "W102",
-   "flag1": "⚽",
+   "flag1": "🇪🇸",
    "flag2": "⚽",
    "ground": "New York/New Jersey (East Rutherford)",
    "ukKickoff": "2026-07-19T20:00:00+01:00",
