@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-15T17:40:16.730313+01:00",
+ "updated": "2026-07-15T17:45:16.607022+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4367,7 +4367,7 @@ window.WC_DATA = {
    "goals": [],
    "status": "UPCOMING",
    "weather": {
-    "temp": 30,
+    "temp": 28,
     "code": 3,
     "icon": "☁️",
     "desc": "Overcast"
