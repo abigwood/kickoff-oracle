@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-15T22:05:16.667870+01:00",
+ "updated": "2026-07-15T22:10:16.205925+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4364,7 +4364,29 @@
    "channel": "TBC",
    "score1": 1,
    "score2": 2,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Anthony Gordon",
+     "minute": "55",
+     "team": "England",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Enzo Fernández",
+     "minute": "86",
+     "team": "Argentina",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Lautaro Martínez",
+     "minute": "92",
+     "team": "Argentina",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 2
@@ -4376,9 +4398,9 @@
    "round": "Match for third place",
    "group": "",
    "team1": "France",
-   "team2": "L102",
+   "team2": "England",
    "flag1": "🇫🇷",
-   "flag2": "⚽",
+   "flag2": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
    "ground": "Miami (Miami Gardens)",
    "ukKickoff": "2026-07-18T22:00:00+01:00",
    "ukDate": "2026-07-18",
@@ -4402,9 +4424,9 @@
    "round": "Final",
    "group": "",
    "team1": "Spain",
-   "team2": "W102",
+   "team2": "Argentina",
    "flag1": "🇪🇸",
-   "flag2": "⚽",
+   "flag2": "🇦🇷",
    "ground": "New York/New Jersey (East Rutherford)",
    "ukKickoff": "2026-07-19T20:00:00+01:00",
    "ukDate": "2026-07-19",
@@ -5152,6 +5174,12 @@
    "goals": 3
   },
   {
+   "name": "Lautaro Martínez",
+   "team": "Argentina",
+   "flag": "🇦🇷",
+   "goals": 3
+  },
+  {
    "name": "Matheus Cunha",
    "team": "Brazil",
    "flag": "🇧🇷",
@@ -5167,12 +5195,6 @@
    "name": "Romelu Lukaku",
    "team": "Belgium",
    "flag": "🇧🇪",
-   "goals": 3
-  },
-  {
-   "name": "Yoane Wissa",
-   "team": "DR Congo",
-   "flag": "🇨🇩",
    "goals": 3
   }
  ],
@@ -5661,5 +5683,16 @@
    }
   ]
  },
- "matchProbs": {}
+ "matchProbs": {
+  "103": [
+   0.47,
+   0.25,
+   0.28
+  ],
+  "104": [
+   0.511,
+   0.242,
+   0.247
+  ]
+ }
 }
