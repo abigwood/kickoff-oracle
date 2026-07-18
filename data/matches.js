@@ -1,5 +1,5 @@
 window.WC_DATA = {
- "updated": "2026-07-19T00:05:15.854321+01:00",
+ "updated": "2026-07-19T00:10:16.223884+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4409,7 +4409,78 @@ window.WC_DATA = {
    "channel": "TBC",
    "score1": 4,
    "score2": 6,
-   "goals": [],
+   "goals": [
+    {
+     "name": "Declan Rice",
+     "minute": "3",
+     "team": "England",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Ezri Konsa",
+     "minute": "18",
+     "team": "England",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Bukayo Saka",
+     "minute": "37",
+     "team": "England",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Bukayo Saka",
+     "minute": "45+1",
+     "team": "England",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Kylian Mbappé",
+     "minute": "48",
+     "team": "France",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Bradley Barcola",
+     "minute": "54",
+     "team": "France",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Kylian Mbappé",
+     "minute": "66",
+     "team": "France",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Bukayo Saka",
+     "minute": "87",
+     "team": "England",
+     "og": false,
+     "pen": true
+    },
+    {
+     "name": "Ousmane Dembélé",
+     "minute": "90+6",
+     "team": "France",
+     "og": false,
+     "pen": false
+    },
+    {
+     "name": "Jude Bellingham",
+     "minute": "90+8",
+     "team": "England",
+     "og": false,
+     "pen": false
+    }
+   ],
    "status": "FT",
    "decided": "FT",
    "advanced": 2
@@ -5048,7 +5119,7 @@ window.WC_DATA = {
    "name": "Kylian Mbappé",
    "team": "France",
    "flag": "🇫🇷",
-   "goals": 8
+   "goals": 10
   },
   {
    "name": "Lionel Messi",
@@ -5063,27 +5134,27 @@ window.WC_DATA = {
    "goals": 7
   },
   {
+   "name": "Jude Bellingham",
+   "team": "England",
+   "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+   "goals": 7
+  },
+  {
    "name": "Harry Kane",
    "team": "England",
    "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
    "goals": 6
   },
   {
-   "name": "Jude Bellingham",
-   "team": "England",
-   "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+   "name": "Ousmane Dembélé",
+   "team": "France",
+   "flag": "🇫🇷",
    "goals": 6
   },
   {
    "name": "Mikel Oyarzabal",
    "team": "Spain",
    "flag": "🇪🇸",
-   "goals": 5
-  },
-  {
-   "name": "Ousmane Dembélé",
-   "team": "France",
-   "flag": "🇫🇷",
    "goals": 5
   },
   {
@@ -5105,9 +5176,21 @@ window.WC_DATA = {
    "goals": 4
   },
   {
+   "name": "Bradley Barcola",
+   "team": "France",
+   "flag": "🇫🇷",
+   "goals": 3
+  },
+  {
    "name": "Brian Brobbey",
    "team": "Netherlands",
    "flag": "🇳🇱",
+   "goals": 3
+  },
+  {
+   "name": "Bukayo Saka",
+   "team": "England",
+   "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
    "goals": 3
   },
   {
@@ -5180,18 +5263,6 @@ window.WC_DATA = {
    "name": "Matheus Cunha",
    "team": "Brazil",
    "flag": "🇧🇷",
-   "goals": 3
-  },
-  {
-   "name": "Raúl Jiménez",
-   "team": "Mexico",
-   "flag": "🇲🇽",
-   "goals": 3
-  },
-  {
-   "name": "Romelu Lukaku",
-   "team": "Belgium",
-   "flag": "🇧🇪",
    "goals": 3
   }
  ],
