@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-19T00:00:15.843733+01:00",
+ "updated": "2026-07-19T00:05:15.854321+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4407,16 +4407,12 @@
    "ukDate": "2026-07-18",
    "ukTime": "22:00",
    "channel": "TBC",
-   "score1": null,
-   "score2": null,
+   "score1": 4,
+   "score2": 6,
    "goals": [],
-   "status": "LIVE",
-   "weather": {
-    "temp": 31,
-    "code": 3,
-    "icon": "☁️",
-    "desc": "Overcast"
-   }
+   "status": "FT",
+   "decided": "FT",
+   "advanced": 2
   },
   {
    "id": 104,
@@ -5206,7 +5202,7 @@
     "team": "Spain",
     "flag": "🇪🇸",
     "elo": 2237,
-    "win": 66.1,
+    "win": 67.7,
     "final": 100.0,
     "sf": 100.0,
     "qf": 100.0,
@@ -5216,18 +5212,8 @@
     "team": "Argentina",
     "flag": "🇦🇷",
     "elo": 2134,
-    "win": 33.9,
+    "win": 32.3,
     "final": 100.0,
-    "sf": 100.0,
-    "qf": 100.0,
-    "r16": 100.0
-   },
-   {
-    "team": "France",
-    "flag": "🇫🇷",
-    "elo": 2122,
-    "win": 0.0,
-    "final": 0.0,
     "sf": 100.0,
     "qf": 100.0,
     "r16": 100.0
@@ -5235,7 +5221,17 @@
    {
     "team": "England",
     "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    "elo": 2048,
+    "elo": 2103,
+    "win": 0.0,
+    "final": 0.0,
+    "sf": 100.0,
+    "qf": 100.0,
+    "r16": 100.0
+   },
+   {
+    "team": "France",
+    "flag": "🇫🇷",
+    "elo": 2067,
     "win": 0.0,
     "final": 0.0,
     "sf": 100.0,
