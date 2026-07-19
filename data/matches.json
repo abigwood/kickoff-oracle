@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-19T22:10:17.970601+01:00",
+ "updated": "2026-07-19T22:15:14.599765+01:00",
  "build": "v79-2026-07-08",
  "matches": [
   {
@@ -4504,7 +4504,7 @@
    "score1": null,
    "score2": null,
    "goals": [],
-   "status": "LIVE",
+   "status": "UPCOMING",
    "weather": {
     "temp": 27,
     "code": 0,
@@ -5752,5 +5752,11 @@
    }
   ]
  },
- "matchProbs": {}
+ "matchProbs": {
+  "104": [
+   0.511,
+   0.242,
+   0.247
+  ]
+ }
 }
